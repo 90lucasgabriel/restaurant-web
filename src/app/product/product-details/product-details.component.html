@@ -1,0 +1,47 @@
+<div *ngIf="loading && !submitted">
+  <mat-progress-spinner mode="indeterminate" diameter="30" strokeWidth="4"></mat-progress-spinner>
+</div>
+
+<div class="container-flex flex-center" *ngIf='!loading || submitted'>
+  <!-- BACK AND TITLE START -->
+  <div class="mat-typography container-flex header-page width-padding">
+    <div class="flex-5"><button mat-icon-button (click)="goBack()" matTooltip="Voltar"><mat-icon>arrow_back</mat-icon></button></div>
+    <div class="flex-95 text-title">Produto Detalhes</div>
+    <div class="flex-30 text-right">
+      <button mat-icon-button [routerLink]="['/company', item.company_id, 'product', item.id, 'edit']" matTooltip="Editar"><mat-icon>edit</mat-icon></button>
+      <button mat-icon-button (click)="deleteConfirm(item)" matTooltip="Excluir"> <mat-icon>delete</mat-icon></button>
+    </div> 
+  </div>
+  <!--BACK AND TITLE END -->
+
+  <mat-card class="flex content-page">
+    <mat-card-content>
+      <!-- DETAILS START -->
+      <div>
+        <mat-card-title-group>
+          <mat-card-subtitle>Informações</mat-card-subtitle>
+        </mat-card-title-group>
+        <div class="container-flex margin-bottom">
+          <div class="flex-5 align-top">
+            <p><mat-icon>info_outline</mat-icon></p>
+          </div>
+
+          <div class="flex-95">
+            <div class="container-flex">
+              <div class="flex-10"><p>Nome: </p></div>
+              <div class="flex-40"><p>{{item.name}}</p></div>
+              <div class="flex-10"><p>Categoria: </p></div>
+              <div class="flex-40"><p>{{item.category?.data.id}} - {{item.category?.data.name}}</p></div>
+            </div>
+            <div class="container-flex">
+              <div class="flex-10"><p>Descrição: </p></div>
+              <div class="flex-90"><p>{{item.description}}</p></div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+      <!-- DETAILS END -->
+    </mat-card-content>
+  </mat-card>
+</div>

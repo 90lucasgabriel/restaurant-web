@@ -1,0 +1,13 @@
+.container{
+  padding:          20px;
+}
+
+.button-menu:hover{
+  cursor:           pointer;
+  background:       rgba(0,0,0,.05);
+}
+
+mat-sidenav mat-list-item h4, 
+mat-sidenav mat-list-item mat-icon{
+  color:            #666;
+}

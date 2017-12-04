@@ -1,1 +1,306 @@
 /* You can add global styles to this file, and also import other style files */
+@import "~@angular/material/prebuilt-themes/indigo-pink.css";
+
+/*GENERAL--------------------------------------------------------------*/
+html, body, material-app, mat-sidenav-container, .my-content {
+  margin:             0;
+  width:              100%;
+  height:             100%;
+  color:            #666;
+}
+
+mat-card mat-icon, mat-table mat-icon{
+  color:            #666;
+}
+
+.pointer, mat-icon-button{
+  cursor:             pointer
+}
+
+.margin-auto{
+  margin:             0 auto;
+}
+
+*{
+  outline:            0 !important;
+}
+
+.margin-right{
+  margin-right:       10px;
+}
+
+mat-card-title-group{
+  /*margin-top:               20px !important;*/
+}
+
+.text-title{
+  font-size:          20px;
+}
+
+.margin-bottom{
+  margin-bottom:      15px;
+}
+
+.header-page{
+  margin-bottom:      15px;
+  color:              #666 !important;
+}
+
+.content-page{
+  width:              92%;
+}
+
+.width-padding{
+  width:              calc(92% + 48px);
+}
+
+.padding{
+  padding:            20px;
+}
+
+.loading-shade {
+  position:           absolute;
+  top:                0;
+  left:               0;
+  bottom:             0;
+  right:              0;
+  height:             calc(100vh - 70px);
+  background:         rgba(255, 255, 255, 0.5);
+  z-index:            1;
+  display:            flex;
+  align-items:        center;
+  justify-content:    center;
+}
+
+.caption-text, .caption-text div{
+  font-size:          smaller;
+}
+
+/*CONTENT--------------------------------------------------------------*/
+.container-flex{
+  display:            flex; 
+  flex-flow:          wrap; 
+  justify-content:    space-between;
+  align-items:        center;
+}
+
+.flex-center{
+  justify-content:    center;
+}
+
+.flex-stretch{
+  align-items:        stretch;
+}
+
+.align-top{
+  align-self:         flex-start;
+}
+
+.align-middle{
+  align-items:        center;
+}
+
+.align-bottom{
+  align-self:         flex-end;
+}
+
+.flex{
+  flex:               flex;
+}
+
+.flex-5{
+  flex:               1;
+}
+
+.flex-10{
+  flex:               2;
+}
+
+.flex-15{
+  flex:               3;
+}
+
+.flex-20{
+  flex:               4;
+}
+
+.flex-25{
+  flex:               5;
+}
+
+.flex-30{
+  flex:               6;
+}
+
+.flex-35{
+  flex:               7;
+}
+
+.flex-40{
+  flex:               8;
+}
+
+.flex-45{
+  flex:               9;
+}
+
+.flex-50{
+  flex:               10;
+}
+
+.flex-55{
+  flex:               11;
+}
+
+.flex-60{
+  flex:               12;
+}
+
+.flex-65{
+  flex:               13;
+}
+
+.flex-70{
+  flex:               14;
+}
+
+.flex-75{
+  flex:               15;
+}
+
+.flex-80{
+  flex:               16;
+}
+
+.flex-85{
+  flex:               17;
+}
+
+.flex-90{
+  flex:               18;
+}
+
+.flex-95{
+  flex:               19;
+}
+
+.text-center{
+  text-align:         center;
+}
+
+.text-right{
+  text-align:         right;
+}
+
+.hover-parent .hover-child{
+  visibility:         hidden;
+}
+
+.hover-parent:hover .hover-child{
+  visibility:         visible;
+}
+
+.actions-column{
+  text-align:         right;
+  max-width:          90px;
+}
+
+.id-column{
+  max-width:          50px;
+}
+
+.number-column{
+  max-width:          100px;
+}
+
+mat-row:hover{
+  background: rgba(0, 0, 0, 0.01);
+}
+
+.images{
+  height:             200px;
+  width:              200px;
+}
+
+.avatar-list{
+  height:             35px; 
+  width:              35px; 
+  background:         #2e85a0;
+  color:              white;
+  font-size:          18px;
+  border-radius:      100%;
+  display:            flex;
+  justify-content:    center;
+  flex-direction:     column;
+  text-align:         center;
+}
+
+/*MATERIAL-------------------------------------------------------------*/
+/*SIDENAV*/
+mat-sidenav-container{
+  top:                5px;
+  height:             calc(100% - 75px);
+}
+
+mat-sidenav{
+  width:              200px;
+  overflow-y:         hidden !important;
+}
+
+mat-sidenav:hover{
+  overflow-y:         auto !important;
+}
+
+.mat-drawer{
+  background-color:   transparent;
+}
+
+/*TOOLBAR*/
+.space-center{
+  flex:               1 1 auto;
+}
+
+mat-toolbar{
+  box-shadow:         0px 2px 7px #000000;
+}
+
+/*BUTTON*/
+.full-width{
+  width:              100%;
+}
+
+/*LIST*/
+mat-list, mat-list-item, mat-list-item:focus, .mat-list-focus:focus, textarea:focus, input:focus, select:focus {
+  box-shadow:         0 0 0 0;
+  border:             0 none;
+  outline:            0 !important;
+} 
+
+
+/*PROGRESS SPINNER*/
+mat-progress-spinner{
+  margin:             0 auto;
+}
+
+/*FAB BUTTON*/
+.fab-position{
+  position:           fixed; 
+  bottom:             40px; 
+  right:              40px;
+}
+
+/*INPUT*/
+.mat-form-field-underline{
+  background-color:   rgba(0, 0, 0, 0.2);
+}
+
+mat-icon.big{
+  font-size:          180px; 
+  height:             180px; 
+  width:              180px;
+  color:              #666;
+}
+
+.hide{
+  visibility:         hidden;
+}

@@ -1,0 +1,22 @@
+<div *ngIf='loading'>
+  <mat-progress-spinner mode='indeterminate' diameter='30' strokeWidth='4'></mat-progress-spinner>
+</div>
+
+
+<div class="container-flex">
+  <mat-card class="example-card flex" style="margin-bottom: 30px; width: 200px" *ngFor="let product of items">
+    <mat-card-header>
+      <mat-card-title>{{product.name}}</mat-card-title>
+      <mat-card-subtitle>{{product.category.data.name}}</mat-card-subtitle>
+    </mat-card-header>
+    <img mat-card-image src='{{product.image}}' style='height: 200px'>
+    <mat-card-content>
+      <p>{{product.description}}
+      </p>
+    </mat-card-content>
+    <mat-card-actions>
+      <button mat-button>LIKE</button>
+      <button mat-button>SHARE</button>
+    </mat-card-actions>
+  </mat-card>
+</div>

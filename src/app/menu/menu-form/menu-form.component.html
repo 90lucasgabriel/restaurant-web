@@ -1,0 +1,156 @@
+<div *ngIf="loading.get && !submitted">
+  <mat-progress-spinner mode="indeterminate" diameter="30" strokeWidth="4"></mat-progress-spinner>
+</div>
+  
+<div class="container-flex flex-center" *ngIf="!loading.get || submitted">
+  <!-- BACK AND TITLE START -->
+  <div class="mat-typography container-flex header-page width-padding">
+    <div class="flex-5"><button mat-icon-button (click)="goBack()" matTooltip="Voltar"><mat-icon>arrow_back</mat-icon></button></div>
+    <div class="flex-95 text-title">{{title}}</div>
+  </div>
+  <!--BACK AND TITLE END -->  
+
+  <mat-vertical-stepper class="flex full-width" style="background: transparent">
+    <!-- CREATE AND EDIT FORM START -->
+    <mat-step label="Cardápio">
+      <div *ngIf="loading.get && !submitted">
+        <mat-progress-spinner mode="indeterminate" diameter="30" strokeWidth="4"></mat-progress-spinner>
+      </div>
+      <mat-card class="flex margin-bottom" *ngIf="!loading.get || submitted">
+        <mat-card-content>
+          <mat-card-title-group>
+            <mat-card-subtitle>Informações</mat-card-subtitle>
+          </mat-card-title-group>
+          <div class="container-flex margin-bottom">
+            <div class="flex-5 align-top">
+              <p><mat-icon>info_outline</mat-icon></p>
+            </div>
+            <div class="flex-95">
+              <div class="container-flex">
+                <div class="flex-10 margin-right">
+                  <mat-form-field class="full-width">
+                    <input matInput placeholder="Nome" [(ngModel)]="item.name" name="name" required>
+                  </mat-form-field>
+                </div>
+              </div>
+              <div class="container-flex">
+                <div class="flex-10 margin-right">
+                  <mat-form-field class="full-width">
+                    <textarea matInput placeholder="Descrição" [(ngModel)]="item.description" name="description"  matTextareaAutosize matAutosizeMinRows="1"></textarea>
+                  </mat-form-field>
+                </div>
+              </div>
+            </div>
+          </div>
+        </mat-card-content>
+      </mat-card>
+    </mat-step>
+    <!-- EDIT FORM END -->
+
+    <!-- ADD OR REMOVE PRODUCTS START -->
+    <mat-step label="Produtos">
+      <div *ngIf="loading.product">
+        <mat-progress-spinner mode="indeterminate" diameter="30" strokeWidth="4"></mat-progress-spinner>
+      </div>
+      <mat-card class="flex margin-bottom" *ngIf="!loading.product">
+        <mat-card-content>
+            <div class="container-flex flex-center full-width">
+                <mat-form-field class="width-padding">
+                <input matInput placeholder="Pesquisar" [(ngModel)]="productKeyword" (keyup)="productFilter($event.target.value)">
+                <button matSuffix mat-icon-button *ngIf="productKeyword" (click)="productKeyword=''; productFilter('')"><mat-icon>close</mat-icon></button>
+                <mat-icon matSuffix>search</mat-icon>
+              </mat-form-field>
+            </div>
+            <div class="container-flex margin-bottom">
+              <div class="full-width">
+                <mat-list>
+                  <!-- TITLE -->
+                  <mat-list-item class="caption-text">
+                    <div class="flex-45">
+                      <mat-checkbox [(ngModel)]="productCheckedAll" (change)="productIsCheckedAll()" [(indeterminate)]="productIndeterminate">Nome</mat-checkbox>
+                    </div>
+                    <div class="flex-25">Categoria</div>
+                    <div class="flex-20"></div>
+                  </mat-list-item>
+
+                  <!-- DATA -->
+                  <mat-list-item *ngFor="let product of productList">
+                    <div class="flex-45">
+                      <mat-checkbox [(ngModel)]="product.checked">{{product.name}}</mat-checkbox>
+                    </div>
+                    <div class="flex-25">
+                      {{product.category.data.name}}
+                    </div>
+                    <div class="flex-20 align-right">
+                      <mat-form-field *ngIf="product.checked">
+                        <span matPrefix>R$ &nbsp;</span>
+                        <input matInput [(ngModel)]="product.price" name="product.price" required>
+                      </mat-form-field>
+                    </div>
+                  </mat-list-item>
+                </mat-list>                
+              </div>
+            </div>
+        </mat-card-content>
+      </mat-card>
+    </mat-step>
+    <!-- ADD OR REMOVE PRODUCTS END -->
+    
+    <!-- ADD OR REMOVE BRANCHES START -->
+    <mat-step label="Filiais">
+      <div *ngIf="loading.branch">
+        <mat-progress-spinner mode="indeterminate" diameter="30" strokeWidth="4"></mat-progress-spinner>
+      </div>
+      <mat-card class="flex margin-bottom" *ngIf="!loading.branch">
+        <mat-card-content>
+            <div class="container-flex flex-center full-width">
+              <mat-form-field class="width-padding">
+                <input matInput placeholder="Pesquisar" [(ngModel)]="branchKeyword" (keyup)="branchFilter($event.target.value)">
+                <button matSuffix mat-icon-button *ngIf="branchKeyword" (click)="branchKeyword=''; branchFilter('')"><mat-icon>close</mat-icon></button>
+                <mat-icon matSuffix>search</mat-icon>
+              </mat-form-field>
+            </div>
+            <div class="container-flex margin-bottom">
+              <div class="full-width">
+                <mat-list>
+                  <!-- TITLE -->
+                  <mat-list-item class="caption-text">
+                    <div class="flex-20">
+                      <mat-checkbox [(ngModel)]="branchCheckedAll" (change)="branchIsCheckedAll()">Endereço</mat-checkbox>
+                    </div>
+                    <div class="flex-15">Cidade</div>
+                    <div class="flex-5">UF</div>
+                    <div class="flex-10">CEP</div>
+                    <div class="flex-10">Telefone</div>
+                    <div class="flex-20">Email</div>
+                  </mat-list-item>
+
+                  <!-- DATA -->
+                  <mat-list-item *ngFor="let branch of branchList">
+                    <div class="flex-20">
+                      <mat-checkbox [(ngModel)]="branch.checked">{{branch.address}}, {{branch.number}}</mat-checkbox>
+                    </div>
+                    <div class="flex-15">{{branch.city}}</div>
+                    <div class="flex-5">{{branch.state}}</div>
+                    <div class="flex-10">{{branch.zipcode}}</div>
+                    <div class="flex-10">{{branch.phone_1}}</div>
+                    <div class="flex-20">{{branch.email_1}}</div>
+                  </mat-list-item>
+                </mat-list>                
+              </div>
+            </div>
+        </mat-card-content>
+      </mat-card>
+    </mat-step>
+    <!-- ADD OR REMOVE BRANCHES END -->
+  </mat-vertical-stepper>
+
+  <!-- FORM ACTIONS START -->
+  <div class="width-padding text-right">
+    <button mat-button (click)="cancelForm()">CANCELAR</button>
+    <button mat-raised-button (click)="submitForm(item)" color="primary">SALVAR</button>
+  </div>
+  <!-- FORM ACTIONS END -->
+
+</div>
+  

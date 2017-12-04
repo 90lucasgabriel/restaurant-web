@@ -1,0 +1,159 @@
+<div *ngIf="loading && !submitted">
+  <mat-progress-spinner mode="indeterminate" diameter="30" strokeWidth="4"></mat-progress-spinner>
+</div>
+  
+<div class="container-flex flex-center" *ngIf="!loading || submitted">
+  <!-- BACK AND TITLE START -->
+  <div class="mat-typography container-flex header-page width-padding">
+    <div class="flex-5"><button mat-icon-button (click)="goBack()" matTooltip="Voltar"><mat-icon>arrow_back</mat-icon></button></div>
+    <div class="flex-95 text-title">{{title}}</div>
+  </div>
+  <!--BACK AND TITLE END -->  
+
+  <mat-card class="flex content-page">
+    <mat-card-content>
+      <!-- CREATE AND EDIT FORM START -->
+      <form #itemForm="ngForm">
+        <mat-card-title-group>
+          <mat-card-subtitle>Localização</mat-card-subtitle>
+        </mat-card-title-group>
+        <div class="container-flex margin-bottom">
+          <div class="flex-5 align-top">
+            <p><mat-icon>place</mat-icon></p>
+          </div>
+          <div class="flex-95">
+            <div class="container-flex">
+              <div class="flex-10 margin-right">
+                <mat-form-field class="full-width">
+                  <input matInput placeholder="CEP" [(ngModel)]="item.zipcode" name="zipcode" required>
+                </mat-form-field>
+              </div>
+            </div>
+            <div class="container-flex">
+              <div class="flex-10 margin-right">
+                <mat-form-field class="full-width">
+                  <input matInput placeholder="Endereço" [(ngModel)]="item.address" name="address" required>
+                </mat-form-field>
+              </div>
+              <div class="flex-10 margin-right">
+                <mat-form-field class="full-width">
+                  <input matInput placeholder="Número" [(ngModel)]="item.number" name="number" required>
+                </mat-form-field>
+              </div>
+            </div>
+            <div class="container-flex">
+              <div class="flex-10 margin-right">
+                <mat-form-field class="full-width">
+                  <input matInput placeholder="Complemento" [(ngModel)]="item.complement" name="complement">
+                </mat-form-field>
+              </div>
+              <div class="flex-10 margin-right">
+                <mat-form-field class="full-width">
+                  <input matInput placeholder="Bairro" [(ngModel)]="item.neighborhood" name="neighborhood" required>
+                </mat-form-field>
+              </div>
+            </div>
+            <div class="container-flex">
+              <div class="flex-10 margin-right">
+                <mat-form-field class="full-width">
+                  <input matInput placeholder="Cidade" [(ngModel)]="item.city" name="city" required>
+                </mat-form-field>
+              </div>
+              <div class="flex-10 margin-right">
+                <mat-form-field class="full-width">
+                  <input matInput placeholder="Estado" [(ngModel)]="item.state" name="state" required>
+                </mat-form-field>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <mat-card-title-group>
+          <mat-card-title></mat-card-title>
+          <mat-card-subtitle>Contato</mat-card-subtitle>
+        </mat-card-title-group>
+        <div class="container-flex margin-bottom">
+          <div class="flex-5 align-top">
+            <p><mat-icon>email</mat-icon></p>
+          </div>
+          <div class="flex-95">
+            <div class="container-flex">
+              <div class="flex-10 margin-right">
+                <mat-form-field class="full-width">
+                  <input matInput placeholder="Email 1" [(ngModel)]="item.email_1" name="email_1" required>
+                </mat-form-field>
+              </div>
+              <div class="flex-10 margin-right">
+                <mat-form-field class="full-width">
+                  <input matInput placeholder="Email 2" [(ngModel)]="item.email_2" name="email_2">
+                </mat-form-field>
+              </div>
+            </div>
+            <div class="container-flex">
+              <div class="flex-10 margin-right">
+                <mat-form-field class="full-width">
+                  <input matInput placeholder="Telefone 1" [(ngModel)]="item.phone_1" name="phone_1" required>
+                </mat-form-field>
+              </div>
+              <div class="flex-10 margin-right">
+                <mat-form-field class="full-width">
+                  <input matInput placeholder="Telefone 2" [(ngModel)]="item.phone_2" name="phone_2">
+                </mat-form-field>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <mat-card-title-group>
+          <mat-card-title></mat-card-title>
+          <mat-card-subtitle>Redes Sociais</mat-card-subtitle>
+        </mat-card-title-group>
+        <div class="container-flex margin-bottom">
+          <div class="flex-5 align-top">
+            <p><mat-icon>link</mat-icon></p>
+          </div>
+          <div class="flex-95">
+            <div class="container-flex">
+              <div class="flex-10 margin-right">
+                <mat-form-field class="full-width">
+                  <input matInput placeholder="Site" [(ngModel)]="item.website" name="website">
+                </mat-form-field>
+              </div>
+            </div>
+            <div class="container-flex">
+              <div class="flex-10 margin-right">
+                <mat-form-field class="full-width">
+                  <input matInput placeholder="Facebook" [(ngModel)]="item.facebook" name="facebook">
+                </mat-form-field>
+              </div>
+            </div>
+            <div class="container-flex">
+              <div class="flex-10 margin-right">
+                <mat-form-field class="full-width">
+                  <input matInput placeholder="Twitter" [(ngModel)]="item.twitter" name="twitter">
+                </mat-form-field>
+              </div>
+            </div>
+            <div class="container-flex">
+              <div class="flex-10 margin-right">
+                <mat-form-field class="full-width">
+                  <input matInput placeholder="Instagram" [(ngModel)]="item.instagram" name="instagram">
+                </mat-form-field>
+              </div>
+            </div>
+          </div>
+        </div>
+      </form>
+      <!-- EDIT FORM END -->
+    </mat-card-content>
+
+    <!-- FORM ACTIONS START -->
+    <mat-card-actions class="text-right">
+      <button mat-button (click)="cancelForm()">CANCELAR</button>
+      <button mat-button (click)="submitForm(item)" [disabled]="!itemForm.form.valid" color="primary">SALVAR</button>
+    </mat-card-actions>
+    <!-- FORM ACTIONS END -->
+
+  </mat-card>
+</div>
+  

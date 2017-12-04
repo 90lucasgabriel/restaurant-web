@@ -1,0 +1,109 @@
+<div *ngIf="loading && !submitted">
+  <mat-progress-spinner mode="indeterminate" diameter="30" strokeWidth="4"></mat-progress-spinner>
+</div>
+
+<div class="container-flex flex-center" *ngIf='!loading || submitted'>
+  <!-- BACK AND TITLE START -->
+  <div class="mat-typography container-flex header-page width-padding">
+    <div class="flex-5"><button mat-icon-button (click)="goBack()" matTooltip="Voltar"><mat-icon>arrow_back</mat-icon></button></div>
+    <div class="flex-95 text-title">Filial Detalhes</div>
+    <div class="flex-30 text-right">
+      <button mat-icon-button [routerLink]="['/company', item.company.data.id, 'branch', item.id, 'edit']" matTooltip="Editar"><mat-icon>edit</mat-icon></button>
+      <button mat-icon-button (click)="deleteConfirm(item)" matTooltip="Excluir"> <mat-icon>delete</mat-icon></button>
+    </div> 
+  </div>
+  <!--BACK AND TITLE END -->
+
+  <mat-card class="flex content-page">
+    <mat-card-content>
+      <!-- DETAILS START -->
+      <div>
+        <mat-card-title-group>
+          <mat-card-subtitle>Localização</mat-card-subtitle>
+        </mat-card-title-group>
+        <div class="container-flex margin-bottom">
+          <div class="flex-5 align-top">
+            <p><mat-icon>place</mat-icon></p>
+          </div>
+          <div class="flex-95">
+          <div class="container-flex">
+            <div class="flex-10"><p>CEP: </p></div>
+            <div class="flex-90"><p>{{item.zipcode}}</p></div>
+          </div>
+          <div class="container-flex">
+            <div class="flex-10"><p>Endereço: </p></div>
+            <div class="flex-40"><p>{{item.address}}</p></div>
+            <div class="flex-10"><p>Número: </p></div>
+            <div class="flex-40"><p>{{item.number}}</p></div>
+          </div>
+          <div class="container-flex">
+            <div class="flex-10"><p>Complemento: </p></div>
+            <div class="flex-40"><p>{{item.complement}}</p></div>
+            <div class="flex-10"><p>Bairro: </p></div>
+            <div class="flex-40"><p>{{item.neighborhood}}</p></div>
+          </div>
+          <div class="container-flex">
+            <div class="flex-10"><p>Cidade: </p></div>
+            <div class="flex-40"><p>{{item.city}}</p></div>
+            <div class="flex-10"><p>Estado: </p></div>
+            <div class="flex-40"><p>{{item.state}}</p></div>
+          </div>
+        </div>
+      </div>
+
+        <mat-card-title-group>
+          <mat-card-title></mat-card-title>
+          <mat-card-subtitle>Contato</mat-card-subtitle>
+        </mat-card-title-group>
+        <div class="container-flex margin-bottom">
+          <div class="flex-5 align-top">
+            <p><mat-icon>email</mat-icon></p>
+          </div>
+          <div class="flex-95">
+            <div class="container-flex">
+              <div class="flex-10"><p>Email 1: </p></div>
+              <div class="flex-40"><p>{{item.email_1}}</p></div>
+              <div class="flex-10"><p>Email 2: </p></div>
+              <div class="flex-40"><p>{{item.email_2}}</p></div>
+            </div>
+            <div class="container-flex">
+              <div class="flex-10"><p>Telefone 1: </p></div>
+              <div class="flex-40"><p>{{item.phone_1}}</p></div>
+              <div class="flex-10"><p>Telefone 2: </p></div>
+              <div class="flex-40"><p>{{item.phone_2}}</p></div>
+            </div>
+          </div>
+        </div>
+
+        <mat-card-title-group>
+          <mat-card-title></mat-card-title>
+          <mat-card-subtitle>Redes Sociais</mat-card-subtitle>
+        </mat-card-title-group>
+        <div class="container-flex">
+          <div class="flex-5 align-top">
+            <p><mat-icon>link</mat-icon></p>
+          </div>
+          <div class="flex-95">
+            <div class="container-flex">
+              <div class="flex-10"><p>Site: </p></div>
+              <div class="flex-90"><p>{{item.website}}</p></div>
+            </div>
+            <div class="container-flex">
+              <div class="flex-10"><p>Facebook: </p></div>
+              <div class="flex-90"><p>{{item.facebook}}</p></div>
+            </div>
+            <div class="container-flex">
+              <div class="flex-10"><p>Twitter: </p></div>
+              <div class="flex-90"><p>{{item.twitter}}</p></div>
+            </div>
+            <div class="container-flex">
+              <div class="flex-10"><p>Instagram: </p></div>
+              <div class="flex-90"><p>{{item.instagram}}</p></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- DETAILS END -->
+    </mat-card-content>
+  </mat-card>
+</div>

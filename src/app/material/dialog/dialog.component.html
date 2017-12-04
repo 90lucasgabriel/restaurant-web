@@ -1,0 +1,8 @@
+<div class="mat-typography">
+<h2 mat-dialog-title>{{data.title}}</h2>
+<mat-dialog-content>{{data.text}}</mat-dialog-content>
+<mat-dialog-actions>
+  <button mat-button [mat-dialog-close]="false" tabindex="-1">{{data.falseButton}}</button>
+  <button mat-button [mat-dialog-close]="true"  tabindex="-1" color="primary">{{data.trueButton}}</button>
+</mat-dialog-actions>
+</div>
