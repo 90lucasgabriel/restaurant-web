@@ -6,10 +6,10 @@ import { MenuFormComponent }      from './menu-form/menu-form.component';
 import { MenuDetailsComponent }   from './menu-details/menu-details.component';
 
 const menuRoutes: Routes = [
-  { path: 'company/:company_id/menu/:id/edit',  component: MenuFormComponent },
-  { path: 'company/:company_id/menu/new',       component: MenuFormComponent },
-  { path: 'company/:company_id/menu/:id',       component: MenuDetailsComponent },
-  { path: 'company/:company_id/menu',           component: MenuListComponent }
+  { path: 'company/:company_id/menu/:id/edit',  component: MenuFormComponent,     pathMatch: 'full' },
+  { path: 'company/:company_id/menu/new',       component: MenuFormComponent,     pathMatch: 'full' },
+  { path: 'company/:company_id/menu/:id',       component: MenuDetailsComponent,  pathMatch: 'full' },
+  { path: 'company/:company_id/menu',           component: MenuListComponent,     pathMatch: 'full' }
 ];
 
 @NgModule({

@@ -6,10 +6,10 @@ import { CategoryFormComponent }    from './category-form/category-form.componen
 import { CategoryDetailsComponent } from './category-details/category-details.component';
 
 const categoryRoutes: Routes = [
-  { path: 'company/:company_id/category/:id/edit',  component: CategoryFormComponent },
-  { path: 'company/:company_id/category/new',       component: CategoryFormComponent },
-  { path: 'company/:company_id/category/:id',       component: CategoryDetailsComponent },
-  { path: 'company/:company_id/category',           component: CategoryListComponent }
+  { path: 'company/:company_id/category/:id/edit',  component: CategoryFormComponent,     pathMatch: 'full' },
+  { path: 'company/:company_id/category/new',       component: CategoryFormComponent,     pathMatch: 'full' },
+  { path: 'company/:company_id/category/:id',       component: CategoryDetailsComponent,  pathMatch: 'full' },
+  { path: 'company/:company_id/category',           component: CategoryListComponent,     pathMatch: 'full' }
 ];
 
 @NgModule({

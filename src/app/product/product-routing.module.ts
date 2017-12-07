@@ -6,10 +6,10 @@ import { ProductFormComponent }    from './product-form/product-form.component';
 import { ProductDetailsComponent } from './product-details/product-details.component';
 
 const productRoutes: Routes = [
-  { path: 'company/:company_id/product/:id/edit',  component: ProductFormComponent },
-  { path: 'company/:company_id/product/new',       component: ProductFormComponent },
-  { path: 'company/:company_id/product/:id',       component: ProductDetailsComponent },
-  { path: 'company/:company_id/product',           component: ProductListComponent }
+  { path: 'company/:company_id/product/:id/edit',  component: ProductFormComponent,     pathMatch: 'full'},
+  { path: 'company/:company_id/product/new',       component: ProductFormComponent,     pathMatch: 'full' },
+  { path: 'company/:company_id/product/:id',       component: ProductDetailsComponent,  pathMatch: 'full' },
+  { path: 'company/:company_id/product',           component: ProductListComponent,     pathMatch: 'full' }
 ];
 
 @NgModule({

@@ -6,10 +6,10 @@ import { BranchFormComponent }    from './branch-form/branch-form.component';
 import { BranchDetailsComponent } from './branch-details/branch-details.component';
 
 const branchRoutes: Routes = [
-  { path: 'company/:company_id/branch/:id/edit',  component: BranchFormComponent },
-  { path: 'company/:company_id/branch/new',       component: BranchFormComponent },
-  { path: 'company/:company_id/branch/:id',       component: BranchDetailsComponent },
-  { path: 'company/:company_id/branch',           component: BranchListComponent }
+  { path: 'company/:company_id/branch/:id/edit',  component: BranchFormComponent,     pathMatch: 'full' },
+  { path: 'company/:company_id/branch/new',       component: BranchFormComponent,     pathMatch: 'full' },
+  { path: 'company/:company_id/branch/:id',       component: BranchDetailsComponent,  pathMatch: 'full' },
+  { path: 'company/:company_id/branch',           component: BranchListComponent,     pathMatch: 'full' }
 ];
 
 @NgModule({
