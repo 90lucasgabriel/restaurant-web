@@ -9,26 +9,26 @@ Make sure you have [Node 6.9.0 or higher, together with NPM 3 or higher](https:/
 ## Installing
 - This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 1.5.0:
 ```
-npm install -g @angular/cli
+$ npm install -g @angular/cli
 ```
 - Clone this repo:
 ```
-git clone git@github.com:90lucasgabriel/restaurant-web.git
+$ git clone git@github.com:90lucasgabriel/restaurant-web.git
 ```
 - Access directory:
 ```
-cd restaurant-web
+$ cd restaurant-web
 ```
 - Install dependencies:
 ```
-npm install
+$ npm install
 ```
 ## Running
 - Run the app:
 ```
-ng serve --open
+$ ng serve --open
 ```
-Navigate to `http://localhost:4200/`. 
+Head to http://localhost:4200 in your browser and you'll see the app running.
 
 The app will automatically reload if you change any of the source files.
 
