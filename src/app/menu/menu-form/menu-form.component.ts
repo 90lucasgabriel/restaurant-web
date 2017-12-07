@@ -276,7 +276,7 @@ export class MenuFormComponent implements OnInit, OnDestroy {
     }).subscribe(data => {
       this.branchList     = data.data;
       this.branchListCopy = data.data;
-      
+
       if (!this.newItemMode) { this.queryMenuBranch(); }
     });
   }
