@@ -20,8 +20,6 @@ import { CategoryModule }             from './category/category.module';
 import { CompanyModule }              from './company/company.module';
 import { HomeModule }                 from './home/home.module';
 import { MenuModule }                 from './menu/menu.module';
-import { MenuBranchModule }           from './menu-branch/menu-branch.module';
-import { MenuProductModule }          from './menu-product/menu-product.module';
 import { ProductModule }              from './product/product.module';
 import { CustomCommonModule }         from './common/custom-common.module';
 
@@ -47,8 +45,6 @@ import { CustomCommonModule }         from './common/custom-common.module';
     CompanyModule,
     HomeModule,
     MenuModule,
-    MenuBranchModule,
-    MenuProductModule,
     ProductModule
   ],
   exports: [
