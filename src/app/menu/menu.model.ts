@@ -1,5 +1,6 @@
 import { Presenter } 		from '../common/model/presenter.model';
 import { Company } 			from '../company/company.model';
+import { BranchMenu }   from '../common/model/branch-menu.model';
 import { MenuProduct } 	from '../common/model/menu-product.model';
 
 /**
@@ -7,16 +8,16 @@ import { MenuProduct } 	from '../common/model/menu-product.model';
  * @class Menu
  */
 export class Menu {
-	constructor(
-		public id?: 					number,
-		public company_id?:   number,
-		public name?: 				string,
-		public description?:	string,
+  constructor(
+    public id?: 					number,
+    public company_id?:   number,
+    public name?: 				string,
+    public description?:	string,
 
-		public checked?:			boolean,
+    public checked?:			boolean,
 
-		public pivot?:				MenuProduct,
-		public price?:				number,
-		public company?:  		Presenter<Company>
-	) { }
+    public pivot?:				MenuProduct|BranchMenu,
+    public price?:				number,
+    public company?:  		Presenter<Company>
+  ) { }
 }

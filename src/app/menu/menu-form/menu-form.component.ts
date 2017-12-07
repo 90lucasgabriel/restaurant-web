@@ -163,9 +163,10 @@ export class MenuFormComponent implements OnInit, OnDestroy {
    */
   public save(item: Menu) {
     Observable.of(this.service.save(item))
-    .switchMap(menu     => this.service.save(item))
-    .switchMap(products => this.service.syncProduct(this.productListChecked, this.menu_id))
-    .switchMap(branches => this.service.syncBranch(this.branchListChecked, this.menu_id))
+    .switchMap(() => this.service.save(item))
+      .map(menu => this.menu_id = menu.data.id)
+    .switchMap(() => this.service.syncProduct(this.productListChecked, this.menu_id ))
+    .switchMap(() => this.service.syncBranch(this.branchListChecked, this.menu_id))
     .subscribe(success  => {
       this.goBack();
       this.material.snackBar(this.message, 'OK');
@@ -206,7 +207,11 @@ export class MenuFormComponent implements OnInit, OnDestroy {
     }).subscribe(data => {
       this.productList     = data.data;
       this.productListCopy = data.data;
-      if (!this.newItemMode) { this.queryMenuProduct(); }
+      if (!this.newItemMode) {
+        this.queryMenuProduct();
+      } else {
+        this.loading.product = false;
+      }
     });
   }
 
@@ -277,7 +282,11 @@ export class MenuFormComponent implements OnInit, OnDestroy {
       this.branchList     = data.data;
       this.branchListCopy = data.data;
 
-      if (!this.newItemMode) { this.queryMenuBranch(); }
+      if (!this.newItemMode) {
+        this.queryMenuBranch();
+      } else {
+        this.loading.branch = false;
+      }
     });
   }
 

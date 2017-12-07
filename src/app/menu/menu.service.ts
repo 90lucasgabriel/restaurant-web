@@ -48,7 +48,7 @@ export class MenuService {
    * @param Menu item
    * @return Observable<Presenter<Menu>>
    */
-  public save(item: Menu): Observable<any> {
+  public save(item: Menu): Observable<Presenter<Menu>> {
     return this.dao.save(item);
   }
 
