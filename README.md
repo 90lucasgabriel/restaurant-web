@@ -32,6 +32,8 @@ Head to http://localhost:4200 in your browser and you'll see the app running.
 
 The app will automatically reload if you change any of the source files.
 
+![print](/print-menu.jpg)
+
 
 ## Extras Angular Cli
 ### Code scaffolding
