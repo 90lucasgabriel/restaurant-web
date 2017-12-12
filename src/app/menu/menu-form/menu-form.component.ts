@@ -168,8 +168,7 @@ export class MenuFormComponent implements OnInit, OnDestroy {
     .switchMap(() => this.service.syncProduct(this.productListChecked, this.menu_id ))
     .switchMap(() => this.service.syncBranch(this.branchListChecked, this.menu_id))
     .subscribe(success  => {
-      this.goBack();
-      this.material.snackBar(this.message, 'OK');
+      this.accomplished();
     }, error => {
       this.material.error('Erro ao atualizar cardápio', error);
     });
@@ -186,8 +185,7 @@ export class MenuFormComponent implements OnInit, OnDestroy {
     .switchMap(products => this.service.syncProduct(this.productListChecked, this.menu_id))
     .switchMap(branches => this.service.syncBranch(this.branchListChecked, this.menu_id))
     .subscribe(success  => {
-      this.goBack();
-      this.material.snackBar(this.message, 'OK');
+      this.accomplished();
     }, error => {
       this.material.error('Erro ao atualizar cardápio', error);
     });

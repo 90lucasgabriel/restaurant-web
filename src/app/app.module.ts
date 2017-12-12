@@ -1,9 +1,9 @@
 import { NgModule }                   from '@angular/core';
 import { BrowserModule }              from '@angular/platform-browser';
 import { BrowserAnimationsModule }    from '@angular/platform-browser/animations';
-import { HttpClientModule, HTTP_INTERCEPTORS }           from '@angular/common/http';
-import { FormsModule, ReactiveFormsModule }                from '@angular/forms';
-// import { FlexLayoutModule }         from '@angular/flex-layout';
+import { HttpClientModule, HTTP_INTERCEPTORS }  from '@angular/common/http';
+import { FormsModule, ReactiveFormsModule }     from '@angular/forms';
+import { FlexLayoutModule }           from '@angular/flex-layout';
 
 import { AppComponent }               from './app.component';
 import { AppConfig }                  from './app.config';
@@ -31,7 +31,7 @@ import { CustomCommonModule }         from './common/custom-common.module';
   imports: [
     BrowserModule,
     BrowserAnimationsModule,
-    //FlexLayoutModule.forRoot(),
+    FlexLayoutModule,
     HttpClientModule,
     FormsModule,
     ReactiveFormsModule,
