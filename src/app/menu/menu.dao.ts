@@ -69,6 +69,22 @@ export class MenuDao {
 
 
 
+  // TIME SECTION --------------------------------
+  /**
+   * Delete old product list and save new product list.
+   * @param items Array<Product>
+   * @param menu_id number
+   * @return Observable<any>
+   */
+  public syncTime(items: Array<any>, menu_id: number): Observable<Presenter<any>> {
+    const path = this.path + menu_id + '/time';
+    console.log(items);
+    return this.http.post(path, {'time': items});
+  }
+
+
+
+
   // PRODUCT SECTION --------------------------------
   /**
    * Delete old product list and save new product list.

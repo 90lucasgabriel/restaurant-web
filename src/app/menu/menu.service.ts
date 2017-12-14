@@ -75,6 +75,19 @@ export class MenuService {
 
 
 
+  // TIME SECTION -------------------------------
+  /**
+   * Delete old product list and save new product list.
+   * @param items Array<Product>
+   * @param menu_id number
+   * @return Observable<Presenter<Product>>
+   */
+  public syncTime(items: Array<any>, menu_id: number): Observable<Presenter<any>> {
+    return this.dao.syncTime(items, menu_id);
+  }
+
+
+
   // PRODUCT SECTION -------------------------------
   /**
    * Delete old product list and save new product list.

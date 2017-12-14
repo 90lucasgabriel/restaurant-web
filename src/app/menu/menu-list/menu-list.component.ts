@@ -19,6 +19,7 @@ import 'rxjs/add/operator/catch';
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/startWith';
 import 'rxjs/add/operator/switchMap';
+import { AppConfig } from '../../app.config';
 
 
 /**
@@ -53,6 +54,8 @@ export class MenuListComponent implements OnInit, OnDestroy, AfterViewInit {
   search:             string;
   delayTimer;
 
+  timeList: Array<any> = new Array<any>();
+
   /**
    * Constructor
    *
@@ -68,7 +71,7 @@ export class MenuListComponent implements OnInit, OnDestroy, AfterViewInit {
     loader.onLoadingChanged.subscribe(isLoading => {
       this.loading = isLoading;
     });
-
+    console.log(new Date().getDay());  
     this.start();
   }
 
@@ -76,11 +79,12 @@ export class MenuListComponent implements OnInit, OnDestroy, AfterViewInit {
    * Execute before onInit
    */
   private start() {
+    this.queryTime();
     this.actionClick    = false;
     this.showFilter     = false;
     this.search         = '';
     this.total          = 0;
-    this.columns        = ['id', 'name', 'actions'];
+    this.columns        = ['id', 'name', 'day', 'actions'];
     this.dataSource     = new MatTableDataSource();
   }
 
@@ -106,7 +110,8 @@ export class MenuListComponent implements OnInit, OnDestroy, AfterViewInit {
         'page':         this.paginator.pageIndex + 1,
         'perPage':      this.paginator.pageSize,
         'search':       this.search,
-        'searchJoin':   'and'
+        'searchJoin':   'and',
+        'include':      'time'
       });
     })
     .map(data => {
@@ -163,6 +168,19 @@ export class MenuListComponent implements OnInit, OnDestroy, AfterViewInit {
       console.log('Erro ao excluir cardápio', error);
       this.material.snackBar('Erro ao excluir cardápio. Detalhes no console (F12).', 'OK');
     });
+  }
+
+  // TIME SECTION --------------------
+  /**
+   * List all times of this menu
+   */
+  public queryTime() {
+    this.timeList = new Array<any>();
+    this.timeList = JSON.parse(JSON.stringify(AppConfig.DAYS));
+  }
+
+  public verifyDays(day: any, list: Array<any>) {
+    return list.find(time => time.day === day);
   }
 
   /**

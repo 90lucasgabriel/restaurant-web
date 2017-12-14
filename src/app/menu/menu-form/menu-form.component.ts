@@ -3,6 +3,7 @@ import { Component, OnInit, ViewEncapsulation, AfterViewInit, ViewChild, OnDestr
 import { Router, ActivatedRoute } from '@angular/router';
 import { Location }               from '@angular/common';
 
+import { AppConfig }              from '../../app.config';
 import { LoaderService }          from '../../loader.service';
 import { MaterialService }        from '../../material/material.service';
 import { QueryInput }             from '../../common/model/query-input.model';
@@ -21,6 +22,7 @@ import 'rxjs/add/operator/catch';
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/startWith';
 import 'rxjs/add/operator/switchMap';
+import { Day } from '../../day.enum';
 
 
 @Component({
@@ -38,6 +40,7 @@ export class MenuFormComponent implements OnInit, OnDestroy {
     branch:   true,
   };
 
+
   item:                     Menu        = new Menu();
   items:                    Array<Menu> = new Array<Menu>();
   company_id:               number;
@@ -47,6 +50,8 @@ export class MenuFormComponent implements OnInit, OnDestroy {
   title:                    string;
   message:                  string;
 
+  timeList:                 Array<any>     = new Array<any>();
+  timeListChecked:          Array<any>     = new Array<any>();
   productList:              Array<Product> = new Array<Product>();
   productListCopy:          Array<Product> = new Array<Product>();
   productListChecked:       Array<Product> = new Array<Product>();
@@ -88,8 +93,8 @@ export class MenuFormComponent implements OnInit, OnDestroy {
    * Execute before onInit
    */
   public start() {
-    this.submitted = false;
-    this.newItemMode       = true;
+    this.submitted   = false;
+    this.newItemMode = true;
 
     this.sub = this.route.params.subscribe(params => {
       if (params['id'] != null) {
@@ -102,6 +107,7 @@ export class MenuFormComponent implements OnInit, OnDestroy {
       this.company_id      = +params['company_id'];
     });
 
+    this.queryTime();
     this.queryProduct();
     this.queryBranch();
   }
@@ -127,10 +133,11 @@ export class MenuFormComponent implements OnInit, OnDestroy {
    * @param number id
    */
   public get(id: number) {
-    this.service.get(id, {'include': 'parent'}).subscribe(success => {
+    this.service.get(id, {'include': 'parent,time,branch,product'}).subscribe(success => {
       this.item        = success.data;
       this.loading.get = false;
       this.submitted   = true;
+      this.queryTimeSelected();
     }, error => {
       this.goBack();
       this.material.error('Cardápio não encontrado', error);
@@ -147,6 +154,7 @@ export class MenuFormComponent implements OnInit, OnDestroy {
     this.branchFilter('');
 
     this.item.company_id    = this.company_id;
+    this.timeListChecked    = this.timeList.filter(time => time.checked);
     this.productListChecked = this.productList.filter(product => product.checked);
     this.branchListChecked  = this.branchList.filter(branch => branch.checked);
 
@@ -165,6 +173,7 @@ export class MenuFormComponent implements OnInit, OnDestroy {
     Observable.of(this.service.save(item))
     .switchMap(() => this.service.save(item))
       .map(menu => this.menu_id = menu.data.id)
+    .switchMap(() => this.service.syncTime(this.timeListChecked, this.menu_id ))
     .switchMap(() => this.service.syncProduct(this.productListChecked, this.menu_id ))
     .switchMap(() => this.service.syncBranch(this.branchListChecked, this.menu_id))
     .subscribe(success  => {
@@ -181,14 +190,33 @@ export class MenuFormComponent implements OnInit, OnDestroy {
    */
   public update(item: Menu, id: number) {
     Observable.of(this.service.update(item, id))
-    .switchMap(menu     => this.service.update(item, id))
-    .switchMap(products => this.service.syncProduct(this.productListChecked, this.menu_id))
-    .switchMap(branches => this.service.syncBranch(this.branchListChecked, this.menu_id))
+    .switchMap(menu => this.service.update(item, id))
+    .switchMap(()   => this.service.syncTime(this.timeListChecked, this.menu_id))
+    .switchMap(()   => this.service.syncProduct(this.productListChecked, this.menu_id))
+    .switchMap(()   => this.service.syncBranch(this.branchListChecked, this.menu_id))
     .subscribe(success  => {
       this.accomplished();
     }, error => {
       this.material.error('Erro ao atualizar cardápio', error);
     });
+  }
+
+  // TIME SECTION --------------------
+  /**
+   * List all times of this menu
+   */
+  public queryTime() {
+    this.timeList = new Array<any>();
+    this.timeList = JSON.parse(JSON.stringify(AppConfig.DAYS));
+  }
+
+  public queryTimeSelected() {
+    for (const p of this.item.time.data) {
+      this.timeList.find(time => time.day === p.day).day        = p.day;
+      this.timeList.find(time => time.day === p.day).time_start = p.time_start;
+      this.timeList.find(time => time.day === p.day).time_end   = p.time_end;
+      this.timeList.find(time => time.day === p.day).checked    = true;
+    }
   }
 
 
@@ -205,10 +233,9 @@ export class MenuFormComponent implements OnInit, OnDestroy {
     }).subscribe(data => {
       this.productList     = data.data;
       this.productListCopy = data.data;
+      this.loading.product = false;
       if (!this.newItemMode) {
         this.queryMenuProduct();
-      } else {
-        this.loading.product = false;
       }
     });
   }
@@ -217,14 +244,10 @@ export class MenuFormComponent implements OnInit, OnDestroy {
    * List all menuProducts of this menu
    */
   public queryMenuProduct() {
-    this.service.queryProduct(this.menu_id).subscribe(data => {
-      for (const p of data.data) {
-        this.productList.find(product => product.id === p.id).checked = true;
-        this.productList.find(product => product.id === p.id).price   = p.pivot.price;
-      }
-
-      this.loading.product = false;
-    });
+    for (const p of this.item.product.data) {
+      this.productList.find(product => product.id === p.id).price   = p.price;
+      this.productList.find(product => product.id === p.id).checked = true;
+    }
   }
 
   /**
@@ -234,19 +257,6 @@ export class MenuFormComponent implements OnInit, OnDestroy {
   public productFilter(value: string) {
     this.productList  = this.productListCopy; // reset array
     this.productList  = this.productService.filter(this.productList, value);
-  }
-
-  /**
-   * Delete and save news products on menu
-   */
-  public syncProduct() {
-    const productListChecked = this.productList.filter(product => product.checked);
-
-    this.service.syncProduct(productListChecked, this.menu_id).subscribe(success => {
-      // this.accomplished();
-    }, error => {
-      this.material.error('Erro ao atualizar produtos', error);
-    });
   }
 
   // /**
@@ -279,11 +289,9 @@ export class MenuFormComponent implements OnInit, OnDestroy {
     }).subscribe(data => {
       this.branchList     = data.data;
       this.branchListCopy = data.data;
-
+      this.loading.branch = false;
       if (!this.newItemMode) {
-        this.queryMenuBranch();
-      } else {
-        this.loading.branch = false;
+        this.queryBranchMenu();
       }
     });
   }
@@ -291,13 +299,10 @@ export class MenuFormComponent implements OnInit, OnDestroy {
   /**
    * List all menuBranchs of this menu
    */
-  public queryMenuBranch() {
-    this.service.queryBranch(this.menu_id).subscribe(data => {
-      for (const p of data.data) {
-        this.branchList.find(branch => branch.id === p.id).checked = true;
-      }
-      this.loading.branch = false;
-    });
+  public queryBranchMenu() {
+    for (const p of this.item.branch.data) {
+      this.branchList.find(branch => branch.id === p.id).checked = true;
+    }
   }
 
   /**
@@ -307,19 +312,6 @@ export class MenuFormComponent implements OnInit, OnDestroy {
   public branchFilter(value: string) {
     this.branchList  = this.branchListCopy; // reset array
     this.branchList  = this.branchService.filter(this.branchList, value);
-  }
-
-  /**
-   * Delete and save news branchs on menu
-   */
-  public syncBranch() {
-    const branchListChecked = this.branchList.filter(branch => branch.checked);
-
-    this.service.syncBranch(branchListChecked, this.menu_id).subscribe(success => {
-      this.accomplished();
-    }, error => {
-      this.material.error('Erro ao atualizar produtos', error);
-    });
   }
 
   // /**

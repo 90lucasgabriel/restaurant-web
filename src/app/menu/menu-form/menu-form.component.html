@@ -42,6 +42,48 @@
               </div>
             </div>
           </div>
+          <mat-card-title-group>
+            <mat-card-subtitle>Horários</mat-card-subtitle>
+          </mat-card-title-group>
+          <div class="container-flex margin-bottom">
+            <div class="flex-5 align-top">
+              <p><mat-icon>schedule</mat-icon></p>
+            </div>
+            <div class="flex-95">
+              <div class="container-flex margin-bottom">
+                <div class="full-width">
+                  <mat-list>
+                    <!-- TITLE -->
+                    <mat-list-item class="caption-text">
+                      <div class="flex-30">
+                        <mat-checkbox [(ngModel)]="dayCheckedAll" (change)="dayIsCheckedAll()" [(indeterminate)]="productIndeterminate">Dia</mat-checkbox>
+                      </div>
+                      <div class="flex-35">Início</div>
+                      <div class="flex-35">Fim</div>
+                    </mat-list-item>
+  
+                    <!-- DATA -->
+                    <mat-list-item *ngFor="let time of timeList">
+                      <div class="flex-30">
+                        <mat-checkbox [(ngModel)]="time.checked">{{time.name}}</mat-checkbox>
+                      </div>
+                      <div class="flex-35 align-right">
+                        <mat-form-field *ngIf="time.checked">
+                          <input matInput type="time" [(ngModel)]="time.time_start" name="time.time_start">
+                        </mat-form-field>
+                      </div>
+                      <div class="flex-35 align-right">
+                        <mat-form-field *ngIf="time.checked">
+                          <input matInput type="time" [(ngModel)]="time.time_end" name="time.time_end">
+                        </mat-form-field>
+                      </div>
+                    </mat-list-item>
+                  </mat-list>                
+                </div>
+              </div>
+            </div>
+          </div>
+          
         </mat-card-content>
       </mat-card>
     </mat-step>

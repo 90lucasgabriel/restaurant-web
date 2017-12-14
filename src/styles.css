@@ -9,6 +9,10 @@ html, body, material-app, mat-sidenav-container, .my-content {
   color:            #666;
 }
 
+.color-accent {
+  color:            red;
+}
+
 mat-card mat-icon, mat-table mat-icon{
   color:            #666;
 }
@@ -182,6 +186,10 @@ mat-card-title-group{
 
 .flex-95{
   flex:               19;
+}
+
+.text-left{
+  text-align:         left !important;
 }
 
 .text-center{
