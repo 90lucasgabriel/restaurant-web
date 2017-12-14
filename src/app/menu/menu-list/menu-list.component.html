@@ -77,7 +77,7 @@
           <ng-container matColumnDef="day">
             <mat-header-cell *matHeaderCellDef class="actions-column text-left"> Dias </mat-header-cell>
             <mat-cell *matCellDef="let row" class="actions-column text-left"> 
-              <span *ngFor="let t of timeList" [ngClass]="{'color-accent': verifyDays(t.day, row.time.data)}">
+              <span *ngFor="let t of timeList" style="font-size: x-small" [ngClass]="{'color-accent': verifyDays(t.day, row.time.data)}">
                 {{t.name.substring(0,1) | uppercase}}
               </span>
             </mat-cell>
