@@ -123,7 +123,7 @@
         <mat-row class="hover-parent pointer" *matRowDef="let row; columns: columns;" (click)="goDetails(row.company_id, row.id)"></mat-row>
       </mat-table>
     
-      <mat-paginator [length]="total" [pageSize]="20" [pageSizeOptions]="[5, 10, 25, 100]"></mat-paginator>
+      <mat-paginator #paginator [length]="total" [pageSize]="20" [pageSizeOptions]="[5, 10, 25, 100]"></mat-paginator>
     </div>
   </div>
   <!-- LIST END -->

@@ -31,6 +31,25 @@ import 'rxjs/add/operator/switchMap';
   selector:           'app-branch-list',
   templateUrl:        './branch-list.component.html',
   styleUrls:          ['./branch-list.component.css'],
+  animations: [
+    trigger(
+      'myAnimation',
+      [
+        transition(
+        ':enter', [
+          style({transform: 'translateY(100%)', opacity: 0}),
+          animate('100ms', style({transform: 'translateY(0)', 'opacity': 1}))
+        ]
+        ),
+        transition(
+          ':leave', [
+            style({transform: 'translateY(0)', 'opacity': 1}),
+            animate('100ms', style({transform: 'translateY(100%)', 'opacity': 0}))
+          ]
+        )
+      ]
+    )
+  ],
   encapsulation:      ViewEncapsulation.None
 })
 export class BranchListComponent implements OnInit, OnDestroy, AfterViewInit {
@@ -39,14 +58,17 @@ export class BranchListComponent implements OnInit, OnDestroy, AfterViewInit {
   total:              number;
   columns:            Array<string>;
   dataSource:         any;
-  dataSourceCopy:     any;
 
   private sub:        any;
   loading:            boolean = true;
   showFilter:         boolean;
+  items:              Array<Branch>;
   filter:             Branch = new Branch();
+  oldFilter:          Branch = new Branch();
 
   actionClick:        boolean;
+  search:             string;
+  delayTimer;
 
   /**
    * Constructor
@@ -73,10 +95,10 @@ export class BranchListComponent implements OnInit, OnDestroy, AfterViewInit {
   public start() {
     this.actionClick    = false;
     this.showFilter     = false;
+    this.search         = '';
     this.total          = 0;
     this.columns        = ['id', 'address', 'number', 'city', 'state', 'phone_1', 'actions'];
     this.dataSource     = new MatTableDataSource();
-    this.dataSourceCopy = new MatTableDataSource();
   }
 
   /**
@@ -84,20 +106,37 @@ export class BranchListComponent implements OnInit, OnDestroy, AfterViewInit {
    */
   public ngAfterViewInit() {
     this.query();
-    this.dataSource.sort      = this.sort;
-    this.dataSource.paginator = this.paginator;
   }
 
   /**
    * Show list items on datatable
    */
   public query() {
-    this.sub = this.service.query({'page': 0}).subscribe(data => {
-      this.total               = data.data.length;
-      this.dataSource.data     = data.data;
-      this.dataSourceCopy.data = data.data;
-    }, error => {
-      this.material.error('Erro ao pesquisar na API.', error);
+    this.sort.sortChange.subscribe(() => this.paginator.pageIndex = 0);
+
+    this.sub = Observable.merge(this.sort.sortChange, this.paginator.page)
+    .startWith(null)
+    .switchMap(() => {
+      return this.service.query({
+        'orderBy':      this.sort.active,
+        'sortedBy':     this.sort.direction,
+        'page':         this.paginator.pageIndex + 1,
+        'perPage':      this.paginator.pageSize,
+        'search':       this.search,
+        'searchJoin':   'and'
+      });
+    })
+    .map(data => {
+      this.total        = data.meta.pagination.total;
+      return data.data;
+    })
+    .catch((error) => {
+      console.log('Erro ao pesquisar na API', error);
+      this.material.snackBar('Erro ao pesquisar na API. Detalhes no console (F12).', 'OK');
+      return Observable.of([]);
+    })
+    .subscribe(data => {
+      this.dataSource.data = data;
     });
   }
 
@@ -105,7 +144,14 @@ export class BranchListComponent implements OnInit, OnDestroy, AfterViewInit {
    * Apply filter when key up
    */
   public applyFilter() {
-    this.dataSource.data = this.dataSourceCopy.data.filter(branch => this.material.filterList(branch, this.filter));
+    if (JSON.stringify(this.filter) !== JSON.stringify(this.oldFilter)) {
+      clearTimeout(this.delayTimer);
+      this.delayTimer  = setTimeout(() => {
+        this.search    = this.material.searchToQueryString(this.filter);
+        this.oldFilter = JSON.parse(JSON.stringify(this.filter));
+        this.query();
+      }, 1500);
+    }
   }
 
   /**
@@ -114,13 +160,12 @@ export class BranchListComponent implements OnInit, OnDestroy, AfterViewInit {
    */
   public deleteConfirm(item: Branch) {
     this.actionClick = true;
-    this.material.openDialog(item, 'Excluir', 'Deseja excluir essa filial?', 'CANCELAR', 'EXCLUIR')
-      .subscribe(data => {
-        this.actionClick = false;
-        if (data === true) {
-          this.delete(item.id);
-        }
-      });
+    this.material.openDialog(item, 'Excluir', 'Deseja excluir essa filial?', 'CANCELAR', 'EXCLUIR').subscribe(data => {
+      this.actionClick = false;
+      if (data === true) {
+        this.delete(item.id);
+      }
+    });
   }
 
   /**
@@ -128,15 +173,12 @@ export class BranchListComponent implements OnInit, OnDestroy, AfterViewInit {
    * @param number id
    */
   public delete(id: number) {
-    const dataTmp              = this.dataSource.data;
-    this.dataSource.data       = dataTmp.splice(this.dataSource.data.findIndex(i => i.id === id), 1);
-
     this.service.delete(id).subscribe(data => {
-      this.dataSourceCopy.data = JSON.parse(JSON.stringify(this.dataSource.data));
+      this.query();
       this.material.snackBar('Filial excluída.', 'OK');
     }, error => {
-      this.dataSource.data = JSON.parse(JSON.stringify(this.dataSourceCopy.data));
-      this.material.error('Erro ao excluir filial.', error);
+      console.log('Erro ao excluir filial', error);
+      this.material.snackBar('Erro ao excluir filial. Detalhes no console (F12).', 'OK');
     });
   }
 

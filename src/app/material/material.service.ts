@@ -52,7 +52,7 @@ export class MaterialService {
   }
 
   /**
-   * Converto object to Query String
+   * Convert object to Query String
    * @param any filter
    */
   public searchToQueryString(filter: any): string {
@@ -66,5 +66,22 @@ export class MaterialService {
     search = search.substr(0, search.length - 1);
 
     return search;
+  }
+
+  /**
+   * Filter a list property by property
+   * @param item any
+   * @param filter any
+   * @returns boolean
+   */
+  public filterList(item: any, filter: any) {
+    for (const tag in item) { // Verify property by property
+      if (filter[tag]) {      // Verify undefined
+        if (!item[tag].toString().trim().toLowerCase().includes(filter[tag].toString().trim().toLowerCase())) {
+          return false;
+        }
+      }
+    }
+    return true;
   }
 }
