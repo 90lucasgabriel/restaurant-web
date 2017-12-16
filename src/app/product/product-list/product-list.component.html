@@ -85,7 +85,7 @@
   
           <!-- Category name Column -->
           <ng-container matColumnDef="category.data.name">
-            <mat-header-cell *matHeaderCellDef> Nome categoria </mat-header-cell>
+            <mat-header-cell *matHeaderCellDef mat-sort-header> Nome categoria </mat-header-cell>
             <mat-cell *matCellDef="let row"> {{ row.category.data.name || null }} </mat-cell>
           </ng-container>
   

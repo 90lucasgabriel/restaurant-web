@@ -32,55 +32,30 @@ import 'rxjs/add/operator/switchMap';
   selector:           'app-category-list',
   templateUrl:        './category-list.component.html',
   styleUrls:          ['./category-list.component.css'],
-  animations: [
-    trigger(
-      'myAnimation',
-      [
-        transition(
-        ':enter', [
-          style({transform: 'translateY(100%)', opacity: 0}),
-          animate('100ms', style({transform: 'translateY(0)', 'opacity': 1}))
-        ]
-        ),
-        transition(
-          ':leave', [
-            style({transform: 'translateY(0)', 'opacity': 1}),
-            animate('100ms', style({transform: 'translateY(100%)', 'opacity': 0}))
-          ]
-        )
-      ]
-    )
-  ],
   encapsulation:      ViewEncapsulation.None
 })
 export class CategoryListComponent implements OnInit, OnDestroy, AfterViewInit {
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;
   total:              number;
-  loadingResults:     boolean;
-  timeout:            boolean;
   columns:            Array<string>;
   dataSource:         any;
+  dataSourceCopy:     any;
 
   private sub:        any;
   loading:            boolean;
-  centerContent:      boolean;
   showFilter:         boolean;
-  items:              Array<Category>;
-  categorySelected:   string|Category = '';
   filter:             Category = new Category();
-  oldFilter:          Category = new Category();
-
   actionClick:        boolean;
-  search:             string;
-  delayTimer;
+  centerContent:      boolean;
 
-  //autocomplete
+  // autocomplete
   parentList          = [];
   categoryControl:    FormControl;
   filteredCategories: Observable<Category[]>;
+  categorySelected:   string|Category = '';
 
-
+  delayTimer;
   /**
    * Constructor
    *
@@ -104,64 +79,54 @@ export class CategoryListComponent implements OnInit, OnDestroy, AfterViewInit {
    * Execute before onInit
    */
   private start() {
+    this.loading        = true;
     this.actionClick    = false;
     this.centerContent  = false;
     this.showFilter     = false;
-    this.search         = '';
     this.total          = 0;
     this.columns        = ['id', 'name', 'parent_id', 'parent.data.name', 'actions'];
     this.dataSource     = new MatTableDataSource();
+    this.dataSourceCopy = new MatTableDataSource();
 
-    //this.categoryOption();
-    this.queryAll();
+    // this.categoryOption();
+    this.queryParent();
   }
 
   /**
    * Execute after load all components
    */
   public ngAfterViewInit() {
-    // Verify if sidenav is open
+    // Verify if sidenav is opened
     Observable.merge(this.parent.sidenav.openedChange)
       .subscribe(data => {
         this.centerContent = !data;
       });
+
     this.query();
+    this.dataSource.sort      = this.sort;
+    this.dataSource.paginator = this.paginator;
   }
 
   /**
    * Show list items on datatable
    */
   public query() {
-    this.sort.sortChange.subscribe(() => this.paginator.pageIndex = 0);
-
-    this.sub = Observable.merge(this.sort.sortChange, this.paginator.page)
-    .startWith(null)
-    .switchMap(() => {
-      return this.service.query({
-        'orderBy':      this.sort.active,
-        'sortedBy':     this.sort.direction,
-        'page':         this.paginator.pageIndex + 1,
-        'perPage':      this.paginator.pageSize,
-        'search':       this.search,
-        'include':      'parent',
-        'searchJoin':   'and'
-      });
-    })
-    .map(data => {
-      this.total        = data.meta.pagination.total;
-      return data.data;
-    })
-    .catch((error) => {
-      console.log('Erro ao pesquisar na API', error);
-      this.material.snackBar('Erro ao pesquisar na API. Detalhes no console (F12).', 'OK');
-      return Observable.of([]);
-    })
-    .subscribe(data => {
-      this.dataSource.data = data;
+    this.sub = this.service.query({
+      'page': 0,
+      'include': 'parent'
+    }).subscribe(data => {
+      this.total               = data.data.length;
+      this.dataSource.data     = data.data;
+      this.dataSourceCopy.data = data.data;
+    }, error => {
+      this.material.error('Erro ao pesquisar na API.', error);
     });
   }
 
-  public queryAll() {
+  /**
+   * Query parent category list to selectbox
+   */
+  public queryParent() {
     this.service.query({
       'orderBy':      'id',
       'sortedBy':     'asc'
@@ -174,14 +139,7 @@ export class CategoryListComponent implements OnInit, OnDestroy, AfterViewInit {
    * Apply filter when key up
    */
   public applyFilter() {
-    if (JSON.stringify(this.filter) !== JSON.stringify(this.oldFilter)) {
-      clearTimeout(this.delayTimer);
-      this.delayTimer  = setTimeout(() => {
-        this.search    = this.material.searchToQueryString(this.filter);
-        this.oldFilter = JSON.parse(JSON.stringify(this.filter));
-        this.query();
-      }, 1100);
-    }
+    this.dataSource.data = this.dataSourceCopy.data.filter(item => this.material.filterList(item, this.filter));
   }
 
   /**
@@ -190,12 +148,13 @@ export class CategoryListComponent implements OnInit, OnDestroy, AfterViewInit {
    */
   public deleteConfirm(item: Category) {
     this.actionClick = true;
-    this.material.openDialog(item, 'Excluir', 'Deseja excluir essa categoria?', 'CANCELAR', 'EXCLUIR').subscribe(data => {
-      this.actionClick = false;
-      if (data === true) {
-        this.delete(item.id);
-      }
-    });
+    this.material.openDialog(item, 'Excluir', 'Deseja excluir essa categoria?', 'CANCELAR', 'EXCLUIR')
+      .subscribe(data => {
+        this.actionClick = false;
+        if (data === true) {
+          this.delete(item.id);
+        }
+      });
   }
 
   /**
@@ -203,19 +162,34 @@ export class CategoryListComponent implements OnInit, OnDestroy, AfterViewInit {
    * @param number id
    */
   public delete(id: number) {
-    this.service.delete(id).subscribe(data => {
-      this.query();
-      this.material.snackBar('Categoria excluída.', 'OK');
-    }, error => {
-      console.log('Erro ao excluir categoria', error);
-      this.material.snackBar('Erro ao excluir categoria. Detalhes no console (F12).', 'OK');
+    const dataTmp              = JSON.parse(JSON.stringify(this.dataSource.data));
+    dataTmp.splice(this.dataSource.data.findIndex(i => i.id === id), 1);
+    this.dataSource.data       = JSON.parse(JSON.stringify(dataTmp));
+    const snackBar = this.material.snackBar('Excluindo', 'Desfazer');
+
+    snackBar.afterOpened().subscribe(() => {
+      // O delay deve ser feito na API
+      this.delayTimer  = setTimeout(() => {
+        this.service.delete(id).subscribe(data => {
+          this.dataSourceCopy.data = JSON.parse(JSON.stringify(this.dataSource.data));
+          this.material.snackBar('Categoria excluída.', 'OK');
+        }, error => {
+          this.dataSource.data = JSON.parse(JSON.stringify(this.dataSourceCopy.data));
+          this.material.error('Erro ao excluir filial.', error);
+        });
+      }, 5000);
+    });
+
+    snackBar.onAction().subscribe(() => {
+      clearTimeout(this.delayTimer);
+      this.dataSource.data = JSON.parse(JSON.stringify(this.dataSourceCopy.data));
     });
   }
 
-  /*
+  /* AUTO COMPLETE
   private categoryOption() {
     //Start category options list
-    this.queryAll();
+    this.queryParent();
     this.categoryControl = new FormControl();
     this.filteredCategories = this.categoryControl.valueChanges
       .startWith(null)

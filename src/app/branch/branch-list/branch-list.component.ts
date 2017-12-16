@@ -45,7 +45,6 @@ export class BranchListComponent implements OnInit, OnDestroy, AfterViewInit {
   loading:            boolean = true;
   showFilter:         boolean;
   filter:             Branch = new Branch();
-
   actionClick:        boolean;
 
   /**
@@ -128,8 +127,9 @@ export class BranchListComponent implements OnInit, OnDestroy, AfterViewInit {
    * @param number id
    */
   public delete(id: number) {
-    const dataTmp              = this.dataSource.data;
-    this.dataSource.data       = dataTmp.splice(this.dataSource.data.findIndex(i => i.id === id), 1);
+    const dataTmp              = JSON.parse(JSON.stringify(this.dataSource.data));
+    dataTmp.splice(this.dataSource.data.findIndex(i => i.id === id), 1);
+    this.dataSource.data       = JSON.parse(JSON.stringify(dataTmp));
 
     this.service.delete(id).subscribe(data => {
       this.dataSourceCopy.data = JSON.parse(JSON.stringify(this.dataSource.data));

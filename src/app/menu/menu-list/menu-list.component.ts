@@ -6,8 +6,10 @@ import { FormControl }            from '@angular/forms';
 
 import { LoaderService }          from '../../loader.service';
 import { MaterialService }        from '../../material/material.service';
+import { MenuTime }               from '../../common/model/menu-time.model';
 import { QueryInput }             from '../../common/model/query-input.model';
 import { AppComponent }           from '../../app.component';
+import { AppConfig }              from '../../app.config';
 
 import { Menu }                   from '../menu.model';
 import { MenuService }            from '../menu.service';
@@ -19,7 +21,7 @@ import 'rxjs/add/operator/catch';
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/startWith';
 import 'rxjs/add/operator/switchMap';
-import { AppConfig } from '../../app.config';
+
 
 
 /**
@@ -41,20 +43,16 @@ export class MenuListComponent implements OnInit, OnDestroy, AfterViewInit {
   total:              number;
   columns:            Array<string>;
   dataSource:         any;
+  dataSourceCopy:     any;
 
   private sub:        any;
-  loading:            boolean = true;
+  loading:            boolean;
   showFilter:         boolean;
-  items:              Array<Menu>;
-  menuSelected:       string|Menu = '';
-  filter:             Menu = new Menu();
-  oldFilter:          Menu = new Menu();
-
+  filter:             Menu;
   actionClick:        boolean;
-  search:             string;
-  delayTimer;
+  centerContent:      boolean;
 
-  timeList: Array<any> = new Array<any>();
+  timeList:           Array<MenuTime>;
 
   /**
    * Constructor
@@ -62,16 +60,12 @@ export class MenuListComponent implements OnInit, OnDestroy, AfterViewInit {
    * @param MenuService service
    */
   constructor(
-    @Inject(AppComponent) private parent: AppComponent,
     private router:           Router,
     private service:          MenuService,
     private material:         MaterialService,
     public  loader:           LoaderService
   ) {
-    loader.onLoadingChanged.subscribe(isLoading => {
-      this.loading = isLoading;
-    });
-    console.log(new Date().getDay());  
+
     this.start();
   }
 
@@ -79,13 +73,17 @@ export class MenuListComponent implements OnInit, OnDestroy, AfterViewInit {
    * Execute before onInit
    */
   private start() {
-    this.queryTime();
+    this.loading        = true;
     this.actionClick    = false;
     this.showFilter     = false;
-    this.search         = '';
     this.total          = 0;
     this.columns        = ['id', 'name', 'day', 'actions'];
     this.dataSource     = new MatTableDataSource();
+    this.dataSourceCopy = new MatTableDataSource();
+    this.filter         = new Menu();
+    this.timeList       = new Array<MenuTime>();
+
+    this.queryTime();
   }
 
   /**
@@ -93,38 +91,23 @@ export class MenuListComponent implements OnInit, OnDestroy, AfterViewInit {
    */
   public ngAfterViewInit() {
     this.query();
+    this.dataSource.sort      = this.sort;
+    this.dataSource.paginator = this.paginator;
   }
 
   /**
    * Show list items on datatable
    */
   public query() {
-    this.sort.sortChange.subscribe(() => this.paginator.pageIndex = 0);
-
-    this.sub = Observable.merge(this.sort.sortChange, this.paginator.page)
-    .startWith(null)
-    .switchMap(() => {
-      return this.service.query({
-        'orderBy':      this.sort.active,
-        'sortedBy':     this.sort.direction,
-        'page':         this.paginator.pageIndex + 1,
-        'perPage':      this.paginator.pageSize,
-        'search':       this.search,
-        'searchJoin':   'and',
-        'include':      'time'
-      });
-    })
-    .map(data => {
-      this.total        = data.meta.pagination.total;
-      return data.data;
-    })
-    .catch((error) => {
-      console.log('Erro ao pesquisar na API', error);
-      this.material.snackBar('Erro ao pesquisar na API. Detalhes no console (F12).', 'OK');
-      return Observable.of([]);
-    })
-    .subscribe(data => {
-      this.dataSource.data = data;
+    this.sub = this.service.query({
+      'page':    0,
+      'include': 'time'
+    }).subscribe(data => {
+      this.total               = data.data.length;
+      this.dataSource.data     = data.data;
+      this.dataSourceCopy.data = data.data;
+    }, error => {
+      this.material.error('Erro ao pesquisar na API.', error);
     });
   }
 
@@ -132,14 +115,7 @@ export class MenuListComponent implements OnInit, OnDestroy, AfterViewInit {
    * Apply filter when key up
    */
   public applyFilter() {
-    if (JSON.stringify(this.filter) !== JSON.stringify(this.oldFilter)) {
-      clearTimeout(this.delayTimer);
-      this.delayTimer  = setTimeout(() => {
-        this.search    = this.material.searchToQueryString(this.filter);
-        this.oldFilter = JSON.parse(JSON.stringify(this.filter));
-        this.query();
-      }, 1100);
-    }
+    this.dataSource.data = this.dataSourceCopy.data.filter(item => this.material.filterList(item, this.filter));
   }
 
   /**
@@ -148,12 +124,13 @@ export class MenuListComponent implements OnInit, OnDestroy, AfterViewInit {
    */
   public deleteConfirm(item: Menu) {
     this.actionClick = true;
-    this.material.openDialog(item, 'Excluir', 'Deseja excluir esse cardápio?', 'CANCELAR', 'EXCLUIR').subscribe(data => {
-      this.actionClick = false;
-      if (data === true) {
-        this.delete(item.id);
-      }
-    });
+    this.material.openDialog(item, 'Excluir', 'Deseja excluir esse cardápio?', 'CANCELAR', 'EXCLUIR')
+      .subscribe(data => {
+        this.actionClick = false;
+        if (data === true) {
+          this.delete(item.id);
+        }
+      });
   }
 
   /**
@@ -161,12 +138,16 @@ export class MenuListComponent implements OnInit, OnDestroy, AfterViewInit {
    * @param number id
    */
   public delete(id: number) {
+    const dataTmp              = JSON.parse(JSON.stringify(this.dataSource.data));
+    dataTmp.splice(this.dataSource.data.findIndex(i => i.id === id), 1);
+    this.dataSource.data       = JSON.parse(JSON.stringify(dataTmp));
+
     this.service.delete(id).subscribe(data => {
-      this.query();
-      this.material.snackBar('Cardápio excluído.', 'OK');
+      this.dataSourceCopy.data = JSON.parse(JSON.stringify(this.dataSource.data));
+      this.material.snackBar('Produto excluído.', 'OK');
     }, error => {
-      console.log('Erro ao excluir cardápio', error);
-      this.material.snackBar('Erro ao excluir cardápio. Detalhes no console (F12).', 'OK');
+      this.dataSource.data     = JSON.parse(JSON.stringify(this.dataSourceCopy.data));
+      this.material.error('Erro ao excluir produto.', error);
     });
   }
 
@@ -179,6 +160,11 @@ export class MenuListComponent implements OnInit, OnDestroy, AfterViewInit {
     this.timeList = JSON.parse(JSON.stringify(AppConfig.DAYS));
   }
 
+  /**
+   * Verify if menu contains a day and print
+   * @param day any
+   * @param list Array<any>
+   */
   public verifyDays(day: any, list: Array<any>) {
     return list.find(time => time.day === day);
   }

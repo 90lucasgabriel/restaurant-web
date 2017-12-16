@@ -302,6 +302,13 @@ mat-progress-spinner{
   background-color:   rgba(0, 0, 0, 0.2);
 }
 
+mat-icon.medium{
+  font-size:          80px; 
+  height:             80px; 
+  width:              80px;
+  color:              #666;
+}
+
 mat-icon.big{
   font-size:          180px; 
   height:             180px; 
@@ -311,4 +318,8 @@ mat-icon.big{
 
 .hide{
   visibility:         hidden;
+}
+
+.mat-column-select {
+  overflow: initial !important;
 }

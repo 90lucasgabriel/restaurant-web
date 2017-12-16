@@ -26,7 +26,7 @@
       <mat-form-field class="full-width">
         <mat-select placeholder="Categoria Pai" [(ngModel)]="filter.parent_id" name="filter.parent_id" (change)="applyFilter()">
           <mat-option>-</mat-option>
-          <mat-option *ngFor="let item of categories" [value]="item.id">
+          <mat-option *ngFor="let item of parentList" [value]="item.id">
             {{ item.id }} - {{ item.name }}
           </mat-option>
         </mat-select>
@@ -94,11 +94,11 @@
 
         <!-- Parent Name Column -->
         <ng-container matColumnDef="parent.data.name">
-          <mat-header-cell *matHeaderCellDef> Nome Cat. Pai </mat-header-cell>
+          <mat-header-cell *matHeaderCellDef mat-sort-header> Nome Cat. Pai </mat-header-cell>
           <mat-cell *matCellDef="let row"> {{ row.parent?.data.name }} </mat-cell>
         </ng-container>
 
-        <!-- Ações Column -->
+        <!-- Actions Column -->
         <ng-container matColumnDef="actions">
           <mat-header-cell *matHeaderCellDef class="actions-column"></mat-header-cell>
           <mat-cell *matCellDef="let row" class="hover-child actions-column">

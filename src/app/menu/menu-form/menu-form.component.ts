@@ -1,4 +1,6 @@
-import { Component, OnInit, ViewEncapsulation, AfterViewInit, ViewChild, OnDestroy,  Inject } from '@angular/core';
+import { Component, OnInit, ViewEncapsulation, AfterViewInit, ViewChild, ViewChildren, OnDestroy,  Inject } from '@angular/core';
+import { MatSort, MatTableDataSource, MatPaginator, MatDialog, MAT_DIALOG_DATA} from '@angular/material';
+import {SelectionModel} from '@angular/cdk/collections';
 
 import { Router, ActivatedRoute } from '@angular/router';
 import { Location }               from '@angular/common';
@@ -31,7 +33,7 @@ import { Day } from '../../day.enum';
   styleUrls:                ['./menu-form.component.css'],
   encapsulation:            ViewEncapsulation.None
 })
-export class MenuFormComponent implements OnInit, OnDestroy {
+export class MenuFormComponent implements OnInit, OnDestroy, AfterViewInit  {
   private sub:              any;
   submitted:                boolean;
   loading = {
@@ -52,16 +54,24 @@ export class MenuFormComponent implements OnInit, OnDestroy {
 
   timeList:                 Array<any>     = new Array<any>();
   timeListChecked:          Array<any>     = new Array<any>();
-  productList:              Array<Product> = new Array<Product>();
-  productListCopy:          Array<Product> = new Array<Product>();
-  productListChecked:       Array<Product> = new Array<Product>();
-  // productCheckedAll:        boolean = false;
-  // productIndeterminate:     boolean = false;
-  branchList:               Array<Branch>;
-  branchListCopy:           Array<Branch>;
-  branchListChecked:        Array<Branch>;
-  // branchCheckedAll:         boolean = false;
-  // branchIndeterminate:      boolean = false;
+
+  @ViewChild('productPaginator') productPaginator: MatPaginator;
+  @ViewChild(MatSort) productSort;
+  productSelection:          SelectionModel<Product> = new SelectionModel<Product>(true, []);
+  productTotal:              number;
+  productColumns:            Array<string>;
+  productDataSource:         any;
+  productDataSourceCopy:     any;
+  productFilter:             Product;
+
+  @ViewChild('branchPaginator') branchPaginator: MatPaginator;
+  @ViewChild(MatSort) branchSort;
+  branchSelection:          SelectionModel<Branch> = new SelectionModel<Branch>(true, []);
+  branchTotal:              number;
+  branchColumns:            Array<string>;
+  branchDataSource:         any;
+  branchDataSourceCopy:     any;
+  branchFilter:             Branch;
 
   imagePreview = '';
 
@@ -107,10 +117,25 @@ export class MenuFormComponent implements OnInit, OnDestroy {
       this.company_id      = +params['company_id'];
     });
 
+    this.startProduct();
+    this.startBranch();
+
     this.queryTime();
-    this.queryProduct();
-    this.queryBranch();
   }
+
+
+  /**
+   * Execute after load all components
+   */
+  public ngAfterViewInit() {
+    this.productDataSource.sort      = this.productSort;
+    this.productDataSource.paginator = this.productPaginator;
+
+    this.branchDataSource.sort      = this.branchSort;
+    this.branchDataSource.paginator = this.branchPaginator;
+  }
+
+
 
   /**
    * Determine if is new item or edit item
@@ -133,7 +158,7 @@ export class MenuFormComponent implements OnInit, OnDestroy {
    * @param number id
    */
   public get(id: number) {
-    this.service.get(id, {'include': 'parent,time,branch,product'}).subscribe(success => {
+    this.service.get(id, {'include': 'category,time,branch,product'}).subscribe(success => {
       this.item        = success.data;
       this.loading.get = false;
       this.submitted   = true;
@@ -150,13 +175,13 @@ export class MenuFormComponent implements OnInit, OnDestroy {
    */
   public submitForm(item: Menu) {
     this.submitted = true;
-    this.productFilter('');
-    this.branchFilter('');
+    this.productFilter = null;
+    this.branchFilter  = null;
 
     this.item.company_id    = this.company_id;
     this.timeListChecked    = this.timeList.filter(time => time.checked);
-    this.productListChecked = this.productList.filter(product => product.checked);
-    this.branchListChecked  = this.branchList.filter(branch => branch.checked);
+    // this.productListChecked = this.productList.filter(product => product.checked);
+    // this.branchListChecked  = this.branchList.filter(branch => branch.checked);
 
     if (this.newItemMode) {
       this.save(item);
@@ -170,7 +195,7 @@ export class MenuFormComponent implements OnInit, OnDestroy {
    * @param Menu item
    */
   public save(item: Menu) {
-    Observable.of(this.service.save(item))
+    /*Observable.of(this.service.save(item))
     .switchMap(() => this.service.save(item))
       .map(menu => this.menu_id = menu.data.id)
     .switchMap(() => this.service.syncTime(this.timeListChecked, this.menu_id ))
@@ -180,7 +205,7 @@ export class MenuFormComponent implements OnInit, OnDestroy {
       this.accomplished();
     }, error => {
       this.material.error('Erro ao atualizar cardápio', error);
-    });
+    });*/
   }
 
   /**
@@ -189,7 +214,7 @@ export class MenuFormComponent implements OnInit, OnDestroy {
    * @param number id
    */
   public update(item: Menu, id: number) {
-    Observable.of(this.service.update(item, id))
+    /*Observable.of(this.service.update(item, id))
     .switchMap(menu => this.service.update(item, id))
     .switchMap(()   => this.service.syncTime(this.timeListChecked, this.menu_id))
     .switchMap(()   => this.service.syncProduct(this.productListChecked, this.menu_id))
@@ -198,18 +223,22 @@ export class MenuFormComponent implements OnInit, OnDestroy {
       this.accomplished();
     }, error => {
       this.material.error('Erro ao atualizar cardápio', error);
-    });
+    });*/
   }
 
   // TIME SECTION --------------------
   /**
-   * List all times of this menu
+   * List all times of this menu on menu_time table
    */
   public queryTime() {
     this.timeList = new Array<any>();
     this.timeList = JSON.parse(JSON.stringify(AppConfig.DAYS));
   }
 
+  /**
+   * Search each time by day of week on menu_time table
+   * and set values and checked in local list
+   */
   public queryTimeSelected() {
     for (const p of this.item.time.data) {
       this.timeList.find(time => time.day === p.day).day        = p.day;
@@ -223,6 +252,16 @@ export class MenuFormComponent implements OnInit, OnDestroy {
 
 
   // PRODUCT SECTION --------------------
+  public startProduct() {
+    this.productTotal          = 0;
+    this.productColumns        = ['select', 'id', 'name', 'category_id'];
+    this.productDataSource     = new MatTableDataSource();
+    this.productDataSourceCopy = new MatTableDataSource();
+    this.productFilter         = new Product();
+
+    this.queryProduct();
+  }
+
   /**
    * List all products of this company
    */
@@ -231,54 +270,40 @@ export class MenuFormComponent implements OnInit, OnDestroy {
       'orderBy':      'id',
       'sortedBy':     'asc'
     }).subscribe(data => {
-      this.productList     = data.data;
-      this.productListCopy = data.data;
-      this.loading.product = false;
+      this.productTotal               = data.data.length;
+      this.productDataSource.data     = data.data;
+      this.productDataSourceCopy.data = data.data;
+      this.loading.product            = false;
       if (!this.newItemMode) {
-        this.queryMenuProduct();
+        this.querySelection(this.item.product.data, this.productSelection, this.productDataSourceCopy);
       }
     });
   }
 
   /**
-   * List all menuProducts of this menu
-   */
+   * Search each product by id on menu_product table
+   * and set values and checked in local list
+   
   public queryMenuProduct() {
     for (const p of this.item.product.data) {
       this.productList.find(product => product.id === p.id).price   = p.price;
       this.productList.find(product => product.id === p.id).checked = true;
     }
-  }
-
-  /**
-   * Filter an array of products with value inserted
-   * @param string value
-   */
-  public productFilter(value: string) {
-    this.productList  = this.productListCopy; // reset array
-    this.productList  = this.productService.filter(this.productList, value);
-  }
-
-  // /**
-  //  * Check all products
-  //  */
-  // public productIsCheckedAll() {
-  //   for (const product of this.productList) {
-  //     product.checked = this.productCheckedAll;
-  //   }
-  // }
-
-  // public verifyProductChecked() {
-  //   for (const item of this.menuProductList) {
-  //     this.productList.find( product => product.id === item.product_id);
-  //   }
-  // }
-
-
+  }*/
 
 
 
   // BRANCH SECTION --------------------------
+  public startBranch() {
+    this.branchTotal          = 0;
+    this.branchColumns        = ['select', 'id', 'address', 'city', 'state'];
+    this.branchDataSource     = new MatTableDataSource();
+    this.branchDataSourceCopy = new MatTableDataSource();
+    this.branchFilter         = new Branch();
+
+    this.queryBranch();
+  }
+
    /**
    * List all products of this company
    */
@@ -287,52 +312,63 @@ export class MenuFormComponent implements OnInit, OnDestroy {
       'orderBy':      'id',
       'sortedBy':     'asc'
     }).subscribe(data => {
-      this.branchList     = data.data;
-      this.branchListCopy = data.data;
-      this.loading.branch = false;
+      this.branchTotal               = data.data.length;
+      this.branchDataSource.data     = data.data;
+      this.branchDataSourceCopy.data = data.data;
+      this.loading.branch            = false;
       if (!this.newItemMode) {
-        this.queryBranchMenu();
+        this.querySelection(this.item.branch.data, this.branchSelection, this.branchDataSourceCopy);
       }
     });
   }
 
+
+
+
+  // DATATABLE AUX SECTION ---------------------------
   /**
-   * List all menuBranchs of this menu
+   * List all branch selection of this menu
    */
-  public queryBranchMenu() {
-    for (const p of this.item.branch.data) {
-      this.branchList.find(branch => branch.id === p.id).checked = true;
+  public querySelection(list: Array<any>, selection: SelectionModel<any>, dataSourceCopy: MatTableDataSource<any>) {
+    for (const p of list) {
+      selection.select(dataSourceCopy.data.find(item => item.id === p.id));
     }
   }
 
   /**
-   * Filter an array of branchs with value inserted
-   * @param string value
+   * Apply filter when key up
    */
-  public branchFilter(value: string) {
-    this.branchList  = this.branchListCopy; // reset array
-    this.branchList  = this.branchService.filter(this.branchList, value);
+  public applyFilter(dataSource: MatTableDataSource<any>, dataSourceCopy: MatTableDataSource<any>, filter: any) {
+    dataSource.data = dataSourceCopy.data.filter(item => this.material.filterList(item, filter));
   }
 
-  // /**
-  //  * Check all branchs
-  //  */
-  // public branchIsCheckedAll() {
-  //   for (const branch of this.branchList) {
-  //     branch.checked = this.branchCheckedAll;
-  //   }
-  // }
+  /**
+   * Whether the number of selected elements matches
+   * the total number of rows.
+   */
+  public isAllSelected(dataSourceCopy: MatTableDataSource<any>, selection: SelectionModel<any>) {
+    const numSelected = selection.selected.length;
+    const numRows     = dataSourceCopy.data.length;
+    return numSelected === numRows;
+  }
 
-  // public verifyBranchChecked() {
-  //   for (const item of this.menuBranchList) {
-  //     this.branchList.find( branch => branch.id === item.branch_id);
-  //   }
-  // }
+  /**
+   * Selects all rows if they are not all selected;
+   * otherwise clear selection.
+   */
+  public masterToggle(dataSource: MatTableDataSource<any>, selection: SelectionModel<any>) {
+    this.isAllSelected(dataSource, selection) ?
+        selection.clear() :
+        dataSource.data.forEach(row => selection.select(row));
+  }
+
 
 
 
   // OTHERS SECTION ---------------------------
-
+  /**
+   * Go back and show message.
+   */
   public accomplished() {
     this.goBack();
     this.material.snackBar(this.message, 'OK');

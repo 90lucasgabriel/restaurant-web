@@ -25,7 +25,7 @@ export class CategoryService {
    * @param QueryInput queryInput
    * @return Observable<Presenter<Array<Category>>>
    */
-  public query(queryInput: QueryInput): Observable<Presenter<Array<Category>>>{
+  public query(queryInput: QueryInput): Observable<Presenter<Array<Category>>> {
     return this.dao.query(queryInput);
   }
 

@@ -1,6 +1,6 @@
 import { Injectable, Inject, Component }  from '@angular/core';
 import { Observable }                     from 'rxjs/Observable';
-import { MatSnackBar }                    from '@angular/material';
+import { MatSnackBar, MatSnackBarRef, SimpleSnackBar }                    from '@angular/material';
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
 import { DialogComponent }                from './dialog/dialog.component';
 
@@ -17,11 +17,13 @@ export class MaterialService {
    * @param message
    * @param action
    */
-  public snackBar(message: string, action: string): void {
-    this.matSnackBar.open(message, action, {
+  public snackBar(message: string, action: string): MatSnackBarRef<SimpleSnackBar> {
+    const snackBarRef = this.matSnackBar.open(message, action, {
       duration: 5000,
       horizontalPosition: 'left'
     });
+
+    return snackBarRef;
   }
 
   public error(message: string, error: any) {
