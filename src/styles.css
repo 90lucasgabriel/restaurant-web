@@ -318,6 +318,8 @@ mat-icon.big{
 
 .hide{
   visibility:         hidden;
+  height:             0;
+  width:              0;
 }
 
 .mat-column-select {

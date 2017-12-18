@@ -50,37 +50,54 @@
               <p><mat-icon>schedule</mat-icon></p>
             </div>
             <div class="flex-95">
-              <div class="container-flex margin-bottom">
-                <div class="full-width">
-                  <mat-list>
-                    <!-- TITLE -->
-                    <mat-list-item class="caption-text">
-                      <div class="flex-30">
-                        <mat-checkbox [(ngModel)]="dayCheckedAll" (change)="dayIsCheckedAll()" [(indeterminate)]="productIndeterminate">Dia</mat-checkbox>
-                      </div>
-                      <div class="flex-35">Início</div>
-                      <div class="flex-35">Fim</div>
-                    </mat-list-item>
-  
-                    <!-- DATA -->
-                    <mat-list-item *ngFor="let time of timeList">
-                      <div class="flex-30">
-                        <mat-checkbox [(ngModel)]="time.checked">{{time.name}}</mat-checkbox>
-                      </div>
-                      <div class="flex-35 align-right">
-                        <mat-form-field *ngIf="time.checked">
-                          <input matInput type="time" [(ngModel)]="time.time_start" name="time.time_start">
-                        </mat-form-field>
-                      </div>
-                      <div class="flex-35 align-right">
-                        <mat-form-field *ngIf="time.checked">
-                          <input matInput type="time" [(ngModel)]="time.time_end" name="time.time_end">
-                        </mat-form-field>
-                      </div>
-                    </mat-list-item>
-                  </mat-list>                
-                </div>
+            <!-- LIST START -->
+            <div class="flex">
+              <div class="flex full-width">
+              
+                <mat-table #timeTable [dataSource]="timeDataSource">
+                  <!-- Checkbox Column -->
+                  <ng-container matColumnDef="select">
+                    <mat-header-cell *matHeaderCellDef class="id-column">
+                      <mat-checkbox (change)="$event ? masterToggle(timeDataSourceCopy, timeSelection) : null"
+                                    [checked]="timeSelection.hasValue() && isAllSelected(timeDataSourceCopy, timeSelection)"
+                                    [indeterminate]="timeSelection.hasValue() && !isAllSelected(timeDataSourceCopy, timeSelection)">
+                      </mat-checkbox>
+                    </mat-header-cell>
+                    <mat-cell *matCellDef="let row" class="id-column">
+                      <mat-checkbox (click)="$event.stopPropagation()"
+                                    (change)="$event ? timeSelection.toggle(row) : null"
+                                    [checked]="timeSelection.isSelected(row)">
+                      </mat-checkbox>
+                    </mat-cell>
+                  </ng-container>
+                
+                  <!-- Name Column -->
+                  <ng-container matColumnDef="day">
+                    <mat-header-cell *matHeaderCellDef> Dia </mat-header-cell>
+                    <mat-cell *matCellDef="let row"> {{row.name}} </mat-cell>
+                  </ng-container>
+
+                  <!-- Category id Column -->
+                  <ng-container matColumnDef="time_start">
+                    <mat-header-cell *matHeaderCellDef> Início </mat-header-cell>
+                    <mat-cell *matCellDef="let row" class="number-column"> {{ row.time_start || null }} </mat-cell>
+                  </ng-container>
+
+                  <!-- Category name Column -->
+                  <ng-container matColumnDef="time_end">
+                    <mat-header-cell *matHeaderCellDef> Fim </mat-header-cell>
+                    <mat-cell *matCellDef="let row"> {{ row.time_end || null }} </mat-cell>
+                  </ng-container>
+
+                  <!-- HEADERS AND ROWS -->
+                  <mat-header-row *matHeaderRowDef="timeColumns"></mat-header-row>
+                  <mat-row class="hover-parent pointer" *matRowDef="let row; columns: timeColumns;" (click)="timeSelection.toggle(row)"></mat-row>
+                </mat-table>
+
               </div>
+            </div>
+            <!-- LIST END -->
+            
             </div>
           </div>
           
@@ -99,7 +116,7 @@
         <mat-progress-spinner mode="indeterminate" diameter="30" strokeWidth="4"></mat-progress-spinner>
       </div>
       <!-- FILTER START -->
-      <div class="flex container-flex content-page margin-bottom">
+      <div class="container-flex margin-bottom">
         <div class="flex-20 margin-right">
           <mat-form-field class="full-width">
             <input matInput placeholder="ID" [(ngModel)]="productFilter.id" name="productFilter.id" (keyup)="applyFilter(productDataSource, productDataSourceCopy, productFilter)">
@@ -124,16 +141,14 @@
       <!-- FILTER END -->
 
       <!-- LOADERS START -->
-      <div *ngIf="productDataSource.data.length == 0" class="full-width container-flex content-page flex-center margin-bottom width-padding">
-        <div class="text-center flex-center mat-typography">
-          <mat-icon class="medium">help_outline</mat-icon>
-          <h3>Nenhum resultado encontrado.</h3>
-        </div>
+      <div class="text-center mat-typography" *ngIf="productDataSource.data.length == 0">
+        <mat-icon class="medium">help_outline</mat-icon>
+        <h3>Nenhum resultado encontrado.</h3>
       </div>
       <!-- LOADERS END -->
 
       <!-- LIST START -->
-      <div class="flex content-page" [ngClass]="{'hide': productDataSource.data.length == 0}">
+      <div class="flex" [ngClass]="{'hide': productDataSource.data.length == 0}">
         <div class="flex full-width mat-elevation-z4">
         
           <mat-table #productTable [dataSource]="productDataSource" 
@@ -189,12 +204,10 @@
               <mat-cell *matCellDef="let row"> {{ row.category.data.name || null }} </mat-cell>
             </ng-container>
 
-            <!-- Ações Column -->
-            <ng-container matColumnDef="actions">
-              <mat-header-cell *matHeaderCellDef class="actions-column"></mat-header-cell>
-              <mat-cell *matCellDef="let row" class="hover-child actions-column">
-                  <button mat-icon-button [routerLink]="[row.id, 'edit']" matTooltip="Editar"><mat-icon>edit</mat-icon></button>
-                  <button mat-icon-button (click)="deleteConfirm(row)" matTooltip="Excluir"><mat-icon>delete</mat-icon></button>
+            <!-- Price Column -->
+            <ng-container matColumnDef="price">
+              <mat-header-cell *matHeaderCellDef mat-sort-header> Preço </mat-header-cell>
+              <mat-cell *matCellDef="let row"> 
               </mat-cell>
             </ng-container>
 
@@ -203,7 +216,7 @@
             <mat-row class="hover-parent pointer" *matRowDef="let row; columns: productColumns;" (click)="productSelection.toggle(row)"></mat-row>
           </mat-table>
         
-          <mat-paginator #branchPaginator [length]="branchTotal" [pageSize]="20" [pageSizeOptions]="[5, 10, 25, 100]"></mat-paginator>
+          <mat-paginator #productPaginator [length]="productTotal" [pageSize]="20" [pageSizeOptions]="[5, 10, 25, 100]"></mat-paginator>
         </div>
       </div>
       <!-- LIST END -->
@@ -221,7 +234,7 @@
       </div>
 
       <!-- FILTER START -->
-      <div class="flex container-flex margin-bottom">
+      <div class="container-flex margin-bottom">
         <div class="flex-20 margin-right">
           <mat-form-field class="full-width">
             <input matInput placeholder="ID" [(ngModel)]="branchFilter.id" name="branchFilter.id" (keyup)="applyFilter(branchDataSource, branchDataSourceCopy, branchFilter)">
@@ -236,79 +249,75 @@
       <!-- FILTER END -->
       
       <!-- LOADERS START -->
-      <div *ngIf="branchDataSource.data.length == 0" class="full-width container-flex content-page flex-center margin-bottom width-padding">
-        <div class="text-center flex-center mat-typography">
-          <mat-icon class="medium">help_outline</mat-icon>
-          <h3>Nenhum resultado encontrado.</h3>
-        </div>
+      <div class="text-center mat-typography" *ngIf="branchDataSource.data.length == 0">
+        <mat-icon class="medium">help_outline</mat-icon>
+        <h3>Nenhum resultado encontrado.</h3>
       </div>
       <!-- LOADERS END -->
 
       <!-- LIST START -->
-      <div class="flex" [ngClass]="{'hide': branchDataSource.data.length == 0}">
-        <div class="flex full-width mat-elevation-z4">
-          <mat-table #table [dataSource]="branchDataSource" class="example-table"
-            matSort matSortActive="id" matSortDirection="desc">    
-            
-            <!-- Checkbox Column -->
-            <ng-container matColumnDef="select">
-              <mat-header-cell *matHeaderCellDef class="id-column">
-                <mat-checkbox (change)="$event ? masterToggle(branchDataSourceCopy, branchSelection) : null"
-                              [checked]="branchSelection.hasValue() && isAllSelected(branchDataSourceCopy, branchSelection)"
-                              [indeterminate]="branchSelection.hasValue() && !isAllSelected(branchDataSourceCopy, branchSelection)">
-                </mat-checkbox>
-              </mat-header-cell>
-              <mat-cell *matCellDef="let row" class="id-column">
-                <mat-checkbox (click)="$event.stopPropagation()"
-                              (change)="$event ? branchSelection.toggle(row) : null"
-                              [checked]="branchSelection.isSelected(row)">
-                </mat-checkbox>
-              </mat-cell>
-            </ng-container>
-            
-            <!-- ID Column -->
-            <ng-container matColumnDef="id">
-              <mat-header-cell *matHeaderCellDef mat-sort-header class="id-column"> ID </mat-header-cell>
-              <mat-cell *matCellDef="let row" class="id-column" > {{row.id}} </mat-cell>
-            </ng-container>
-        
-            <!-- Address Column -->
-            <ng-container matColumnDef="address">
-              <mat-header-cell *matHeaderCellDef mat-sort-header> Endereço </mat-header-cell>
-              <mat-cell *matCellDef="let row"> {{row.address}} </mat-cell>
-            </ng-container>
+      <div class="flex full-width mat-elevation-z4" [ngClass]="{'hide': branchDataSource.data.length == 0}">
+        <mat-table #table [dataSource]="branchDataSource" class="example-table"
+          matSort matSortActive="id" matSortDirection="desc">    
+          
+          <!-- Checkbox Column -->
+          <ng-container matColumnDef="select">
+            <mat-header-cell *matHeaderCellDef class="id-column">
+              <mat-checkbox (change)="$event ? masterToggle(branchDataSourceCopy, branchSelection) : null"
+                            [checked]="branchSelection.hasValue() && isAllSelected(branchDataSourceCopy, branchSelection)"
+                            [indeterminate]="branchSelection.hasValue() && !isAllSelected(branchDataSourceCopy, branchSelection)">
+              </mat-checkbox>
+            </mat-header-cell>
+            <mat-cell *matCellDef="let row" class="id-column">
+              <mat-checkbox (click)="$event.stopPropagation()"
+                            (change)="$event ? branchSelection.toggle(row) : null"
+                            [checked]="branchSelection.isSelected(row)">
+              </mat-checkbox>
+            </mat-cell>
+          </ng-container>
+          
+          <!-- ID Column -->
+          <ng-container matColumnDef="id">
+            <mat-header-cell *matHeaderCellDef mat-sort-header class="id-column"> ID </mat-header-cell>
+            <mat-cell *matCellDef="let row" class="id-column" > {{row.id}} </mat-cell>
+          </ng-container>
+      
+          <!-- Address Column -->
+          <ng-container matColumnDef="address">
+            <mat-header-cell *matHeaderCellDef mat-sort-header> Endereço </mat-header-cell>
+            <mat-cell *matCellDef="let row"> {{row.address}} </mat-cell>
+          </ng-container>
 
-            <!-- Number Column -->
-            <ng-container matColumnDef="number">
-              <mat-header-cell *matHeaderCellDef mat-sort-header  class="number-column"> Número </mat-header-cell>
-              <mat-cell *matCellDef="let row"  class="number-column"> {{row.number}} </mat-cell>
-            </ng-container>
-        
-            <!-- City Column -->
-            <ng-container matColumnDef="city">
-              <mat-header-cell *matHeaderCellDef mat-sort-header> Cidade </mat-header-cell>
-              <mat-cell *matCellDef="let row"> {{row.city}} </mat-cell>
-            </ng-container>
+          <!-- Number Column -->
+          <ng-container matColumnDef="number">
+            <mat-header-cell *matHeaderCellDef mat-sort-header  class="number-column"> Número </mat-header-cell>
+            <mat-cell *matCellDef="let row"  class="number-column"> {{row.number}} </mat-cell>
+          </ng-container>
+      
+          <!-- City Column -->
+          <ng-container matColumnDef="city">
+            <mat-header-cell *matHeaderCellDef mat-sort-header> Cidade </mat-header-cell>
+            <mat-cell *matCellDef="let row"> {{row.city}} </mat-cell>
+          </ng-container>
 
-            <!-- State Column -->
-            <ng-container matColumnDef="state">
-              <mat-header-cell *matHeaderCellDef mat-sort-header> UF </mat-header-cell>
-              <mat-cell *matCellDef="let row"> {{row.state}} </mat-cell>
-            </ng-container>
+          <!-- State Column -->
+          <ng-container matColumnDef="state">
+            <mat-header-cell *matHeaderCellDef mat-sort-header> UF </mat-header-cell>
+            <mat-cell *matCellDef="let row"> {{row.state}} </mat-cell>
+          </ng-container>
 
-            <!-- Phone Column -->
-            <ng-container matColumnDef="phone_1">
-              <mat-header-cell *matHeaderCellDef mat-sort-header> Telefone </mat-header-cell>
-              <mat-cell *matCellDef="let row"> {{row.phone_1}} </mat-cell>
-            </ng-container>
+          <!-- Phone Column -->
+          <ng-container matColumnDef="phone_1">
+            <mat-header-cell *matHeaderCellDef mat-sort-header> Telefone </mat-header-cell>
+            <mat-cell *matCellDef="let row"> {{row.phone_1}} </mat-cell>
+          </ng-container>
 
-            <!-- HEADERS AND ROWS -->
-            <mat-header-row *matHeaderRowDef="branchColumns"></mat-header-row>
-            <mat-row class="hover-parent pointer" *matRowDef="let row; columns: branchColumns;" (click)="branchSelection.toggle(row)"></mat-row>
-          </mat-table>
-        
-          <mat-paginator #branchPaginator [length]="branchTotal" [pageSize]="20" [pageSizeOptions]="[5, 10, 25, 100]"></mat-paginator>
-        </div>
+          <!-- HEADERS AND ROWS -->
+          <mat-header-row *matHeaderRowDef="branchColumns"></mat-header-row>
+          <mat-row class="hover-parent pointer" *matRowDef="let row; columns: branchColumns;" (click)="branchSelection.toggle(row)"></mat-row>
+        </mat-table>
+      
+        <mat-paginator #branchPaginator [length]="branchTotal" [pageSize]="20" [pageSizeOptions]="[5, 10, 25, 100]"></mat-paginator>
       </div>
       <!-- LIST END -->
     </mat-step>

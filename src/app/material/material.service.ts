@@ -1,7 +1,9 @@
 import { Injectable, Inject, Component }  from '@angular/core';
 import { Observable }                     from 'rxjs/Observable';
 import { MatSnackBar, MatSnackBarRef, SimpleSnackBar }                    from '@angular/material';
-import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
+import { MatSort, MatTableDataSource, MatPaginator, MatDialog, MAT_DIALOG_DATA} from '@angular/material';
+import {SelectionModel} from '@angular/cdk/collections';
+
 import { DialogComponent }                from './dialog/dialog.component';
 
 @Injectable()
@@ -12,6 +14,9 @@ export class MaterialService {
     private matDialog:          MatDialog
   ) { }
 
+
+
+  // SNACKBAR ----------------------------------------------------
   /**
    * Open message
    * @param message
@@ -26,11 +31,20 @@ export class MaterialService {
     return snackBarRef;
   }
 
+  /**
+   * Show snackbar and console
+   * @param message string
+   * @param error any
+   */
   public error(message: string, error: any) {
     console.log(message, error);
     this.snackBar(`${message}. Detalhes no console (F12).`, 'OK');
   }
 
+
+
+
+  // DIALOG ------------------------------------------------------
   /**
    * Open dialog to confirm
    * @param Any item
@@ -53,21 +67,44 @@ export class MaterialService {
     return dialogRef.afterClosed();
   }
 
+
+
+
+  // DATATABLE ----------------------------------------------------
   /**
-   * Convert object to Query String
-   * @param any filter
+   * List all branch selection of this menu
    */
-  public searchToQueryString(filter: any): string {
-    let search  = '';
-
-    for (const key in filter) {
-      if (filter[key] && filter[key].toString().trim().length > 0) {
-        search = search + key + ':' + filter[key] + ';';
+  public querySelection(key: string, list: Array<any>, selection: SelectionModel<any>, dataSourceCopy: MatTableDataSource<any>) {
+    for (const i of list) {
+        selection.select(dataSourceCopy.data.find(item => item[key] === i[key]));
       }
-    }
-    search = search.substr(0, search.length - 1);
+  }
 
-    return search;
+  /**
+   * Apply filter when key up
+   */
+  public applyFilter(dataSource: MatTableDataSource<any>, dataSourceCopy: MatTableDataSource<any>, filter: any) {
+    dataSource.data = dataSourceCopy.data.filter(item => this.filterList(item, filter));
+  }
+
+  /**
+   * Whether the number of selected elements matches
+   * the total number of rows.
+   */
+  public isAllSelected(dataSourceCopy: MatTableDataSource<any>, selection: SelectionModel<any>) {
+    const numSelected = selection.selected.length;
+    const numRows     = dataSourceCopy.data.length;
+    return numSelected === numRows;
+  }
+
+  /**
+   * Selects all rows if they are not all selected;
+   * otherwise clear selection.
+   */
+  public masterToggle(dataSource: MatTableDataSource<any>, selection: SelectionModel<any>) {
+    this.isAllSelected(dataSource, selection) ?
+        selection.clear() :
+        dataSource.data.forEach(row => selection.select(row));
   }
 
   /**
@@ -85,5 +122,26 @@ export class MaterialService {
       }
     }
     return true;
+  }
+
+
+
+
+  // OTHERS ---------------------------------------------------
+  /**
+   * Convert object to Query String
+   * @param any filter
+   */
+  public searchToQueryString(filter: any): string {
+    let search  = '';
+
+    for (const key in filter) {
+      if (filter[key] && filter[key].toString().trim().length > 0) {
+        search = search + key + ':' + filter[key] + ';';
+      }
+    }
+    search = search.substr(0, search.length - 1);
+
+    return search;
   }
 }

@@ -6,6 +6,7 @@ import { Day } from '../../day.enum';
  */
 export class MenuTime {
   constructor(
+    public id?:           number,
     public menu_id?:      number,
     public day?:          Day,
     public time_start?:	  string,

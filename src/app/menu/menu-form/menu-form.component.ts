@@ -1,6 +1,6 @@
 import { Component, OnInit, ViewEncapsulation, AfterViewInit, ViewChild, ViewChildren, OnDestroy,  Inject } from '@angular/core';
 import { MatSort, MatTableDataSource, MatPaginator, MatDialog, MAT_DIALOG_DATA} from '@angular/material';
-import {SelectionModel} from '@angular/cdk/collections';
+import { SelectionModel }         from '@angular/cdk/collections';
 
 import { Router, ActivatedRoute } from '@angular/router';
 import { Location }               from '@angular/common';
@@ -10,6 +10,7 @@ import { LoaderService }          from '../../loader.service';
 import { MaterialService }        from '../../material/material.service';
 import { QueryInput }             from '../../common/model/query-input.model';
 
+import { Day }                    from '../../day.enum';
 import { Product }                from '../../product/product.model';
 import { ProductService }         from '../../product/product.service';
 import { Branch }                 from '../../branch/branch.model';
@@ -24,7 +25,8 @@ import 'rxjs/add/operator/catch';
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/startWith';
 import 'rxjs/add/operator/switchMap';
-import { Day } from '../../day.enum';
+import { MenuTime } from '../../common/model/menu-time.model';
+
 
 
 @Component({
@@ -44,7 +46,6 @@ export class MenuFormComponent implements OnInit, OnDestroy, AfterViewInit  {
 
 
   item:                     Menu        = new Menu();
-  items:                    Array<Menu> = new Array<Menu>();
   company_id:               number;
   menu_id:                  number;
 
@@ -52,8 +53,10 @@ export class MenuFormComponent implements OnInit, OnDestroy, AfterViewInit  {
   title:                    string;
   message:                  string;
 
-  timeList:                 Array<any>     = new Array<any>();
-  timeListChecked:          Array<any>     = new Array<any>();
+  timeSelection:             SelectionModel<MenuTime> = new SelectionModel<MenuTime>(true, []);
+  timeColumns:               Array<string>;
+  timeDataSource:            any;
+  timeDataSourceCopy:        any;
 
   @ViewChild('productPaginator') productPaginator: MatPaginator;
   @ViewChild(MatSort) productSort;
@@ -119,8 +122,6 @@ export class MenuFormComponent implements OnInit, OnDestroy, AfterViewInit  {
 
     this.startProduct();
     this.startBranch();
-
-    this.queryTime();
   }
 
 
@@ -162,7 +163,8 @@ export class MenuFormComponent implements OnInit, OnDestroy, AfterViewInit  {
       this.item        = success.data;
       this.loading.get = false;
       this.submitted   = true;
-      this.queryTimeSelected();
+      // this.queryTimeSelected();
+        this.startTime();
     }, error => {
       this.goBack();
       this.material.error('Cardápio não encontrado', error);
@@ -179,7 +181,7 @@ export class MenuFormComponent implements OnInit, OnDestroy, AfterViewInit  {
     this.branchFilter  = null;
 
     this.item.company_id    = this.company_id;
-    this.timeListChecked    = this.timeList.filter(time => time.checked);
+    // this.timeListChecked    = this.timeList.filter(time => time.checked);
     // this.productListChecked = this.productList.filter(product => product.checked);
     // this.branchListChecked  = this.branchList.filter(branch => branch.checked);
 
@@ -226,27 +228,47 @@ export class MenuFormComponent implements OnInit, OnDestroy, AfterViewInit  {
     });*/
   }
 
+
+
+
   // TIME SECTION --------------------
+  public startTime() {
+    this.timeColumns        = ['select', 'day', 'time_start', 'time_end'];
+    this.timeDataSource     = new MatTableDataSource();
+    this.timeDataSourceCopy = new MatTableDataSource();
+
+    this.queryTime();
+  }
+
   /**
    * List all times of this menu on menu_time table
    */
   public queryTime() {
-    this.timeList = new Array<any>();
-    this.timeList = JSON.parse(JSON.stringify(AppConfig.DAYS));
+    this.timeDataSource.data     = AppConfig.DAYS;
+    this.timeDataSourceCopy.data = AppConfig.DAYS;
+    /**
+     * Ta procurando os itens dentro do enum
+     * O certo seria puxar todas as entradas de menu_time e selecionar
+     * Nao adianta colocar os atributos no enum, porque eles não são os valores originais
+     * Analisar casos com pivot também
+     */
+    if (!this.newItemMode) {
+      this.querySelection('day', this.item.time.data, this.timeSelection, this.timeDataSourceCopy);
+    }
   }
 
   /**
    * Search each time by day of week on menu_time table
    * and set values and checked in local list
    */
-  public queryTimeSelected() {
+  /*public queryTimeSelected() {
     for (const p of this.item.time.data) {
       this.timeList.find(time => time.day === p.day).day        = p.day;
       this.timeList.find(time => time.day === p.day).time_start = p.time_start;
       this.timeList.find(time => time.day === p.day).time_end   = p.time_end;
       this.timeList.find(time => time.day === p.day).checked    = true;
     }
-  }
+  }*/
 
 
 
@@ -254,7 +276,7 @@ export class MenuFormComponent implements OnInit, OnDestroy, AfterViewInit  {
   // PRODUCT SECTION --------------------
   public startProduct() {
     this.productTotal          = 0;
-    this.productColumns        = ['select', 'id', 'name', 'category_id'];
+    this.productColumns        = ['select', 'id', 'name', 'category_id', 'category.data.name', 'price'];
     this.productDataSource     = new MatTableDataSource();
     this.productDataSourceCopy = new MatTableDataSource();
     this.productFilter         = new Product();
@@ -275,21 +297,11 @@ export class MenuFormComponent implements OnInit, OnDestroy, AfterViewInit  {
       this.productDataSourceCopy.data = data.data;
       this.loading.product            = false;
       if (!this.newItemMode) {
-        this.querySelection(this.item.product.data, this.productSelection, this.productDataSourceCopy);
+        this.querySelection('id', this.item.product.data, this.productSelection, this.productDataSourceCopy);
       }
     });
   }
 
-  /**
-   * Search each product by id on menu_product table
-   * and set values and checked in local list
-   
-  public queryMenuProduct() {
-    for (const p of this.item.product.data) {
-      this.productList.find(product => product.id === p.id).price   = p.price;
-      this.productList.find(product => product.id === p.id).checked = true;
-    }
-  }*/
 
 
 
@@ -317,7 +329,7 @@ export class MenuFormComponent implements OnInit, OnDestroy, AfterViewInit  {
       this.branchDataSourceCopy.data = data.data;
       this.loading.branch            = false;
       if (!this.newItemMode) {
-        this.querySelection(this.item.branch.data, this.branchSelection, this.branchDataSourceCopy);
+        this.querySelection('id', this.item.branch.data, this.branchSelection, this.branchDataSourceCopy);
       }
     });
   }
@@ -329,17 +341,15 @@ export class MenuFormComponent implements OnInit, OnDestroy, AfterViewInit  {
   /**
    * List all branch selection of this menu
    */
-  public querySelection(list: Array<any>, selection: SelectionModel<any>, dataSourceCopy: MatTableDataSource<any>) {
-    for (const p of list) {
-      selection.select(dataSourceCopy.data.find(item => item.id === p.id));
-    }
+  public querySelection(key: string, list: Array<any>, selection: SelectionModel<any>, dataSourceCopy: MatTableDataSource<any>) {
+    this.material.querySelection(key, list, selection, dataSourceCopy);
   }
 
   /**
    * Apply filter when key up
    */
   public applyFilter(dataSource: MatTableDataSource<any>, dataSourceCopy: MatTableDataSource<any>, filter: any) {
-    dataSource.data = dataSourceCopy.data.filter(item => this.material.filterList(item, filter));
+    this.material.applyFilter(dataSource, dataSourceCopy, filter);
   }
 
   /**
@@ -347,9 +357,7 @@ export class MenuFormComponent implements OnInit, OnDestroy, AfterViewInit  {
    * the total number of rows.
    */
   public isAllSelected(dataSourceCopy: MatTableDataSource<any>, selection: SelectionModel<any>) {
-    const numSelected = selection.selected.length;
-    const numRows     = dataSourceCopy.data.length;
-    return numSelected === numRows;
+    return this.material.isAllSelected(dataSourceCopy, selection);
   }
 
   /**
@@ -357,9 +365,7 @@ export class MenuFormComponent implements OnInit, OnDestroy, AfterViewInit  {
    * otherwise clear selection.
    */
   public masterToggle(dataSource: MatTableDataSource<any>, selection: SelectionModel<any>) {
-    this.isAllSelected(dataSource, selection) ?
-        selection.clear() :
-        dataSource.data.forEach(row => selection.select(row));
+    this.material.masterToggle(dataSource, selection);
   }
 
 
