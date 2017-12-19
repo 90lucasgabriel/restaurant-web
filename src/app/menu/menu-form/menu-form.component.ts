@@ -357,28 +357,31 @@ export class MenuFormComponent implements OnInit, OnDestroy, AfterViewInit  {
     this.material.masterToggle(dataSource, selection);
   }
 
-
-
-
-  // OTHERS SECTION ---------------------------
+  /**
+   * Verify selected items when emit == true and if is update mode.
+   */
   private verifyEmit() {
-    this.itemLoaded.subscribe(loaded => {
-      if (loaded && !this.newItemMode) {
+    this.itemLoaded.subscribe(iLoaded => {
+      if (iLoaded && !this.newItemMode) {
         this.querySelection(this.item.time.data, this.timeSelection, this.timeDataSourceCopy, this.timePivot, 'day');
-      }
-    });
-    this.productLoaded.subscribe(loaded => {
-      if (loaded && !this.newItemMode) {
-        this.querySelection(this.item.product.data, this.productSelection, this.productDataSourceCopy, this.productPivot);
-      }
-    });
-    this.branchLoaded.subscribe(loaded => {
-      if (loaded && !this.newItemMode) {
-        this.querySelection(this.item.branch.data, this.branchSelection, this.branchDataSourceCopy);
+
+        // Verify products and branches after menu info is loaded.
+        this.productLoaded.subscribe(pLoaded => {
+          if (pLoaded && !this.newItemMode) {
+            this.querySelection(this.item.product.data, this.productSelection, this.productDataSourceCopy, this.productPivot);
+          }
+        });
+        this.branchLoaded.subscribe(bLoaded => {
+          if (bLoaded && !this.newItemMode) {
+            this.querySelection(this.item.branch.data, this.branchSelection, this.branchDataSourceCopy);
+          }
+        });
       }
     });
   }
 
+
+  // OTHERS SECTION ---------------------------
   /**
    * Go back and show message.
    */
