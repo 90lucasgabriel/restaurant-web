@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewEncapsulation, AfterViewInit, ViewChild, ViewChildren, OnDestroy,  Inject } from '@angular/core';
+import { Component, OnInit, ViewEncapsulation, AfterViewInit, ViewChild, OnDestroy,  Inject, EventEmitter } from '@angular/core';
 import { MatSort, MatTableDataSource, MatPaginator, MatDialog, MAT_DIALOG_DATA} from '@angular/material';
 import { SelectionModel }         from '@angular/cdk/collections';
 
@@ -9,6 +9,7 @@ import { AppConfig }              from '../../app.config';
 import { LoaderService }          from '../../loader.service';
 import { MaterialService }        from '../../material/material.service';
 import { QueryInput }             from '../../common/model/query-input.model';
+import { MenuTime }               from '../../common/model/menu-time.model';
 
 import { Day }                    from '../../day.enum';
 import { Product }                from '../../product/product.model';
@@ -25,7 +26,6 @@ import 'rxjs/add/operator/catch';
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/startWith';
 import 'rxjs/add/operator/switchMap';
-import { MenuTime } from '../../common/model/menu-time.model';
 
 
 
@@ -36,47 +36,51 @@ import { MenuTime } from '../../common/model/menu-time.model';
   encapsulation:            ViewEncapsulation.None
 })
 export class MenuFormComponent implements OnInit, OnDestroy, AfterViewInit  {
-  private sub:              any;
-  submitted:                boolean;
+  private sub:               any;
+  submitted:                 boolean;
   loading = {
     get:      true,
     product:  true,
     branch:   true,
   };
 
+  itemLoaded:                EventEmitter<boolean> = new EventEmitter<boolean>();
+  item:                      Menu;
+  company_id:                number;
+  menu_id:                   number;
 
-  item:                     Menu        = new Menu();
-  company_id:               number;
-  menu_id:                  number;
+  newItemMode:               boolean;
+  title:                     string;
+  message:                   string;
 
-  newItemMode:              boolean;
-  title:                    string;
-  message:                  string;
 
-  timeSelection:             SelectionModel<MenuTime> = new SelectionModel<MenuTime>(true, []);
+  timeLoaded:                EventEmitter<boolean> = new EventEmitter<boolean>();
+  timeSelection:             SelectionModel<MenuTime>;
   timeColumns:               Array<string>;
+  timePivot:                 Array<string>;
   timeDataSource:            any;
   timeDataSourceCopy:        any;
 
   @ViewChild('productPaginator') productPaginator: MatPaginator;
   @ViewChild(MatSort) productSort;
-  productSelection:          SelectionModel<Product> = new SelectionModel<Product>(true, []);
+  productLoaded:             EventEmitter<boolean> = new EventEmitter<boolean>();
+  productSelection:          SelectionModel<Product>;
   productTotal:              number;
   productColumns:            Array<string>;
+  productPivot:              Array<string>;
   productDataSource:         any;
   productDataSourceCopy:     any;
   productFilter:             Product;
 
   @ViewChild('branchPaginator') branchPaginator: MatPaginator;
   @ViewChild(MatSort) branchSort;
-  branchSelection:          SelectionModel<Branch> = new SelectionModel<Branch>(true, []);
+  branchLoaded:             EventEmitter<boolean> = new EventEmitter<boolean>();
+  branchSelection:          SelectionModel<Branch>;
   branchTotal:              number;
   branchColumns:            Array<string>;
   branchDataSource:         any;
   branchDataSourceCopy:     any;
   branchFilter:             Branch;
-
-  imagePreview = '';
 
   /**
    * Constructor
@@ -99,6 +103,7 @@ export class MenuFormComponent implements OnInit, OnDestroy, AfterViewInit  {
     loader.onLoadingChanged.subscribe(isLoading => {
       this.loading.get = isLoading;
     });
+
     this.start();
   }
 
@@ -106,6 +111,9 @@ export class MenuFormComponent implements OnInit, OnDestroy, AfterViewInit  {
    * Execute before onInit
    */
   public start() {
+    this.verifyEmit();
+
+    this.item        = new Menu();
     this.submitted   = false;
     this.newItemMode = true;
 
@@ -120,6 +128,7 @@ export class MenuFormComponent implements OnInit, OnDestroy, AfterViewInit  {
       this.company_id      = +params['company_id'];
     });
 
+    this.startTime();
     this.startProduct();
     this.startBranch();
   }
@@ -132,8 +141,8 @@ export class MenuFormComponent implements OnInit, OnDestroy, AfterViewInit  {
     this.productDataSource.sort      = this.productSort;
     this.productDataSource.paginator = this.productPaginator;
 
-    this.branchDataSource.sort      = this.branchSort;
-    this.branchDataSource.paginator = this.branchPaginator;
+    this.branchDataSource.sort       = this.branchSort;
+    this.branchDataSource.paginator  = this.branchPaginator;
   }
 
 
@@ -144,6 +153,8 @@ export class MenuFormComponent implements OnInit, OnDestroy, AfterViewInit  {
    */
   public setNewItem(value: boolean) {
     if (value) {
+      this.loading.get     = false;
+      this.submitted       = true;
       this.newItemMode     = true;
       this.title           = 'Novo Cardápio';
       this.message         = 'Novo cardápio criado';
@@ -163,8 +174,7 @@ export class MenuFormComponent implements OnInit, OnDestroy, AfterViewInit  {
       this.item        = success.data;
       this.loading.get = false;
       this.submitted   = true;
-      // this.queryTimeSelected();
-        this.startTime();
+      this.itemLoaded.emit(true);
     }, error => {
       this.goBack();
       this.material.error('Cardápio não encontrado', error);
@@ -176,14 +186,8 @@ export class MenuFormComponent implements OnInit, OnDestroy, AfterViewInit  {
    * @param Menu item
    */
   public submitForm(item: Menu) {
-    this.submitted = true;
-    this.productFilter = null;
-    this.branchFilter  = null;
-
-    this.item.company_id    = this.company_id;
-    // this.timeListChecked    = this.timeList.filter(time => time.checked);
-    // this.productListChecked = this.productList.filter(product => product.checked);
-    // this.branchListChecked  = this.branchList.filter(branch => branch.checked);
+    this.submitted       = true;
+    this.item.company_id = this.company_id;
 
     if (this.newItemMode) {
       this.save(item);
@@ -197,17 +201,17 @@ export class MenuFormComponent implements OnInit, OnDestroy, AfterViewInit  {
    * @param Menu item
    */
   public save(item: Menu) {
-    /*Observable.of(this.service.save(item))
+    Observable.of(this.service.save(item))
     .switchMap(() => this.service.save(item))
       .map(menu => this.menu_id = menu.data.id)
-    .switchMap(() => this.service.syncTime(this.timeListChecked, this.menu_id ))
-    .switchMap(() => this.service.syncProduct(this.productListChecked, this.menu_id ))
-    .switchMap(() => this.service.syncBranch(this.branchListChecked, this.menu_id))
+    .switchMap(() => this.service.syncTime(this.timeSelection.selected, this.menu_id ))
+    .switchMap(() => this.service.syncProduct(this.productSelection.selected, this.menu_id ))
+    .switchMap(() => this.service.syncBranch(this.branchSelection.selected, this.menu_id))
     .subscribe(success  => {
       this.accomplished();
     }, error => {
       this.material.error('Erro ao atualizar cardápio', error);
-    });*/
+    });
   }
 
   /**
@@ -216,16 +220,16 @@ export class MenuFormComponent implements OnInit, OnDestroy, AfterViewInit  {
    * @param number id
    */
   public update(item: Menu, id: number) {
-    /*Observable.of(this.service.update(item, id))
+    Observable.of(this.service.update(item, id))
     .switchMap(menu => this.service.update(item, id))
-    .switchMap(()   => this.service.syncTime(this.timeListChecked, this.menu_id))
-    .switchMap(()   => this.service.syncProduct(this.productListChecked, this.menu_id))
-    .switchMap(()   => this.service.syncBranch(this.branchListChecked, this.menu_id))
+    .switchMap(()   => this.service.syncTime(this.timeSelection.selected, this.menu_id))
+    .switchMap(()   => this.service.syncProduct(this.productSelection.selected, this.menu_id))
+    .switchMap(()   => this.service.syncBranch(this.branchSelection.selected, this.menu_id))
     .subscribe(success  => {
       this.accomplished();
     }, error => {
       this.material.error('Erro ao atualizar cardápio', error);
-    });*/
+    });
   }
 
 
@@ -234,8 +238,10 @@ export class MenuFormComponent implements OnInit, OnDestroy, AfterViewInit  {
   // TIME SECTION --------------------
   public startTime() {
     this.timeColumns        = ['select', 'day', 'time_start', 'time_end'];
+    this.timePivot          = ['time_start', 'time_end'];
     this.timeDataSource     = new MatTableDataSource();
     this.timeDataSourceCopy = new MatTableDataSource();
+    this.timeSelection      = new SelectionModel<MenuTime>(true, []);
 
     this.queryTime();
   }
@@ -246,29 +252,8 @@ export class MenuFormComponent implements OnInit, OnDestroy, AfterViewInit  {
   public queryTime() {
     this.timeDataSource.data     = AppConfig.DAYS;
     this.timeDataSourceCopy.data = AppConfig.DAYS;
-    /**
-     * Ta procurando os itens dentro do enum
-     * O certo seria puxar todas as entradas de menu_time e selecionar
-     * Nao adianta colocar os atributos no enum, porque eles não são os valores originais
-     * Analisar casos com pivot também
-     */
-    if (!this.newItemMode) {
-      this.querySelection('day', this.item.time.data, this.timeSelection, this.timeDataSourceCopy);
-    }
+    this.timeLoaded.emit(true);
   }
-
-  /**
-   * Search each time by day of week on menu_time table
-   * and set values and checked in local list
-   */
-  /*public queryTimeSelected() {
-    for (const p of this.item.time.data) {
-      this.timeList.find(time => time.day === p.day).day        = p.day;
-      this.timeList.find(time => time.day === p.day).time_start = p.time_start;
-      this.timeList.find(time => time.day === p.day).time_end   = p.time_end;
-      this.timeList.find(time => time.day === p.day).checked    = true;
-    }
-  }*/
 
 
 
@@ -277,8 +262,10 @@ export class MenuFormComponent implements OnInit, OnDestroy, AfterViewInit  {
   public startProduct() {
     this.productTotal          = 0;
     this.productColumns        = ['select', 'id', 'name', 'category_id', 'category.data.name', 'price'];
+    this.productPivot          = ['price'];
     this.productDataSource     = new MatTableDataSource();
     this.productDataSourceCopy = new MatTableDataSource();
+    this.productSelection      = new SelectionModel<Product>(true, []);
     this.productFilter         = new Product();
 
     this.queryProduct();
@@ -296,9 +283,7 @@ export class MenuFormComponent implements OnInit, OnDestroy, AfterViewInit  {
       this.productDataSource.data     = data.data;
       this.productDataSourceCopy.data = data.data;
       this.loading.product            = false;
-      if (!this.newItemMode) {
-        this.querySelection('id', this.item.product.data, this.productSelection, this.productDataSourceCopy);
-      }
+      this.productLoaded.emit(true);
     });
   }
 
@@ -311,6 +296,7 @@ export class MenuFormComponent implements OnInit, OnDestroy, AfterViewInit  {
     this.branchColumns        = ['select', 'id', 'address', 'city', 'state'];
     this.branchDataSource     = new MatTableDataSource();
     this.branchDataSourceCopy = new MatTableDataSource();
+    this.branchSelection      = new SelectionModel<Branch>(true, []);
     this.branchFilter         = new Branch();
 
     this.queryBranch();
@@ -328,9 +314,7 @@ export class MenuFormComponent implements OnInit, OnDestroy, AfterViewInit  {
       this.branchDataSource.data     = data.data;
       this.branchDataSourceCopy.data = data.data;
       this.loading.branch            = false;
-      if (!this.newItemMode) {
-        this.querySelection('id', this.item.branch.data, this.branchSelection, this.branchDataSourceCopy);
-      }
+      this.branchLoaded.emit(true);
     });
   }
 
@@ -341,8 +325,13 @@ export class MenuFormComponent implements OnInit, OnDestroy, AfterViewInit  {
   /**
    * List all branch selection of this menu
    */
-  public querySelection(key: string, list: Array<any>, selection: SelectionModel<any>, dataSourceCopy: MatTableDataSource<any>) {
-    this.material.querySelection(key, list, selection, dataSourceCopy);
+  public querySelection(
+    selectedList:   Array<any>,
+    selection:      SelectionModel<any>,
+    dataSourceCopy: MatTableDataSource<any>,
+    pivot?:         Array<string>,
+    key?:           string) {
+    this.material.querySelection(selectedList, selection, dataSourceCopy, pivot, key);
   }
 
   /**
@@ -372,6 +361,24 @@ export class MenuFormComponent implements OnInit, OnDestroy, AfterViewInit  {
 
 
   // OTHERS SECTION ---------------------------
+  private verifyEmit() {
+    this.itemLoaded.subscribe(loaded => {
+      if (loaded && !this.newItemMode) {
+        this.querySelection(this.item.time.data, this.timeSelection, this.timeDataSourceCopy, this.timePivot, 'day');
+      }
+    });
+    this.productLoaded.subscribe(loaded => {
+      if (loaded && !this.newItemMode) {
+        this.querySelection(this.item.product.data, this.productSelection, this.productDataSourceCopy, this.productPivot);
+      }
+    });
+    this.branchLoaded.subscribe(loaded => {
+      if (loaded && !this.newItemMode) {
+        this.querySelection(this.item.branch.data, this.branchSelection, this.branchDataSourceCopy);
+      }
+    });
+  }
+
   /**
    * Go back and show message.
    */

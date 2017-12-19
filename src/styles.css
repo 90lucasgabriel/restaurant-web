@@ -323,5 +323,9 @@ mat-icon.big{
 }
 
 .mat-column-select {
-  overflow: initial !important;
+  overflow:           initial !important;
+}
+
+.mat-row{
+  border-bottom:      white !important;
 }

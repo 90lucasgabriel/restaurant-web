@@ -80,18 +80,26 @@
                   <!-- Category id Column -->
                   <ng-container matColumnDef="time_start">
                     <mat-header-cell *matHeaderCellDef> Início </mat-header-cell>
-                    <mat-cell *matCellDef="let row" class="number-column"> {{ row.time_start || null }} </mat-cell>
+                    <mat-cell *matCellDef="let row"> 
+                      <mat-form-field *ngIf="timeSelection.isSelected(row)">
+                        <input matInput type="time" [(ngModel)]="row.time_start" name="row.time_start">
+                      </mat-form-field>
+                    </mat-cell>
                   </ng-container>
 
                   <!-- Category name Column -->
                   <ng-container matColumnDef="time_end">
                     <mat-header-cell *matHeaderCellDef> Fim </mat-header-cell>
-                    <mat-cell *matCellDef="let row"> {{ row.time_end || null }} </mat-cell>
+                    <mat-cell *matCellDef="let row">
+                      <mat-form-field *ngIf="timeSelection.isSelected(row)">
+                        <input matInput type="time" [(ngModel)]="row.time_end" name="row.time_end">
+                      </mat-form-field>
+                    </mat-cell>
                   </ng-container>
 
                   <!-- HEADERS AND ROWS -->
                   <mat-header-row *matHeaderRowDef="timeColumns"></mat-header-row>
-                  <mat-row class="hover-parent pointer" *matRowDef="let row; columns: timeColumns;" (click)="timeSelection.toggle(row)"></mat-row>
+                  <mat-row class="hover-parent pointer" *matRowDef="let row; columns: timeColumns;"></mat-row>
                 </mat-table>
 
               </div>
@@ -208,12 +216,16 @@
             <ng-container matColumnDef="price">
               <mat-header-cell *matHeaderCellDef mat-sort-header> Preço </mat-header-cell>
               <mat-cell *matCellDef="let row"> 
+                <mat-form-field *ngIf="productSelection.isSelected(row)">
+                  <span matPrefix>R$&nbsp;</span>
+                  <input matInput [(ngModel)]="row.price" name="row.price">
+                </mat-form-field>
               </mat-cell>
             </ng-container>
 
             <!-- HEADERS AND ROWS -->
             <mat-header-row *matHeaderRowDef="productColumns"></mat-header-row>
-            <mat-row class="hover-parent pointer" *matRowDef="let row; columns: productColumns;" (click)="productSelection.toggle(row)"></mat-row>
+            <mat-row class="hover-parent pointer" *matRowDef="let row; columns: productColumns;"></mat-row>
           </mat-table>
         
           <mat-paginator #productPaginator [length]="productTotal" [pageSize]="20" [pageSizeOptions]="[5, 10, 25, 100]"></mat-paginator>

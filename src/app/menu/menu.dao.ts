@@ -78,7 +78,6 @@ export class MenuDao {
    */
   public syncTime(items: Array<any>, menu_id: number): Observable<Presenter<any>> {
     const path = this.path + menu_id + '/time';
-    console.log(items);
     return this.http.post(path, {'time': items});
   }
 

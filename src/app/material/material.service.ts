@@ -74,10 +74,19 @@ export class MaterialService {
   /**
    * List all branch selection of this menu
    */
-  public querySelection(key: string, list: Array<any>, selection: SelectionModel<any>, dataSourceCopy: MatTableDataSource<any>) {
-    for (const i of list) {
-        selection.select(dataSourceCopy.data.find(item => item[key] === i[key]));
+  public querySelection(
+    selectedList:   Array<any>,
+    selection:      SelectionModel<any>,
+    dataSourceCopy: MatTableDataSource<any>,
+    pivot?:         Array<string>,
+    key:            string = 'id') {
+    for (const s of selectedList) {
+      const selected = dataSourceCopy.data.find(item => item[key] === s[key]);
+      if (pivot) {
+        pivot.forEach(p => selected[p] = s[p]);
       }
+      selection.select(selected);
+    }
   }
 
   /**
