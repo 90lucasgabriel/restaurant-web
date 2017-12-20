@@ -6,6 +6,7 @@
       <div class="flex-30 text-right">
         <button mat-icon-button (click)="showFilter = !showFilter" matTooltip="Filtrar"><mat-icon>filter_list</mat-icon></button>
         <button mat-icon-button (click)="deleteConfirm(row)" matTooltip="Exportar"><mat-icon>share</mat-icon></button>
+        <button mat-icon-button *ngIf="selection.selected.length > 0" (click)="deleteConfirm(selection)" matTooltip="Excluir"><mat-icon>delete</mat-icon></button>
       </div>  
     </div>
     <!--BACK AND TITLE END -->
@@ -14,23 +15,22 @@
     <div class="flex container-flex content-page margin-bottom" *ngIf="showFilter">
       <div class="flex-20 margin-right">
         <mat-form-field class="full-width">
-          <input matInput placeholder="ID" [(ngModel)]="filter.id" name="filter.id" (keyup)="applyFilter()">
+          <input matInput placeholder="ID" [(ngModel)]="filter.id" name="filter.id" (keyup)="applyFilter(dataSource, dataSourceCopy, filter)">
         </mat-form-field>
       </div>
       <div class="flex-20 margin-right">
         <mat-form-field class="full-width">
-          <input matInput placeholder="Nome" [(ngModel)]="filter.name" name="filter.name" (keyup)="applyFilter()">
+          <input matInput placeholder="Nome" [(ngModel)]="filter.name" name="filter.name" (keyup)="applyFilter(dataSource, dataSourceCopy, filter)">
         </mat-form-field>
       </div>
     </div>
     <!-- FILTER END -->
   
     <!-- LOADERS START -->
-    <div class="full-width" *ngIf="dataSource.data.length == 0 && loading">
+    <div class="content-page" *ngIf="loading">
       <mat-progress-spinner mode="indeterminate" diameter="30" strokeWidth="4"></mat-progress-spinner>
-    </div>
-    
-    <div *ngIf="dataSource.data.length == 0 && !loading" class="full-width container-flex content-page flex-center margin-bottom width-padding">
+    </div>    
+    <div *ngIf="dataSource.data.length == 0 && !loading" class="flex-center">
       <div class="text-center flex-center mat-typography">
         <mat-icon class="big">help_outline</mat-icon>
         <h3>Nenhum resultado encontrado.</h3>
@@ -43,15 +43,20 @@
       <div class="flex full-width mat-elevation-z4">
       
         <mat-table #table [dataSource]="dataSource" 
-          matSort matSortActive="id" matSortDirection="desc">    
-          <!-- Image Column -->
-          <ng-container matColumnDef="image">
-            <mat-header-cell *matHeaderCellDef class="id-column">  </mat-header-cell>
-            <mat-cell *matCellDef="let row" class="id-column"> 
-              <img [src]='row.image' class="avatar-list" *ngIf="row.image" /> 
-              <div class="avatar-list" *ngIf="!row.image">
-                <p>{{row.name.substring(0,1) | uppercase}}</p>
-              </div>
+          matSort matSortActive="id" matSortDirection="desc">
+          <!-- Checkbox Column -->
+          <ng-container matColumnDef="select">
+            <mat-header-cell *matHeaderCellDef class="id-column">
+              <mat-checkbox (change)="$event ? masterToggle(dataSourceCopy, selection) : null"
+                            [checked]="selection.hasValue() && isAllSelected(dataSourceCopy, selection)"
+                            [indeterminate]="selection.hasValue() && !isAllSelected(dataSourceCopy, selection)">
+              </mat-checkbox>
+            </mat-header-cell>
+            <mat-cell *matCellDef="let row" class="id-column">
+              <mat-checkbox (click)="$event.stopPropagation()"
+                            (change)="$event ? selection.toggle(row) : null"
+                            [checked]="selection.isSelected(row)">
+              </mat-checkbox>
             </mat-cell>
           </ng-container>
           
@@ -67,13 +72,7 @@
             <mat-cell *matCellDef="let row"> {{row.name}} </mat-cell>
           </ng-container>
   
-          <!-- Category id Column -->
-          <ng-container matColumnDef="category_id">
-            <mat-header-cell *matHeaderCellDef mat-sort-header class="number-column"> ID categoria </mat-header-cell>
-            <mat-cell *matCellDef="let row" class="number-column"> {{ row.category_id || null }} </mat-cell>
-          </ng-container>
-  
-          <!-- Category name Column -->
+          <!-- Days Column -->
           <ng-container matColumnDef="day">
             <mat-header-cell *matHeaderCellDef class="actions-column text-left"> Dias </mat-header-cell>
             <mat-cell *matCellDef="let row" class="actions-column text-left"> 

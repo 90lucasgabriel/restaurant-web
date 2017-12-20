@@ -96,16 +96,6 @@ export class MenuDao {
     return this.http.post(path, {'product': items});
   }
 
-  /**
-   * Query product list.
-   * @param menu_id number
-   * @return Observable<Presenter<Product>>
-   */
-  public queryProduct(menu_id: number): Observable<Presenter<Array<Product>>> {
-    const path = this.path + menu_id + '/product';
-    return this.http.get(path);
-  }
-
 
 
 
@@ -119,15 +109,5 @@ export class MenuDao {
   public syncBranch(items: Array<Branch>, menu_id: number): Observable<Presenter<Branch>> {
     const path = this.path + menu_id + '/branch';
     return this.http.post(path, {'branch': items});
-  }
-
-  /**
-   * Query branch list.
-   * @param menu_id number
-   * @return Observable<Presenter<Branch>>
-   */
-  public queryBranch(menu_id: number): Observable<Presenter<Array<Branch>>> {
-    const path = this.path + menu_id + '/branch';
-    return this.http.get(path);
   }
 }

@@ -1,6 +1,6 @@
-import { Component, OnInit, OnDestroy, ViewEncapsulation, AfterViewInit, ViewChild, Host, Inject } from '@angular/core';
-import { trigger, transition, style, animate, state} from '@angular/animations';
+import { Component, OnInit, ViewEncapsulation, AfterViewInit, ViewChild, OnDestroy,  Inject, EventEmitter } from '@angular/core';
 import { MatSort, MatTableDataSource, MatPaginator, MatDialog, MAT_DIALOG_DATA} from '@angular/material';
+import { SelectionModel }         from '@angular/cdk/collections';
 import { Router }                 from '@angular/router';
 import { FormControl }            from '@angular/forms';
 
@@ -40,15 +40,17 @@ import 'rxjs/add/operator/switchMap';
 export class MenuListComponent implements OnInit, OnDestroy, AfterViewInit {
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;
+  selection:          SelectionModel<Menu>;
   total:              number;
   columns:            Array<string>;
-  dataSource:         any;
-  dataSourceCopy:     any;
+  pivot:              Array<string>;
+  dataSource:         MatTableDataSource<Menu>;
+  dataSourceCopy:     MatTableDataSource<Menu>;
+  filter:             Menu;
 
   private sub:        any;
   loading:            boolean;
   showFilter:         boolean;
-  filter:             Menu;
   actionClick:        boolean;
   centerContent:      boolean;
 
@@ -77,9 +79,10 @@ export class MenuListComponent implements OnInit, OnDestroy, AfterViewInit {
     this.actionClick    = false;
     this.showFilter     = false;
     this.total          = 0;
-    this.columns        = ['id', 'name', 'day', 'actions'];
+    this.columns        = ['select', 'id', 'name', 'day', 'actions'];
     this.dataSource     = new MatTableDataSource();
     this.dataSourceCopy = new MatTableDataSource();
+    this.selection      = new SelectionModel<MenuTime>(true, []);
     this.filter         = new Menu();
     this.timeList       = new Array<MenuTime>();
 
@@ -106,16 +109,10 @@ export class MenuListComponent implements OnInit, OnDestroy, AfterViewInit {
       this.total               = data.data.length;
       this.dataSource.data     = data.data;
       this.dataSourceCopy.data = data.data;
+      this.loading             = false;
     }, error => {
       this.material.error('Erro ao pesquisar na API.', error);
     });
-  }
-
-  /**
-   * Apply filter when key up
-   */
-  public applyFilter() {
-    this.dataSource.data = this.dataSourceCopy.data.filter(item => this.material.filterList(item, this.filter));
   }
 
   /**
@@ -169,6 +166,49 @@ export class MenuListComponent implements OnInit, OnDestroy, AfterViewInit {
     return list.find(time => time.day === day);
   }
 
+
+
+
+  // DATATABLE AUX SECTION ---------------------------
+  /**
+   * List all branch selection of this menu
+   */
+  public querySelection(
+    selectedList:   Array<any>,
+    selection:      SelectionModel<any>,
+    dataSourceCopy: MatTableDataSource<any>,
+    pivot?:         Array<string>,
+    key?:           string) {
+    this.material.querySelection(selectedList, selection, dataSourceCopy, pivot, key);
+  }
+
+  /**
+   * Apply filter when key up
+   */
+  public applyFilter(dataSource: MatTableDataSource<any>, dataSourceCopy: MatTableDataSource<any>, filter: any) {
+    this.material.applyFilter(dataSource, dataSourceCopy, filter);
+  }
+
+  /**
+   * Whether the number of selected elements matches
+   * the total number of rows.
+   */
+  public isAllSelected(dataSourceCopy: MatTableDataSource<any>, selection: SelectionModel<any>) {
+    return this.material.isAllSelected(dataSourceCopy, selection);
+  }
+
+  /**
+   * Selects all rows if they are not all selected;
+   * otherwise clear selection.
+   */
+  public masterToggle(dataSource: MatTableDataSource<any>, selection: SelectionModel<any>) {
+    this.material.masterToggle(dataSource, selection);
+  }
+
+
+
+
+  // OTHERS -----------------------------------
   /**
    * Go to details
    * @param company_id number

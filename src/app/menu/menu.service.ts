@@ -99,16 +99,6 @@ export class MenuService {
     return this.dao.syncProduct(items, menu_id);
   }
 
-  /**
-   * Query product list.
-   * @param menu_id number
-   * @return Observable<Presenter<Array<Product>>>
-   */
-  public queryProduct(menu_id: number): Observable<Presenter<Array<Product>>> {
-    return this.dao.queryProduct(menu_id);
-  }
-
-
 
 
 
@@ -121,14 +111,5 @@ export class MenuService {
    */
   public syncBranch(items: Array<Branch>, menu_id: number): Observable<Presenter<Branch>> {
     return this.dao.syncBranch(items, menu_id);
-  }
-
-  /**
-   * Query branch list.
-   * @param menu_id number
-   * @return Observable<Presenter<Array<Branch>>>
-   */
-  public queryBranch(menu_id: number): Observable<Presenter<Array<Branch>>> {
-    return this.dao.queryBranch(menu_id);
   }
 }
