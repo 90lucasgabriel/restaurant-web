@@ -119,13 +119,13 @@ export class MenuListComponent implements OnInit, OnDestroy, AfterViewInit {
    * Open dialog to confirm delete
    * @param Menu item
    */
-  public deleteConfirm(item: Menu) {
+  public deleteConfirm(item: SelectionModel<Menu>) {
     this.actionClick = true;
     this.material.openDialog(item, 'Excluir', 'Deseja excluir esse cardápio?', 'CANCELAR', 'EXCLUIR')
       .subscribe(data => {
         this.actionClick = false;
-        if (data === true) {
-          this.delete(item.id);
+        if (data) {
+          item.selected.forEach(i => this.delete(i.id));
         }
       });
   }
@@ -141,10 +141,10 @@ export class MenuListComponent implements OnInit, OnDestroy, AfterViewInit {
 
     this.service.delete(id).subscribe(data => {
       this.dataSourceCopy.data = JSON.parse(JSON.stringify(this.dataSource.data));
-      this.material.snackBar('Produto excluído.', 'OK');
+      this.material.snackBar('Cardápio excluído.', 'OK');
     }, error => {
       this.dataSource.data     = JSON.parse(JSON.stringify(this.dataSourceCopy.data));
-      this.material.error('Erro ao excluir produto.', error);
+      this.material.error('Erro ao excluir cardápio.', error);
     });
   }
 

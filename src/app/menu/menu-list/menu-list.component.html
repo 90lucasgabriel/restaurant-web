@@ -29,12 +29,10 @@
     <!-- LOADERS START -->
     <div class="content-page" *ngIf="loading">
       <mat-progress-spinner mode="indeterminate" diameter="30" strokeWidth="4"></mat-progress-spinner>
-    </div>    
-    <div *ngIf="dataSource.data.length == 0 && !loading" class="flex-center">
-      <div class="text-center flex-center mat-typography">
-        <mat-icon class="big">help_outline</mat-icon>
-        <h3>Nenhum resultado encontrado.</h3>
-      </div>
+    </div>
+    <div class="text-center mat-typography" *ngIf="dataSource.data.length == 0 && !loading">
+      <mat-icon class="medium">help_outline</mat-icon>
+      <h3>Nenhum resultado encontrado.</h3>
     </div>
     <!-- LOADERS END -->
   
@@ -87,7 +85,7 @@
             <mat-header-cell *matHeaderCellDef class="actions-column"></mat-header-cell>
             <mat-cell *matCellDef="let row" class="hover-child actions-column">
                 <button mat-icon-button [routerLink]="[row.id, 'edit']" matTooltip="Editar"><mat-icon>edit</mat-icon></button>
-                <button mat-icon-button (click)="deleteConfirm(row)" matTooltip="Excluir"><mat-icon>delete</mat-icon></button>
+                <button mat-icon-button (click)="deleteConfirm({selected: [row]})" matTooltip="Excluir"><mat-icon>delete</mat-icon></button>
             </mat-cell>
           </ng-container>
   

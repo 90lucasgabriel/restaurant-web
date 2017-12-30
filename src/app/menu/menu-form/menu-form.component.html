@@ -146,7 +146,7 @@
       <!-- FILTER END -->
 
       <!-- LOADERS START -->
-      <div *ngIf="loading.product">
+      <div class="content-page" *ngIf="loading.product">
         <mat-progress-spinner mode="indeterminate" diameter="30" strokeWidth="4"></mat-progress-spinner>
       </div>
       <div class="text-center mat-typography" *ngIf="productDataSource.data.length == 0">
