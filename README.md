@@ -9,6 +9,7 @@ Make sure you have [Node 6.9.0 or higher, together with NPM 3 or higher](https:/
 ```
 npm install -g @angular/cli
 ```
+- Running Server [Restaurant RESTful API](https://github.com/90lucasgabriel/restaurant-api).
 
 ## Installing
 - Clone this repo:
