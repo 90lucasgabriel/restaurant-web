@@ -1,11 +1,11 @@
 import { Injectable }               from '@angular/core';
 import { Observable }               from 'rxjs/Observable';
 
-import { QueryInput }               from '../common/model/query-input.model';
-import { Presenter }                from '../common/model/presenter.model';
+import { QueryInput }               from '@r-model/query-input.model';
+import { Presenter }                from '@r-model/presenter.model';
 
-import { Category } 			            from './category.model';
-import { CategoryDao } 	              from './category.dao';
+import { Category } 			          from '@r-category/category.model';
+import { CategoryDao } 	            from '@r-category/category.dao';
 
 @Injectable()
 export class CategoryService {
@@ -13,27 +13,28 @@ export class CategoryService {
   items: Array<Category>;
 
   /**
-   * Constructor
-   *
-   * @param CategoryDao dao
+   * Creates an instance of CategoryService.
+   * @param {CategoryDao} dao
+   * @memberof CategoryService
    */
   constructor(private dao: CategoryDao) {}
 
   /**
-   * Give a list of resource from database.
-   *
-   * @param QueryInput queryInput
-   * @return Observable<Presenter<Array<Category>>>
+   * Returns a resource list.
+   * @param {QueryInput} queryInput
+   * @returns {Observable<Presenter<Array<Category>>>}
+   * @memberof CategoryService
    */
   public query(queryInput: QueryInput): Observable<Presenter<Array<Category>>> {
     return this.dao.query(queryInput);
   }
 
   /**
-   * Give a list of resource.
-   *
-   * @param number id
-   * @return Observable<Presenter<Category>>
+   * Returns only one item of the resource.
+   * @param {number} id
+   * @param {QueryInput} [queryInput]
+   * @returns {Observable<Presenter<Category>>}
+   * @memberof CategoryService
    */
   public get(id: number, queryInput?: QueryInput): Observable<Presenter<Category>> {
     return this.dao.get(id, queryInput);
@@ -41,9 +42,9 @@ export class CategoryService {
 
   /**
    * Update resource.
-   *
-   * @param Category item
-   * @return Observable<Presenter<Category>>
+   * @param {Category} item
+   * @returns {Observable<Presenter<Category>>}
+   * @memberof CategoryService
    */
   public save(item: Category): Observable<Presenter<Category>> {
     return this.dao.save(item);
@@ -51,10 +52,10 @@ export class CategoryService {
 
   /**
    * Update resource.
-   *
-   * @param Category item
-   * @param number id
-   * @return Observable<Presenter<Category>>
+   * @param {Category} item
+   * @param {number} id
+   * @returns {Observable<Presenter<Category>>}
+   * @memberof CategoryService
    */
   public update(item: Category, id: number): Observable<Presenter<Category>> {
     return this.dao.update(item, id);
@@ -62,8 +63,9 @@ export class CategoryService {
 
   /**
    * Delete resource.
-   * @param number id
-   * @return boolean
+   * @param {number} id
+   * @returns {Observable<any>}
+   * @memberof CategoryService
    */
   public delete(id: number): Observable<any> {
     return this.dao.delete(id);

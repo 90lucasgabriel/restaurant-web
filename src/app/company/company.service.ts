@@ -1,11 +1,11 @@
 import { Injectable }               from '@angular/core';
 import { Observable }               from 'rxjs/Observable';
 
-import { QueryInput }               from '../common/model/query-input.model';
-import { Presenter }                from '../common/model/presenter.model';
+import { QueryInput }               from '@r-model/query-input.model';
+import { Presenter }                from '@r-model/presenter.model';
 
-import { Company } 			            from './company.model';
-import { CompanyDao } 	            from './company.dao';
+import { Company } 			            from '@r-company/company.model';
+import { CompanyDao } 	            from '@r-company/company.dao';
 
 @Injectable()
 export class CompanyService {
@@ -20,7 +20,7 @@ export class CompanyService {
   constructor(private dao: CompanyDao) {}
 
   /**
-   * Give a list of resource from database.
+   * Returns a resource list.
    *
    * @param QueryInput queryInput
    * @return Observable<Presenter<Array<Company>>>

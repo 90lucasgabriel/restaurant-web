@@ -2,13 +2,20 @@ import { Component, OnInit, ViewEncapsulation, AfterViewInit, ViewChild, OnDestr
 import { Router, ActivatedRoute } from '@angular/router';
 import { Location }               from '@angular/common';
 
-import { LoaderService }          from '../../loader.service';
-import { MaterialService }        from '../../material/material.service';
-import { QueryInput }             from '../../common/model/query-input.model';
+import { LoaderService }          from '@r-service/loader.service';
+import { MaterialService }        from '@r-material/material.service';
+import { QueryInput }             from '@r-model/query-input.model';
 
-import { Category }               from '../category.model';
-import { CategoryService }        from '../category.service';
+import { Category }               from '@r-category/category.model';
+import { CategoryService }        from '@r-category/category.service';
 
+/**
+ * CategoryFormComponent
+ * @export
+ * @class CategoryFormComponent
+ * @implements {OnInit}
+ * @implements {OnDestroy}
+ */
 @Component({
   selector:                 'app-category-form',
   templateUrl:              './category-form.component.html',
@@ -16,13 +23,14 @@ import { CategoryService }        from '../category.service';
   encapsulation:            ViewEncapsulation.None
 })
 export class CategoryFormComponent implements OnInit, OnDestroy {
+// DECLARATIONS --------------------------
   private sub:              any;
   loading:                  boolean;
   submitted:                boolean;
 
-  item:                     Category = new Category();
+  item:                     Category        = new Category();
   oldItem:                  Category;
-  items: Array<Category> = new Array<Category>();
+  items:                    Array<Category> = new Array<Category>();
   company_id:               number;
 
   newItemMode:              boolean;
@@ -30,28 +38,10 @@ export class CategoryFormComponent implements OnInit, OnDestroy {
 
   imagePreview = '';
 
-  /**
-   * Constructor
-   * @param Router          router
-   * @param ActivatedRoute  route
-   * @param Location        location
-   * @param CategoryService service
-   * @param MaterialService material
-   */
-  constructor(
-    private router:         Router,
-    private route:          ActivatedRoute,
-    private location:       Location,
-    private service:        CategoryService,
-    public  material:       MaterialService,
-    public  loader:         LoaderService
-  ) {
-    loader.onLoadingChanged.subscribe(isLoading => {
-      this.loading = isLoading;
-    });
-    this.start();
-  }
 
+
+
+// MAIN ----------------------------------
   /**
    * Execute before onInit
    */
@@ -64,8 +54,7 @@ export class CategoryFormComponent implements OnInit, OnDestroy {
     this.sub = this.route.params.subscribe(params => {
       if (params['id'] != null) {
         this.get(+params['id']);
-      }
-      else {
+      }  else {
         this.company_id      = +params['company_id'];
         this.item.company_id = +params['company_id'];
         this.setNewItem(true);
@@ -75,14 +64,14 @@ export class CategoryFormComponent implements OnInit, OnDestroy {
 
   /**
    * Determine if is new item or edit item
-   * @param boolean value
+   * @param {boolean} value
+   * @memberof CategoryFormComponent
    */
   public setNewItem(value: boolean) {
     if (value) {
       this.newItemMode = true;
       this.title       = 'Nova Categoria';
-    }
-    else {
+    } else {
       this.newItemMode = false;
       this.title       = 'Editar Categoria';
     }
@@ -96,20 +85,20 @@ export class CategoryFormComponent implements OnInit, OnDestroy {
     this.service.get(id, {'include': 'parent'}).subscribe(success => {
       this.setNewItem(false);
       this.item    = success.data;
-      this.oldItem = JSON.parse(JSON.stringify(this.item)); //copy
+      this.oldItem = JSON.parse(JSON.stringify(this.item)); // copy
     });
   }
 
   /**
    * Submit data to create or update
-   * @param Category item
+   * @param {Category} item
+   * @memberof CategoryFormComponent
    */
   public submitForm(item: Category) {
     this.submitted = true;
     if (this.newItemMode) {
       this.save(item);
-    }
-    else {
+    } else {
       this.update(item, this.oldItem.id);
     }
   }
@@ -143,6 +132,9 @@ export class CategoryFormComponent implements OnInit, OnDestroy {
     });
   }
 
+  /**
+   * List all categories.
+   */
   public queryAll() {
     this.service.query({
       'orderBy':      'id',
@@ -152,9 +144,40 @@ export class CategoryFormComponent implements OnInit, OnDestroy {
     });
   }
 
-
+  /**
+   * Get image file and set on variable.
+   * @param event
+   */
   public previewImage(event) {
     this.item.image = event.srcElement.files[0].name;
+  }
+
+
+
+
+// OTHERS --------------------------------
+  /**
+   * Creates an instance of CategoryFormComponent.
+   * @param {Router} router
+   * @param {ActivatedRoute} route
+   * @param {Location} location
+   * @param {CategoryService} service
+   * @param {MaterialService} material
+   * @param {LoaderService} loader
+   * @memberof CategoryFormComponent
+   */
+  constructor(
+    private router:         Router,
+    private route:          ActivatedRoute,
+    private location:       Location,
+    private service:        CategoryService,
+    public  material:       MaterialService,
+    public  loader:         LoaderService
+  ) {
+    loader.onLoadingChanged.subscribe(isLoading => {
+      this.loading = isLoading;
+    });
+    this.start();
   }
 
   /**

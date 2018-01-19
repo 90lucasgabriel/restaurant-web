@@ -241,10 +241,6 @@
 
     <!-- BRANCHES ADD OR REMOVE START ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
     <mat-step label="Filiais">
-      <div *ngIf="loading.branch">
-        <mat-progress-spinner mode="indeterminate" diameter="30" strokeWidth="4"></mat-progress-spinner>
-      </div>
-
       <!-- FILTER START -->
       <div class="container-flex margin-bottom">
         <div class="flex-20 margin-right">
@@ -261,6 +257,9 @@
       <!-- FILTER END -->
       
       <!-- LOADERS START -->
+      <div class="flex content-page" *ngIf="loading.branch">
+        <mat-progress-spinner mode="indeterminate" diameter="30" strokeWidth="4"></mat-progress-spinner>
+      </div>
       <div class="text-center mat-typography" *ngIf="branchDataSource.data.length == 0">
         <mat-icon class="medium">help_outline</mat-icon>
         <h3>Nenhum resultado encontrado.</h3>

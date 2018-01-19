@@ -1,4 +1,4 @@
-import { Day } from '../../day.enum';
+import { Day } from '@r-enum/day.enum';
 
 /**
  * Model MenuTime

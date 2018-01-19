@@ -1,18 +1,17 @@
 import { Component, OnInit, OnDestroy, ViewEncapsulation, AfterViewInit, ViewChild, Host, Inject } from '@angular/core';
-import { trigger, transition, style, animate, state} from '@angular/animations';
 import { MatSort, MatTableDataSource, MatPaginator, MatDialog, MAT_DIALOG_DATA} from '@angular/material';
+import { SelectionModel }         from '@angular/cdk/collections';
 import { Router }                 from '@angular/router';
-import { FormControl }            from '@angular/forms';
 
-import { LoaderService }          from '../../loader.service';
-import { MaterialService }        from '../../material/material.service';
-import { QueryInput }             from '../../common/model/query-input.model';
-import { AppComponent }           from '../../app.component';
+import { LoaderService }          from '@r-service/loader.service';
+import { MaterialService }        from '@r-material/material.service';
+import { QueryInput }             from '@r-model/query-input.model';
+import { AppComponent }           from '@r-app/app.component';
 
-import { Product }                from '../product.model';
-import { ProductService }         from '../product.service';
-import { Category }               from '../../category/category.model';
-import { CategoryService }        from '../../category/category.service';
+import { Category }               from '@r-category/category.model';
+import { CategoryService }        from '@r-category/category.service';
+import { Product }                from '@r-product/product.model';
+import { ProductService }         from '@r-product/product.service';
 
 import {Observable} from 'rxjs/Observable';
 import 'rxjs/add/observable/merge';
@@ -23,7 +22,7 @@ import 'rxjs/add/operator/startWith';
 import 'rxjs/add/operator/switchMap';
 
 /**
- * List Product
+ * Product List Controller
  *
  * @export
  * @class ProductListComponent
@@ -36,52 +35,40 @@ import 'rxjs/add/operator/switchMap';
   encapsulation:      ViewEncapsulation.None
 })
 export class ProductListComponent implements OnInit, OnDestroy, AfterViewInit {
+// DECLARATIONS ---------------------
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;
+  selection:          SelectionModel<Product>;
   total:              number;
   columns:            Array<string>;
-  dataSource:         any;
-  dataSourceCopy:     any;
+  pivot:              Array<string>;
+  dataSource:         MatTableDataSource<Product>;
+  dataSourceCopy:     MatTableDataSource<Product>;
+  filter:             Product;
 
   private sub:        any;
   loading:            boolean;
   showFilter:         boolean;
-  filter:             Product;
   actionClick:        boolean;
   centerContent:      boolean;
 
   categoryList:       Array<Category>;
 
-  /**
-   * Constructor
-   *
-   * @param ProductService service
-   */
-  constructor(
-    private router:           Router,
-    private service:          ProductService,
-    private categoryService:  CategoryService,
-    private material:         MaterialService,
-    public  loader:           LoaderService
-  ) {
-    loader.onLoadingChanged.subscribe(isLoading => {
-      this.loading = isLoading;
-    });
 
-    this.start();
-  }
 
+
+// MAIN -----------------------------
   /**
    * Execute before onInit
    */
   private start() {
-    this.loading        = true;
     this.actionClick    = false;
     this.showFilter     = false;
     this.total          = 0;
-    this.columns        = ['image', 'id', 'name', 'category_id', 'category.data.name', 'actions'];
+    this.columns        = ['select', 'image', 'id', 'name', 'category_id', 'category.data.name', 'actions'];
     this.dataSource     = new MatTableDataSource();
     this.dataSourceCopy = new MatTableDataSource();
+    this.selection      = new SelectionModel<Product>(true, []);
     this.filter         = new Product();
     this.categoryList   = new Array<Category>();
 
@@ -114,35 +101,16 @@ export class ProductListComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   /**
-   * Query caegory list to selectbox
-   */
-  public queryCategory() {
-    this.categoryService.query({
-      'orderBy':      'id',
-      'sortedBy':     'asc'
-    }).subscribe(data => {
-      this.categoryList = data.data;
-    });
-  }
-
-  /**
-   * Apply filter when key up
-   */
-  public applyFilter() {
-    this.dataSource.data = this.dataSourceCopy.data.filter(item => this.material.filterList(item, this.filter));
-  }
-
-  /**
    * Open dialog to confirm delete
    * @param Product item
    */
-  public deleteConfirm(item: Product) {
+  public deleteConfirm(item: SelectionModel<Product>) {
     this.actionClick = true;
     this.material.openDialog(item, 'Excluir', 'Deseja excluir esse produto?', 'CANCELAR', 'EXCLUIR')
       .subscribe(data => {
         this.actionClick = false;
-        if (data === true) {
-          this.delete(item.id);
+        if (data) {
+          item.selected.forEach(i => this.delete(i.id));
         }
       });
   }
@@ -155,14 +123,81 @@ export class ProductListComponent implements OnInit, OnDestroy, AfterViewInit {
     const dataTmp              = JSON.parse(JSON.stringify(this.dataSource.data));
     dataTmp.splice(this.dataSource.data.findIndex(i => i.id === id), 1);
     this.dataSource.data       = JSON.parse(JSON.stringify(dataTmp));
+    this.selection.deselect(this.selection.selected.find(i => i.id === id));
 
     this.service.delete(id).subscribe(data => {
       this.dataSourceCopy.data = JSON.parse(JSON.stringify(this.dataSource.data));
       this.material.snackBar('Produto excluído.', 'OK');
     }, error => {
+      this.selection.select(this.selection.selected.find(i => i.id === id));
       this.dataSource.data     = JSON.parse(JSON.stringify(this.dataSourceCopy.data));
       this.material.error('Erro ao excluir produto.', error);
     });
+  }
+
+
+
+
+// CATEGORY SECTION -----------------
+  /**
+   * Query category list to selectbox
+   */
+  public queryCategory() {
+    this.categoryService.query({
+      'orderBy':      'id',
+      'sortedBy':     'asc'
+    }).subscribe(data => {
+      this.categoryList = data.data;
+    });
+  }
+
+
+
+
+// DATATABLE AUX SECTION ------------
+  /**
+   * Apply filter when key up
+   */
+  public applyFilter(dataSource: MatTableDataSource<any>, dataSourceCopy: MatTableDataSource<any>, filter: any) {
+    this.material.applyFilter(dataSource, dataSourceCopy, filter);
+  }
+
+  /**
+   * Whether the number of selected elements matches
+   * the total number of rows.
+   */
+  public isAllSelected(dataSourceCopy: MatTableDataSource<any>, selection: SelectionModel<any>) {
+    return this.material.isAllSelected(dataSourceCopy, selection);
+  }
+
+  /**
+   * Selects all rows if they are not all selected;
+   * otherwise clear selection.
+   */
+  public masterToggle(dataSource: MatTableDataSource<any>, selection: SelectionModel<any>) {
+    this.material.masterToggle(dataSource, selection);
+  }
+
+
+
+
+// OTHERS ---------------------------
+  /**
+   * Constructor
+   *
+   * @param ProductService service
+   */
+  constructor(
+    private router:           Router,
+    private service:          ProductService,
+    private categoryService:  CategoryService,
+    private material:         MaterialService,
+    public  loader:           LoaderService
+  ) {
+    loader.onLoadingChanged.subscribe(isLoading => {
+      this.loading = isLoading;
+    });
+    this.start();
   }
 
   /**

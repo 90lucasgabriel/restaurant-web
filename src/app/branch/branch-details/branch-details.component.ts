@@ -2,16 +2,17 @@ import { Component, OnInit, ViewEncapsulation, AfterViewInit, ViewChild, OnDestr
 import { Router, ActivatedRoute } from '@angular/router';
 import { Location }               from '@angular/common';
 
-import { AppComponent }           from '../../app.component';
-import { LoaderService }          from '../../loader.service';
-import { MaterialService }        from '../../material/material.service';
-import { QueryInput }             from '../../common/model/query-input.model';
+import { AppComponent }           from '@r-app/app.component';
+import { LoaderService }          from '@r-service/loader.service';
+import { MaterialService }        from '@r-material/material.service';
+import { QueryInput }             from '@r-model/query-input.model';
 
-import { Branch }                 from '../branch.model';
-import { BranchService }          from '../branch.service';
+import { Branch }                 from '@r-branch/branch.model';
+import { BranchService }          from '@r-branch/branch.service';
 
 /**
  * Branch's details
+ * @export
  * @class BranchDetailsComponent
  * @implements {OnInit}
  * @implements {OnDestroy}
@@ -23,18 +24,81 @@ import { BranchService }          from '../branch.service';
   encapsulation:            ViewEncapsulation.None
 })
 export class BranchDetailsComponent implements OnInit, OnDestroy {
+// DECLARATIONS --------------------------
   private sub:              any;
-  readMode:                 boolean;
   loading:                  boolean;
   submitted:                boolean;
   item:                     Branch;
   oldItem:                  Branch;
 
+
+
+
+// MAIN ----------------------------------
   /**
-   * Constructor
-   * @param ActivatedRoute  route
-   * @param BranchService   service
-   * @param MatSnackBar     snackBar
+   * Execute before onInit
+   */
+  public start() {
+    this.submitted = false;
+    this.sub = this.route.params.subscribe(params => {
+      this.get(+params['id']);
+    });
+  }
+
+  /**
+   * Show item details
+   * @param {number} id
+   * @memberof BranchDetailsComponent
+   */
+  public get(id: number) {
+    this.service.get(id).subscribe(success => {
+      this.item    = success.data;
+      this.oldItem = JSON.parse(JSON.stringify(this.item)); // copy
+    }, error => {
+      this.material.error('Erro ao pesquisar filial.', error);
+    });
+  }
+
+  /**
+   * Open dialog to confirm delete
+   * @param {Branch} item
+   * @memberof BranchDetailsComponent
+   */
+  public deleteConfirm(item: Branch) {
+    this.material.openDialog(item, 'Excluir', 'Deseja excluir essa filial?', 'CANCELAR', 'EXCLUIR').subscribe(data => {
+      if (data) {
+        this.delete(item.id);
+      }
+    });
+  }
+
+  /**
+   * Delete resource
+   * @param {number} id
+   * @memberof BranchDetailsComponent
+   */
+  public delete(id: number) {
+    this.submitted = true;
+    this.service.delete(id).subscribe(data => {
+      this.material.snackBar('Filial excluída.', 'OK');
+      this.goBack();
+    }, error => {
+      this.material.error('Erro ao excluir filial.', error);
+    });
+  }
+
+
+
+
+// OTHERS --------------------------------
+  /**
+   * Creates an instance of BranchDetailsComponent.
+   * @param {ActivatedRoute} route
+   * @param {Location} location
+   * @param {BranchService} service
+   * @param {MaterialService} material
+   * @param {LoaderService} loader
+   * @memberof BranchDetailsComponent
    */
   constructor(
     private route:          ActivatedRoute,
@@ -49,11 +113,11 @@ export class BranchDetailsComponent implements OnInit, OnDestroy {
     this.start();
   }
 
-  public start() {
-    this.submitted = false;
-    this.sub = this.route.params.subscribe(params => {
-      this.get(+params['id']);
-    });
+  /**
+   * Go to latest route
+   */
+  public goBack() {
+    this.location.back();
   }
 
   /**
@@ -68,53 +132,5 @@ export class BranchDetailsComponent implements OnInit, OnDestroy {
    */
   public ngOnDestroy() {
     this.sub.unsubscribe();
-  }
-
-  /**
-   * Show item details
-   * @param number id
-   */
-  public get(id: number) {
-    this.service.get(id).subscribe(success => {
-      this.item    = success.data;
-      this.oldItem = JSON.parse(JSON.stringify(this.item)); //copy
-    }, error => {
-      console.log('Erro ao pesquisar filial', error);
-      this.material.snackBar('Erro ao pesquisar filial. Detalhes no console (F12).', 'OK');
-    });
-  }
-
-  /**
-   * Open dialog to confirm delete
-   * @param Branch item
-   */
-  public deleteConfirm(item: Branch) {
-    this.material.openDialog(item, 'Excluir', 'Deseja excluir essa filial?', 'CANCELAR', 'EXCLUIR').subscribe(data => {
-      if (data === true) {
-        this.delete(item.id);
-      }
-    });
-  }
-
-  /**
-   * Delete resource
-   * @param number id
-   */
-  public delete(id: number) {
-    this.submitted = true;
-    this.service.delete(id).subscribe(data => {
-      this.material.snackBar('Filial excluída.', 'OK');
-      this.goBack();
-    }, error => {
-      console.log('Erro ao excluir filial', error);
-      this.material.snackBar('Erro ao excluir filial. Detalhes no console (F12).', 'OK');
-    });
-  }
-
-  /**
-   * Go to latest route
-   */
-  public goBack() {
-    this.location.back();
   }
 }

@@ -1,13 +1,12 @@
 import { Injectable, Injector }     from '@angular/core';
-import { HttpClient }               from '@angular/common/http';
+import { HttpClient, HttpParams }   from '@angular/common/http';
 import { Observable }               from 'rxjs/Observable';
 
-import { AppConfig }                from '../app.config';
-import { Presenter }                from '../common/model/presenter.model';
-import { QueryInput }               from '../common/model/query-input.model';
+import { AppConfig }                from '@r-app/app.config';
+import { Presenter }                from '@r-model/presenter.model';
+import { QueryInput }               from '@r-model/query-input.model';
 
-import { Company }                  from './company.model';
-import { HttpParams } from '@angular/common/http/src/params';
+import { Company }                  from '@r-company/company.model';
 
 /**
  * @class CompanyDao
@@ -23,23 +22,14 @@ export class CompanyDao {
   constructor(
     private http:      HttpClient
   ) {
-    this.setPath(AppConfig.BASE_URL + '/api/company');
+    this.path = `${AppConfig.BASE_URL}/api/company/`;
   }
 
   /**
-   * Display a listing of resource
+   * Returns a list of the resource
    * @param QueryInput queryInput
    */
   public query(queryInput: QueryInput): Observable<Presenter<Array<Company>>>{
-    return this.http.get(this.getPath(), {params: <HttpParams> queryInput});
-  }
-
-  // GETTERS AND SETTERS ------------------------------------------------
-  public getPath(): string {
-    return this.path;
-  }
-
-  public setPath(value: string) {
-    this.path = value;
+    return this.http.get(this.path, {params: <HttpParams> queryInput});
   }
 }

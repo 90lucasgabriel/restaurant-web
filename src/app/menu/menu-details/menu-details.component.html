@@ -1,47 +1,295 @@
-<div *ngIf="loading && !submitted">
+<div *ngIf="loading.get && !submitted">
   <mat-progress-spinner mode="indeterminate" diameter="30" strokeWidth="4"></mat-progress-spinner>
 </div>
 
-<div class="container-flex flex-center" *ngIf='!loading || submitted'>
+<div class="container-flex flex-center" *ngIf='!loading.get || submitted'>
   <!-- BACK AND TITLE START -->
   <div class="mat-typography container-flex header-page width-padding">
     <div class="flex-5"><button mat-icon-button (click)="goBack()" matTooltip="Voltar"><mat-icon>arrow_back</mat-icon></button></div>
     <div class="flex-95 text-title">Cardápio Detalhes</div>
     <div class="flex-30 text-right">
-      <button mat-icon-button [routerLink]="['/company', item.company_id, 'product', item.id, 'edit']" matTooltip="Editar"><mat-icon>edit</mat-icon></button>
+      <button mat-icon-button [routerLink]="['/company', item.company_id, 'menu', item.id, 'edit']" matTooltip="Editar"><mat-icon>edit</mat-icon></button>
       <button mat-icon-button (click)="deleteConfirm(item)" matTooltip="Excluir"> <mat-icon>delete</mat-icon></button>
     </div> 
   </div>
   <!--BACK AND TITLE END -->
 
-  <mat-card class="flex content-page">
-    <mat-card-content>
-      <!-- DETAILS START -->
-      <div>
-        <mat-card-title-group>
-          <mat-card-subtitle>Informações</mat-card-subtitle>
-        </mat-card-title-group>
-        <div class="container-flex margin-bottom">
-          <div class="flex-5 align-top">
-            <p><mat-icon>info_outline</mat-icon></p>
+
+
+
+  <mat-tab-group class="flex width-padding">
+    <mat-tab>
+      <ng-template mat-tab-label>
+        <mat-icon>restaurant</mat-icon> Cardápio
+      </ng-template>
+      <!-- DETAILS START ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
+      <div  class="padding-5" style="padding-top: 0">
+        <mat-card>
+          <mat-card-content>
+            
+          <mat-card-title-group>
+            <mat-card-subtitle>Informações</mat-card-subtitle>
+          </mat-card-title-group>
+          <div class="container-flex margin-bottom">
+            <div class="flex-5 align-top">
+              <p><mat-icon>info_outline</mat-icon></p>
+            </div>
+            <div class="flex-95" style="margin-left: 25px">
+              <div class="container-flex">
+                <div class="flex-10"><p>Nome: </p></div>
+                <div class="flex-90"><p>{{item.name}}</p></div>
+              </div>
+              <div class="container-flex">
+                <div class="flex-10"><p>Descrição: </p></div>
+                <div class="flex-90"><p>{{item.description}}</p></div>
+              </div>
+            </div>
           </div>
 
-          <div class="flex-95">
-            <div class="container-flex">
-              <div class="flex-10"><p>Nome: </p></div>
-              <div class="flex-40"><p>{{item.name}}</p></div>
-              <div class="flex-10"><p>Categoria: </p></div>
-              <div class="flex-40"><p>{{item.category?.data.id}} - {{item.category?.data.name}}</p></div>
-            </div>
-            <div class="container-flex">
-              <div class="flex-10"><p>Descrição: </p></div>
-              <div class="flex-90"><p>{{item.description}}</p></div>
-            </div>
-          </div>
+          <mat-card-title-group>
+            <mat-card-subtitle>Horários</mat-card-subtitle>
+          </mat-card-title-group>
+          <div class="container-flex margin-bottom">
+            <!-- LIST START -->
+              <div class="flex-5 align-top">
+                <p><mat-icon>schedule</mat-icon></p>
+              </div>
+              <div class="flex-95">              
+                <mat-table #timeTable [dataSource]="timeDataSource">            
+                  <!-- Name Column -->
+                  <ng-container matColumnDef="day">
+                    <mat-header-cell *matHeaderCellDef> Dia </mat-header-cell>
+                    <mat-cell *matCellDef="let row"> {{row.name}} </mat-cell>
+                  </ng-container>
 
-        </div>
+                  <!-- Category id Column -->
+                  <ng-container matColumnDef="time_start">
+                    <mat-header-cell *matHeaderCellDef> Início </mat-header-cell>
+                    <mat-cell *matCellDef="let row"> 
+                        <p> {{(row.time_start | slice:0:5) || '-'}} </p>
+                    </mat-cell>
+                  </ng-container>
+
+                  <!-- Category name Column -->
+                  <ng-container matColumnDef="time_end">
+                    <mat-header-cell *matHeaderCellDef> Fim </mat-header-cell>
+                    <mat-cell *matCellDef="let row">
+                      <p> {{(row.time_end | slice:0:5) || '-'}} </p>
+                    </mat-cell>
+                  </ng-container>
+
+                  <!-- HEADERS AND ROWS -->
+                  <mat-header-row *matHeaderRowDef="timeColumns"  style="display: none"></mat-header-row>
+                  <mat-row class="hover-parent pointer" *matRowDef="let row; columns: timeColumns;"></mat-row>
+                </mat-table>
+
+              </div>
+            <!-- LIST END -->
+            
+          </div>
+          
+        </mat-card-content>
+      </mat-card>
       </div>
-      <!-- DETAILS END -->
-    </mat-card-content>
-  </mat-card>
+      <!-- DETAILS END ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
+    </mat-tab>
+
+
+
+
+    <!-- PRODUCTS START ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
+    <mat-tab>
+      <ng-template mat-tab-label>
+        <mat-icon>shopping_cart</mat-icon> Produtos
+      </ng-template>
+      <div  class="padding-5" style="padding-top: 0">
+        <mat-card>
+          <mat-card-content>
+            <!-- FILTER START -->
+            <div class="container-flex margin-bottom">
+              <div class="flex-20 margin-right">
+                <mat-form-field class="full-width">
+                  <input matInput placeholder="ID" [(ngModel)]="productFilter.id" name="productFilter.id" (keyup)="applyFilter(productDataSource, productDataSourceCopy, productFilter)">
+                </mat-form-field>
+              </div>
+              <div class="flex-20 margin-right">
+                <mat-form-field class="full-width">
+                  <input matInput placeholder="Nome" [(ngModel)]="productFilter.name" name="productFilter.name" (keyup)="applyFilter(productDataSource, productDataSourceCopy, productFilter)">
+                </mat-form-field>
+              </div>
+              <div class="flex-20 margin-right" *ngIf="false">
+                <mat-form-field class="full-width">
+                  <mat-select placeholder="Categoria" [(ngModel)]="productFilter.category_id" name="productFilter.category_id" (change)="applyFilter(productDataSource, productDataSourceCopy, productFilter)">
+                    <mat-option>-</mat-option>
+                    <mat-option *ngFor="let category of categoryList" [value]="category.id">
+                      {{ category.id }} - {{ category.name }}
+                    </mat-option>
+                  </mat-select>
+                </mat-form-field>
+              </div>
+            </div>
+            <!-- FILTER END -->
+
+            <!-- LOADER START -->
+            <div class="flex width-padding" *ngIf="loading.product">
+              <mat-progress-spinner mode="indeterminate" diameter="30" strokeWidth="4"></mat-progress-spinner>
+            </div>
+            <div class="text-center mat-typography" *ngIf="productDataSource.data.length == 0">
+              <mat-icon class="medium">help_outline</mat-icon>
+              <h3>Nenhum resultado encontrado.</h3>
+            </div>
+            <!-- LOADER END -->
+
+            <!-- LIST START -->
+            <div [ngClass]="{'hide': productDataSource.data.length == 0}">
+              <mat-table #productTable [dataSource]="productDataSource" 
+                matSort matSortActive="id" matSortDirection="desc">
+                <!-- Image Column -->
+                <ng-container matColumnDef="image">
+                  <mat-header-cell *matHeaderCellDef class="id-column">  </mat-header-cell>
+                  <mat-cell *matCellDef="let row" class="id-column"> 
+                    <img [src]='row.image' class="avatar-list" *ngIf="row.image" /> 
+                    <div class="avatar-list" *ngIf="!row.image">
+                      <p>{{row.name.substring(0,1) | uppercase}}</p>
+                    </div>
+                  </mat-cell>
+                </ng-container>
+                
+                <!-- ID Column -->
+                <ng-container matColumnDef="id">
+                  <mat-header-cell *matHeaderCellDef mat-sort-header class="id-column"> ID </mat-header-cell>
+                  <mat-cell *matCellDef="let row" class="id-column"> {{row.id}} </mat-cell>
+                </ng-container>
+
+                <!-- Name Column -->
+                <ng-container matColumnDef="name">
+                  <mat-header-cell *matHeaderCellDef mat-sort-header> Nome </mat-header-cell>
+                  <mat-cell *matCellDef="let row"> {{row.name}} </mat-cell>
+                </ng-container>
+
+                <!-- Category id Column -->
+                <ng-container matColumnDef="category_id">
+                  <mat-header-cell *matHeaderCellDef mat-sort-header class="number-column"> ID categoria </mat-header-cell>
+                  <mat-cell *matCellDef="let row" class="number-column"> {{ row.category_id || null }} </mat-cell>
+                </ng-container>
+
+                <!-- Category name Column -->
+                <ng-container matColumnDef="category.data.name">
+                  <mat-header-cell *matHeaderCellDef mat-sort-header> Nome categoria </mat-header-cell>
+                  <mat-cell *matCellDef="let row"> {{ row.category.data.name || null }} </mat-cell>
+                </ng-container>
+
+                <!-- Price Column -->
+                <ng-container matColumnDef="price">
+                  <mat-header-cell *matHeaderCellDef mat-sort-header> Preço </mat-header-cell>
+                  <mat-cell *matCellDef="let row"> 
+                    <p>R$ {{row.price}}</p>
+                  </mat-cell>
+                </ng-container>
+
+                <!-- HEADERS AND ROWS -->
+                <mat-header-row *matHeaderRowDef="productColumns" style="display: none"></mat-header-row>
+                <mat-row class="hover-parent pointer" *matRowDef="let row; columns: productColumns;"></mat-row>
+              </mat-table>
+            
+              <mat-paginator #productPaginator [length]="productTotal" [pageSize]="20" [pageSizeOptions]="[5, 10, 25, 100]"></mat-paginator>
+            </div>
+            <!-- LIST END -->  
+          </mat-card-content>
+        </mat-card> 
+      </div> 
+    </mat-tab>
+    <!-- PRODUCTS END ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
+    
+
+
+
+    <!-- BRANCHES ADD OR REMOVE START ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
+    <mat-tab>
+      <ng-template mat-tab-label>
+        <mat-icon>store</mat-icon> Filiais
+      </ng-template>
+      <div  class="padding-5" style="padding-top: 0">
+          <mat-card>
+            <mat-card-content>
+              <!-- FILTER START -->
+              <div class="container-flex margin-bottom">
+                <div class="flex-20 margin-right">
+                  <mat-form-field class="full-width">
+                    <input matInput placeholder="ID" [(ngModel)]="branchFilter.id" name="branchFilter.id" (keyup)="applyFilter(branchDataSource, branchDataSourceCopy, branchFilter)">
+                  </mat-form-field>
+                </div>
+                <div class="flex-20 margin-right">
+                  <mat-form-field class="full-width">
+                    <input matInput placeholder="Endereço" [(ngModel)]="branchFilter.address" name="branchFilter.address" (keyup)="applyFilter(branchDataSource, branchDataSourceCopy, branchFilter)">
+                  </mat-form-field>
+                </div>
+              </div>
+              <!-- FILTER END -->
+              
+              <!-- LOADER START -->
+              <div class="flex width-padding" *ngIf="loading.branch">
+                <mat-progress-spinner mode="indeterminate" diameter="30" strokeWidth="4"></mat-progress-spinner>
+              </div>
+              <div class="text-center mat-typography" *ngIf="branchDataSource.data.length == 0">
+                <mat-icon class="medium">help_outline</mat-icon>
+                <h3>Nenhum resultado encontrado.</h3>
+              </div>
+              <!-- LOADER END -->
+
+              <!-- LIST START -->
+              <div [ngClass]="{'hide': branchDataSource.data.length == 0}">
+                <mat-table #table [dataSource]="branchDataSource" class="example-table"
+                  matSort matSortActive="id" matSortDirection="desc">          
+                  <!-- ID Column -->
+                  <ng-container matColumnDef="id">
+                    <mat-header-cell *matHeaderCellDef mat-sort-header class="id-column"> ID </mat-header-cell>
+                    <mat-cell *matCellDef="let row" class="id-column" > {{row.id}} </mat-cell>
+                  </ng-container>
+              
+                  <!-- Address Column -->
+                  <ng-container matColumnDef="address">
+                    <mat-header-cell *matHeaderCellDef mat-sort-header> Endereço </mat-header-cell>
+                    <mat-cell *matCellDef="let row"> {{row.address}} </mat-cell>
+                  </ng-container>
+
+                  <!-- Number Column -->
+                  <ng-container matColumnDef="number">
+                    <mat-header-cell *matHeaderCellDef mat-sort-header  class="number-column"> Número </mat-header-cell>
+                    <mat-cell *matCellDef="let row"  class="number-column"> {{row.number}} </mat-cell>
+                  </ng-container>
+              
+                  <!-- City Column -->
+                  <ng-container matColumnDef="city">
+                    <mat-header-cell *matHeaderCellDef mat-sort-header> Cidade </mat-header-cell>
+                    <mat-cell *matCellDef="let row"> {{row.city}} </mat-cell>
+                  </ng-container>
+
+                  <!-- State Column -->
+                  <ng-container matColumnDef="state">
+                    <mat-header-cell *matHeaderCellDef mat-sort-header> UF </mat-header-cell>
+                    <mat-cell *matCellDef="let row"> {{row.state}} </mat-cell>
+                  </ng-container>
+
+                  <!-- Phone Column -->
+                  <ng-container matColumnDef="phone_1">
+                    <mat-header-cell *matHeaderCellDef mat-sort-header> Telefone </mat-header-cell>
+                    <mat-cell *matCellDef="let row"> {{row.phone_1}} </mat-cell>
+                  </ng-container>
+
+                  <!-- HEADERS AND ROWS -->
+                  <mat-header-row *matHeaderRowDef="branchColumns" style="display: none"></mat-header-row>
+                  <mat-row class="hover-parent pointer" *matRowDef="let row; columns: branchColumns;" (click)="branchSelection.toggle(row)"></mat-row>
+                </mat-table>
+              
+                <mat-paginator #branchPaginator [length]="branchTotal" [pageSize]="20" [pageSizeOptions]="[5, 10, 25, 100]"></mat-paginator>
+              </div>
+              <!-- LIST END -->
+          </mat-card-content>
+        </mat-card> 
+      </div> 
+    </mat-tab>
+    <!-- BRANCHES ADD OR REMOVE END ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
+
+  </mat-tab-group>
 </div>

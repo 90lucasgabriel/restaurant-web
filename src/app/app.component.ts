@@ -1,8 +1,8 @@
 import { Component, ViewChild }     from '@angular/core';
 import { MatSidenav }               from '@angular/material';
-import { AppConfig }                from './app.config';
-import { MaterialService }          from './material/material.service';
-import { LoaderService }            from './loader.service';
+import { AppConfig }                from '@r-app/app.config';
+import { MaterialService }          from '@r-material/material.service';
+import { LoaderService }            from '@r-service/loader.service';
 
 
 @Component({
@@ -13,7 +13,7 @@ import { LoaderService }            from './loader.service';
 export class AppComponent {
   title = 'app';
   @ViewChild('sidenav') sidenav: MatSidenav;
-  public progressBarVisible: boolean = true;
+  public progressBarVisible = true;
 
   constructor(private loader: LoaderService) {
     // change isLoading status whenever notified

@@ -1,26 +1,20 @@
 import { Injectable, Inject, Component }  from '@angular/core';
 import { Observable }                     from 'rxjs/Observable';
-import { MatSnackBar, MatSnackBarRef, SimpleSnackBar }                    from '@angular/material';
+import { MatSnackBar, MatSnackBarRef, SimpleSnackBar }                          from '@angular/material';
 import { MatSort, MatTableDataSource, MatPaginator, MatDialog, MAT_DIALOG_DATA} from '@angular/material';
-import {SelectionModel} from '@angular/cdk/collections';
+import { SelectionModel}                  from '@angular/cdk/collections';
 
-import { DialogComponent }                from './dialog/dialog.component';
+import { DialogComponent }                from '@r-material/dialog/dialog.component';
 
 @Injectable()
 export class MaterialService {
-
-  constructor(
-    private matSnackBar:        MatSnackBar,
-    private matDialog:          MatDialog
-  ) { }
-
-
-
-  // SNACKBAR ----------------------------------------------------
+// SNACKBAR ---------------------------
   /**
    * Open message
-   * @param message
-   * @param action
+   * @param {string} message
+   * @param {string} action
+   * @returns {MatSnackBarRef<SimpleSnackBar>}
+   * @memberof MaterialService
    */
   public snackBar(message: string, action: string): MatSnackBarRef<SimpleSnackBar> {
     const snackBarRef = this.matSnackBar.open(message, action, {
@@ -33,8 +27,9 @@ export class MaterialService {
 
   /**
    * Show snackbar and console
-   * @param message string
-   * @param error any
+   * @param {string} message
+   * @param {*} error
+   * @memberof MaterialService
    */
   public error(message: string, error: any) {
     console.log(message, error);
@@ -44,14 +39,16 @@ export class MaterialService {
 
 
 
-  // DIALOG ------------------------------------------------------
+// DIALOG -----------------------------
   /**
    * Open dialog to confirm
-   * @param Any item
-   * @param string title
-   * @param string text
-   * @param string falseButton
-   * @param string trueButton
+   * @param {*} item
+   * @param {string} title
+   * @param {string} text
+   * @param {string} falseButton
+   * @param {string} trueButton
+   * @returns {Observable<any>}
+   * @memberof MaterialService
    */
   public openDialog(item: any, title: string, text: string, falseButton: string, trueButton: string): Observable<any> {
     const dialogRef = this.matDialog.open(DialogComponent, {
@@ -70,9 +67,15 @@ export class MaterialService {
 
 
 
-  // DATATABLE ----------------------------------------------------
+// DATATABLE --------------------------
   /**
-   * List all branch selection of this menu
+   * List all items selection of this resource
+   * @param {Array<any>} selectedList
+   * @param {SelectionModel<any>} selection
+   * @param {MatTableDataSource<any>} dataSourceCopy
+   * @param {Array<string>} [pivot]
+   * @param {string} [key='id']
+   * @memberof MaterialService
    */
   public querySelection(
     selectedList:   Array<any>,
@@ -91,6 +94,10 @@ export class MaterialService {
 
   /**
    * Apply filter when key up
+   * @param {MatTableDataSource<any>} dataSource
+   * @param {MatTableDataSource<any>} dataSourceCopy
+   * @param {*} filter
+   * @memberof MaterialService
    */
   public applyFilter(dataSource: MatTableDataSource<any>, dataSourceCopy: MatTableDataSource<any>, filter: any) {
     dataSource.data = dataSourceCopy.data.filter(item => this.filterList(item, filter));
@@ -99,16 +106,23 @@ export class MaterialService {
   /**
    * Whether the number of selected elements matches
    * the total number of rows.
+   * @param {MatTableDataSource<any>} dataSourceCopy
+   * @param {SelectionModel<any>} selection
+   * @returns {boolean}
+   * @memberof MaterialService
    */
   public isAllSelected(dataSourceCopy: MatTableDataSource<any>, selection: SelectionModel<any>) {
-    const numSelected = selection.selected.length;
-    const numRows     = dataSourceCopy.data.length;
+    const numSelected: number = selection.selected.length;
+    const numRows:     number = dataSourceCopy.data.length;
     return numSelected === numRows;
   }
 
   /**
    * Selects all rows if they are not all selected;
    * otherwise clear selection.
+   * @param {MatTableDataSource<any>} dataSource
+   * @param {SelectionModel<any>} selection
+   * @memberof MaterialService
    */
   public masterToggle(dataSource: MatTableDataSource<any>, selection: SelectionModel<any>) {
     this.isAllSelected(dataSource, selection) ?
@@ -118,9 +132,10 @@ export class MaterialService {
 
   /**
    * Filter a list property by property
-   * @param item any
-   * @param filter any
-   * @returns boolean
+   * @param {*} item
+   * @param {*} filter
+   * @returns {boolean} match
+   * @memberof MaterialService
    */
   public filterList(item: any, filter: any) {
     for (const tag in item) { // Verify property by property
@@ -136,10 +151,12 @@ export class MaterialService {
 
 
 
-  // OTHERS ---------------------------------------------------
+// OTHERS -----------------------------
   /**
    * Convert object to Query String
-   * @param any filter
+   * @param {*} filter
+   * @returns {string} querystring search
+   * @memberof MaterialService
    */
   public searchToQueryString(filter: any): string {
     let search  = '';
@@ -153,4 +170,15 @@ export class MaterialService {
 
     return search;
   }
+
+  /**
+   * Creates an instance of MaterialService.
+   * @param {MatSnackBar} matSnackBar
+   * @param {MatDialog} matDialog
+   * @memberof MaterialService
+   */
+  constructor(
+    private matSnackBar:        MatSnackBar,
+    private matDialog:          MatDialog
+  ) { }
 }

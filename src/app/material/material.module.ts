@@ -1,6 +1,6 @@
 import { NgModule }           from '@angular/core';
 import { CommonModule }       from '@angular/common';
-import { DialogComponent }    from './dialog/dialog.component';
+import { DialogComponent }    from '@r-material/dialog/dialog.component';
 import {
   MatAutocompleteModule,
   MatButtonModule,
@@ -21,6 +21,7 @@ import {
   MatSnackBarModule,
   MatSortModule,
   MatStepperModule,
+  MatTabsModule,
   MatTableModule,
   MatToolbarModule,
   MatTooltipModule
@@ -48,6 +49,7 @@ import {
     MatSnackBarModule,
     MatSortModule,
     MatStepperModule,
+    MatTabsModule,
     MatTableModule,
     MatToolbarModule,
     MatTooltipModule
@@ -72,6 +74,7 @@ import {
     MatSnackBarModule,
     MatSortModule,
     MatStepperModule,
+    MatTabsModule,
     MatTableModule,
     MatToolbarModule,
     MatTooltipModule

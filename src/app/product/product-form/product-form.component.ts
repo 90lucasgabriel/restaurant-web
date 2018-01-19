@@ -2,14 +2,14 @@ import { Component, OnInit, ViewEncapsulation, AfterViewInit, ViewChild, OnDestr
 import { Router, ActivatedRoute } from '@angular/router';
 import { Location }               from '@angular/common';
 
-import { LoaderService }          from '../../loader.service';
-import { MaterialService }        from '../../material/material.service';
-import { QueryInput }             from '../../common/model/query-input.model';
+import { LoaderService }          from '@r-service/loader.service';
+import { MaterialService }        from '@r-material/material.service';
+import { QueryInput }             from '@r-model/query-input.model';
 
-import { Category }               from '../../category/category.model';
-import { CategoryService }        from '../../category/category.service';
-import { Product }                from '../product.model';
-import { ProductService }         from '../product.service';
+import { Category }               from '@r-category/category.model';
+import { CategoryService }        from '@r-category/category.service';
+import { Product }                from '@r-product/product.model';
+import { ProductService }         from '@r-product/product.service';
 
 @Component({
   selector:                 'app-product-form',

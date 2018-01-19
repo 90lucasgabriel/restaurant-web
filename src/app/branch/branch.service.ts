@@ -1,11 +1,11 @@
 import { Injectable }               from '@angular/core';
 import { Observable }               from 'rxjs/Observable';
 
-import { QueryInput }               from '../common/model/query-input.model';
-import { Presenter }                from '../common/model/presenter.model';
+import { QueryInput }               from '@r-model/query-input.model';
+import { Presenter }                from '@r-model/presenter.model';
 
-import { Branch } 			            from './branch.model';
-import { BranchDao } 	              from './branch.dao';
+import { Branch } 			            from '@r-branch/branch.model';
+import { BranchDao } 	              from '@r-branch/branch.dao';
 
 @Injectable()
 export class BranchService {
@@ -13,37 +13,37 @@ export class BranchService {
   items: Array<Branch>;
 
   /**
-   * Constructor
-   *
-   * @param BranchDao dao
+   * Creates an instance of BranchService.
+   * @param {BranchDao} dao
+   * @memberof BranchService
    */
   constructor(private dao: BranchDao) {}
 
   /**
-   * Give a list of resource from database.
-   *
-   * @param QueryInput queryInput
-   * @return Observable<Presenter<Array<Branch>>>
+   * Returns a resource list.
+   * @param {QueryInput} queryInput
+   * @returns {Observable<Presenter<Array<Branch>>>}
+   * @memberof BranchService
    */
-  public query(queryInput: QueryInput): Observable<Presenter<Array<Branch>>>{
+  public query(queryInput: QueryInput): Observable<Presenter<Array<Branch>>> {
     return this.dao.query(queryInput);
   }
 
   /**
-   * Give a list of resource.
-   *
-   * @param number id
-   * @return Observable<Presenter<Branch>>
+   * Returns only one item of the resource.
+   * @param {number} id
+   * @returns {Observable<Presenter<Branch>>}
+   * @memberof BranchService
    */
   public get(id: number): Observable<Presenter<Branch>> {
     return this.dao.get(id);
   }
 
   /**
-   * Update resource.
-   *
-   * @param Branch item
-   * @return Observable<Presenter<Branch>>
+   * Create resource.
+   * @param {Branch} item
+   * @returns {Observable<Presenter<Branch>>}
+   * @memberof BranchService
    */
   public save(item: Branch): Observable<Presenter<Branch>> {
     return this.dao.save(item);
@@ -51,10 +51,10 @@ export class BranchService {
 
   /**
    * Update resource.
-   *
-   * @param Branch item
-   * @param number id
-   * @return Observable<Presenter<Branch>>
+   * @param {Branch} item
+   * @param {number} id
+   * @returns {Observable<Presenter<Branch>>}
+   * @memberof BranchService
    */
   public update(item: Branch, id: number): Observable<Presenter<Branch>> {
     return this.dao.update(item, id);
@@ -62,17 +62,20 @@ export class BranchService {
 
   /**
    * Delete resource.
-   * @param number id
-   * @return boolean
+   * @param {number} id
+   * @returns {Observable<any>}
+   * @memberof BranchService
    */
   public delete(id: number): Observable<any> {
     return this.dao.delete(id);
   }
 
   /**
-   * Filter a list of Branch
-   * @param list 
-   * @param value 
+   * Filter a list of branch.
+   * @param {Array<Branch>} list
+   * @param {string} value
+   * @returns {Array<Branch>}
+   * @memberof BranchService
    */
   public filter(list: Array<Branch>, value: string): Array<Branch> {
     value = value.trim().toLowerCase();

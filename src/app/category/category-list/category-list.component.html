@@ -6,6 +6,7 @@
     <div class="flex-30 text-right">
       <button mat-icon-button (click)="showFilter = !showFilter" matTooltip="Filtrar"><mat-icon>filter_list</mat-icon></button>
       <button mat-icon-button (click)="deleteConfirm(row)" matTooltip="Exportar"><mat-icon>share</mat-icon></button>
+      <button mat-icon-button *ngIf="selection.selected.length > 0" (click)="deleteConfirm(selection)" matTooltip="Excluir"><mat-icon>delete</mat-icon></button>
     </div>  
   </div>
   <!--BACK AND TITLE END -->
@@ -14,17 +15,17 @@
   <div class="flex container-flex content-page margin-bottom" *ngIf="showFilter">
     <div class="flex-20 margin-right">
       <mat-form-field class="full-width">
-        <input matInput placeholder="ID" [(ngModel)]="filter.id" name="filter.id" (keyup)="applyFilter()">
+        <input matInput placeholder="ID" [(ngModel)]="filter.id" name="filter.id" (keyup)="applyFilter(dataSource, dataSourceCopy, filter)">
       </mat-form-field>
     </div>
     <div class="flex-20 margin-right">
       <mat-form-field class="full-width">
-        <input matInput placeholder="Nome" [(ngModel)]="filter.name" name="filter.name" (keyup)="applyFilter()">
+        <input matInput placeholder="Nome" [(ngModel)]="filter.name" name="filter.name" (keyup)="applyFilter(dataSource, dataSourceCopy, filter)">
       </mat-form-field>
     </div>
     <div class="flex-20 margin-right">
       <mat-form-field class="full-width">
-        <mat-select placeholder="Categoria Pai" [(ngModel)]="filter.parent_id" name="filter.parent_id" (change)="applyFilter()">
+        <mat-select placeholder="Categoria Pai" [(ngModel)]="filter.parent_id" name="filter.parent_id" (change)="applyFilter(dataSource, dataSourceCopy, filter)">
           <mat-option>-</mat-option>
           <mat-option *ngFor="let item of parentList" [value]="item.id">
             {{ item.id }} - {{ item.name }}
@@ -49,15 +50,12 @@
   <!-- FILTER END -->
 
   <!-- LOADERS START -->
-  <div class="full-width" *ngIf="dataSource.data.length == 0 && loading">
+  <div class="content-page" *ngIf="loading">
     <mat-progress-spinner mode="indeterminate" diameter="30" strokeWidth="4"></mat-progress-spinner>
   </div>
-  
-  <div *ngIf="dataSource.data.length == 0 && !loading" class="full-width container-flex content-page flex-center margin-bottom width-padding">
-    <div class="text-center flex-center mat-typography">
-      <mat-icon class="big">help_outline</mat-icon>
-      <h3>Nenhum resultado encontrado.</h3>
-    </div>
+  <div class="text-center mat-typography" *ngIf="dataSource.data.length == 0 && !loading">
+    <mat-icon class="big">help_outline</mat-icon>
+    <h3>Nenhum resultado encontrado.</h3>
   </div>
   <!-- LOADERS END -->
 
@@ -74,6 +72,22 @@
     
       <mat-table #table [dataSource]="dataSource" class="example-table"
         matSort matSortActive="id" matSortDirection="desc">    
+        <!-- Checkbox Column -->
+        <ng-container matColumnDef="select">
+          <mat-header-cell *matHeaderCellDef class="id-column">
+            <mat-checkbox (change)="$event ? masterToggle(dataSourceCopy, selection) : null"
+                          [checked]="selection.hasValue() && isAllSelected(dataSourceCopy, selection)"
+                          [indeterminate]="selection.hasValue() && !isAllSelected(dataSourceCopy, selection)">
+            </mat-checkbox>
+          </mat-header-cell>
+          <mat-cell *matCellDef="let row" class="id-column">
+            <mat-checkbox (click)="$event.stopPropagation()"
+                          (change)="$event ? selection.toggle(row) : null"
+                          [checked]="selection.isSelected(row)">
+            </mat-checkbox>
+          </mat-cell>
+        </ng-container>
+
         <!-- ID Column -->
         <ng-container matColumnDef="id">
           <mat-header-cell *matHeaderCellDef mat-sort-header class="id-column"> ID </mat-header-cell>
@@ -103,7 +117,7 @@
           <mat-header-cell *matHeaderCellDef class="actions-column"></mat-header-cell>
           <mat-cell *matCellDef="let row" class="hover-child actions-column">
               <button mat-icon-button [routerLink]="[row.id, 'edit']" matTooltip="Editar"><mat-icon>edit</mat-icon></button>
-              <button mat-icon-button (click)="deleteConfirm(row)" matTooltip="Excluir"><mat-icon>delete</mat-icon></button>
+              <button mat-icon-button (click)="deleteConfirm({selected: [row]})" matTooltip="Excluir"><mat-icon>delete</mat-icon></button>
           </mat-cell>
         </ng-container>
 

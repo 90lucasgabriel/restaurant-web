@@ -1,14 +1,14 @@
 import { Injectable }               from '@angular/core';
 import { Observable }               from 'rxjs/Observable';
 
-import { QueryInput }               from '../common/model/query-input.model';
-import { Presenter }                from '../common/model/presenter.model';
+import { QueryInput }               from '@r-model/query-input.model';
+import { Presenter }                from '@r-model/presenter.model';
 
-import { Product }                  from '../product/product.model';
-import { Branch }                   from '../branch/branch.model';
+import { Product }                  from '@r-product/product.model';
+import { Branch }                   from '@r-branch/branch.model';
 
-import { Menu } 			              from './menu.model';
-import { MenuDao } 	                from './menu.dao';
+import { Menu } 			              from '@r-menu/menu.model';
+import { MenuDao } 	                from '@r-menu/menu.dao';
 
 @Injectable()
 export class MenuService {
@@ -16,27 +16,28 @@ export class MenuService {
   items: Array<Menu>;
 
   /**
-   * Constructor
-   *
-   * @param MenuDao dao
+   * Creates an instance of MenuService.
+   * @param {MenuDao} dao
+   * @memberof MenuService
    */
   constructor(private dao: MenuDao) {}
 
   /**
-   * Give a list of resource from database.
-   *
-   * @param QueryInput queryInput
-   * @return Observable<Presenter<Array<Menu>>>
+   * Returns a resource list.
+   * @param {QueryInput} queryInput
+   * @returns {Observable<Presenter<Array<Menu>>>}
+   * @memberof MenuService
    */
   public query(queryInput: QueryInput): Observable<Presenter<Array<Menu>>> {
     return this.dao.query(queryInput);
   }
 
   /**
-   * Give a list of resource.
-   *
-   * @param number id
-   * @return Observable<Presenter<Menu>>
+   * Returns only one item of the resource.
+   * @param {number} id
+   * @param {QueryInput} [queryInput]
+   * @returns {Observable<Presenter<Menu>>}
+   * @memberof MenuService
    */
   public get(id: number, queryInput?: QueryInput): Observable<Presenter<Menu>> {
     return this.dao.get(id, queryInput);
@@ -44,9 +45,9 @@ export class MenuService {
 
   /**
    * Save resource.
-   *
-   * @param Menu item
-   * @return Observable<Presenter<Menu>>
+   * @param {Menu} item
+   * @returns {Observable<Presenter<Menu>>}
+   * @memberof MenuService
    */
   public save(item: Menu): Observable<Presenter<Menu>> {
     return this.dao.save(item);
@@ -54,10 +55,10 @@ export class MenuService {
 
   /**
    * Update resource.
-   *
-   * @param Menu item
-   * @param number id
-   * @return Observable<Presenter<Menu>>
+   * @param {Menu} item
+   * @param {number} id
+   * @returns {Observable<Presenter<Menu>>}
+   * @memberof MenuService
    */
   public update(item: Menu, id: number): Observable<Presenter<Menu>> {
     return this.dao.update(item, id);
@@ -65,8 +66,9 @@ export class MenuService {
 
   /**
    * Delete resource.
-   * @param number id
-   * @return boolean
+   * @param {number} id
+   * @returns {Observable<any>}
+   * @memberof MenuService
    */
   public delete(id: number): Observable<any> {
     return this.dao.delete(id);
@@ -77,10 +79,11 @@ export class MenuService {
 
   // TIME SECTION -------------------------------
   /**
-   * Delete old product list and save new product list.
-   * @param items Array<Product>
-   * @param menu_id number
-   * @return Observable<Presenter<Product>>
+   * Delete old menuTime list and save new menuTime list.
+   * @param {Array<any>} items
+   * @param {number} menu_id
+   * @returns {Observable<Presenter<any>>}
+   * @memberof MenuService
    */
   public syncTime(items: Array<any>, menu_id: number): Observable<Presenter<any>> {
     return this.dao.syncTime(items, menu_id);
@@ -91,9 +94,10 @@ export class MenuService {
   // PRODUCT SECTION -------------------------------
   /**
    * Delete old product list and save new product list.
-   * @param items Array<Product>
-   * @param menu_id number
-   * @return Observable<Presenter<Product>>
+   * @param {Array<Product>} items
+   * @param {number} menu_id
+   * @returns {Observable<Presenter<Product>>}
+   * @memberof MenuService
    */
   public syncProduct(items: Array<Product>, menu_id: number): Observable<Presenter<Product>> {
     return this.dao.syncProduct(items, menu_id);
@@ -105,9 +109,10 @@ export class MenuService {
   // BRANCH SECTION -------------------------------
   /**
    * Delete old branch list and save new branch list.
-   * @param items Array<Branch>
-   * @param menu_id number
-   * @return Observable<Presenter<Branch>>
+   * @param {Array<Branch>} items
+   * @param {number} menu_id
+   * @returns {Observable<Presenter<Branch>>}
+   * @memberof MenuService
    */
   public syncBranch(items: Array<Branch>, menu_id: number): Observable<Presenter<Branch>> {
     return this.dao.syncBranch(items, menu_id);

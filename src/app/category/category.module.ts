@@ -1,15 +1,15 @@
 import { NgModule }               from '@angular/core';
 import { CommonModule }           from '@angular/common';
 import { HttpClientModule }       from '@angular/common/http';
-import { FormsModule, ReactiveFormsModule }            from '@angular/forms';
-import { MaterialModule }         from '../material/material.module';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { MaterialModule }         from '@r-material/material.module';
 
-import { CategoryRoutingModule }    from './category-routing.module';
-import { CategoryService }          from './category.service';
-import { CategoryDao }              from './category.dao';
-import { CategoryListComponent }    from './category-list/category-list.component';
-import { CategoryDetailsComponent } from './category-details/category-details.component';
-import { CategoryFormComponent }    from './category-form/category-form.component';
+import { CategoryRoutingModule }    from '@r-category/category-routing.module';
+import { CategoryService }          from '@r-category/category.service';
+import { CategoryDao }              from '@r-category/category.dao';
+import { CategoryListComponent }    from '@r-category/category-list/category-list.component';
+import { CategoryDetailsComponent } from '@r-category/category-details/category-details.component';
+import { CategoryFormComponent }    from '@r-category/category-form/category-form.component';
 
 @NgModule({
   imports: [

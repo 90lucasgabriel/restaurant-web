@@ -1,6 +1,7 @@
 import { Injectable, Inject, EventEmitter } from '@angular/core';
-import { AppComponent } from './app.component';
-import { HttpRequest } from '@angular/common/http/src/request';
+import { HttpRequest }  from '@angular/common/http/src/request';
+
+import { AppComponent } from '@r-app/app.component';
 
 @Injectable()
 export class LoaderService {

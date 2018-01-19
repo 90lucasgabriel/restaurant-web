@@ -62,6 +62,10 @@ mat-card-title-group{
   padding:            20px;
 }
 
+.padding-5{
+  padding:            5px;
+}
+
 .loading-shade {
   position:           absolute;
   top:                0;
@@ -243,6 +247,22 @@ mat-row:hover{
   text-align:         center;
 }
 
+.hide{
+  visibility:         hidden;
+  height:             0;
+  width:              0;
+}
+
+.soft{
+  border-bottom:      1px solid rgba(0, 0, 0, 0.03);
+}
+
+.soft mat-header-cell{
+  color:              #E2e2e2 !important;
+}
+
+
+
 /*MATERIAL-------------------------------------------------------------*/
 /*SIDENAV*/
 mat-sidenav-container{
@@ -302,6 +322,17 @@ mat-progress-spinner{
   background-color:   rgba(0, 0, 0, 0.2);
 }
 
+/*TABLE*/
+mat-row{
+  min-height:         57px !important;
+  border-bottom:      transparent !important;
+}
+
+.mat-column-select {
+  overflow:           initial !important;
+}
+
+/*ICON*/
 mat-icon.medium{
   font-size:          80px; 
   height:             80px; 
@@ -316,16 +347,30 @@ mat-icon.big{
   color:              #666;
 }
 
-.hide{
-  visibility:         hidden;
-  height:             0;
-  width:              0;
+.mat-tab-label mat-icon{
+  margin-right:       20px;
 }
 
-.mat-column-select {
-  overflow:           initial !important;
+
+/*TABS*/
+.mat-tab-labels{
+  justify-content:    space-evenly;
 }
 
-.mat-row{
-  border-bottom:      white !important;
+.mat-tab-label{
+  flex:               1;
+}
+
+.mat-tab-body.mat-tab-body-active{
+  width:              100%;
+  justify-content:    center;
+}
+
+.mat-tab-body{
+  display:            flex !important;
+}
+
+.mat-tab-body-content{
+    width:            100% !important;
+    overflow:         hidden !important;
 }

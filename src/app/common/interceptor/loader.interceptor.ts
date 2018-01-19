@@ -4,8 +4,9 @@ import {
     HttpHandler,
     HttpEvent}                      from '@angular/common/http';
 import { Injectable, Inject }       from '@angular/core';
+import { LoaderService }            from '@r-service/loader.service';
+
 import { Observable }               from 'rxjs/Observable';
-import { LoaderService }            from './loader.service';
 import 'rxjs/add/operator/finally';
 
 @Injectable()

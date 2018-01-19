@@ -4,15 +4,9 @@
     <div class="flex-5"><button mat-icon-button><mat-icon>store</mat-icon></button></div>
     <div class="flex-65 text-title">Filiais</div>
     <div class="flex-30 text-right">
-      <mat-form-field *ngIf="false">
-        <mat-icon matSuffix>search</mat-icon>
-        <input matInput placeholder="Pesquisar" [(ngModel)]="search" name="search" (keyup)="applyFilter()">
-        <button mat-button *ngIf="search" matPrefix mat-icon-button aria-label="Clear" (click)="applyFilter(''); search=''">
-          <mat-icon>close</mat-icon>
-        </button>
-      </mat-form-field>
       <button mat-icon-button (click)="showFilter = !showFilter" matTooltip="Filtrar"><mat-icon>filter_list</mat-icon></button>
       <button mat-icon-button (click)="deleteConfirm(row)" matTooltip="Exportar"><mat-icon>share</mat-icon></button>
+      <button mat-icon-button *ngIf="selection.selected.length > 0" (click)="deleteConfirm(selection)" matTooltip="Excluir"><mat-icon>delete</mat-icon></button>
     </div>  
   </div>
   <!--BACK AND TITLE END -->
@@ -21,58 +15,64 @@
   <div class="flex container-flex content-page margin-bottom" *ngIf="showFilter">
     <div class="flex-20 margin-right">
       <mat-form-field class="full-width">
-        <input matInput placeholder="Endereço" [(ngModel)]="filter.address" name="filter.address" (keyup)="applyFilter()">
+        <input matInput placeholder="Endereço" [(ngModel)]="filter.address" name="filter.address" (keyup)="applyFilter(dataSource, dataSourceCopy, filter)">
       </mat-form-field>
     </div>
     <div class="flex-20 margin-right">
       <mat-form-field class="full-width">
-        <input matInput placeholder="Número" [(ngModel)]="filter.number" name="filter.number" (keyup)="applyFilter()">
+        <input matInput placeholder="Número" [(ngModel)]="filter.number" name="filter.number" (keyup)="applyFilter(dataSource, dataSourceCopy, filter)">
       </mat-form-field>
     </div>
     <div class="flex-20 margin-right">
       <mat-form-field class="full-width">
-        <input matInput placeholder="Cidade" [(ngModel)]="filter.city" name="filter.city" (keyup)="applyFilter()">
+        <input matInput placeholder="Cidade" [(ngModel)]="filter.city" name="filter.city" (keyup)="applyFilter(dataSource, dataSourceCopy, filter)">
       </mat-form-field>
     </div>
     <div class="flex-20 margin-right">
       <mat-form-field class="full-width">
-        <input matInput placeholder="UF" [(ngModel)]="filter.state" name="filter.state" (keyup)="applyFilter()">
+        <input matInput placeholder="UF" [(ngModel)]="filter.state" name="filter.state" (keyup)="applyFilter(dataSource, dataSourceCopy, filter)">
       </mat-form-field>
     </div>
     <div class="flex-20 margin-right">
       <mat-form-field class="full-width">
-        <input matInput placeholder="Telefone" [(ngModel)]="filter.phone_1" name="filter.phone_1" (keyup)="applyFilter()">
+        <input matInput placeholder="Telefone" [(ngModel)]="filter.phone_1" name="filter.phone_1" (keyup)="applyFilter(dataSource, dataSourceCopy, filter)">
       </mat-form-field>
     </div>
   </div>
   <!-- FILTER END -->
 
   <!-- LOADERS START -->
-  <div class="full-width" *ngIf="dataSource.data.length == 0 && loading">
+  <div class="content-page" *ngIf="loading">
     <mat-progress-spinner mode="indeterminate" diameter="30" strokeWidth="4"></mat-progress-spinner>
   </div>
-  
-  <div *ngIf="dataSource.data.length == 0 && !loading" class="full-width container-flex content-page flex-center margin-bottom width-padding">
-    <div class="text-center flex-center mat-typography">
-      <mat-icon class="big">help_outline</mat-icon>
-      <h3>Nenhum resultado encontrado.</h3>
-    </div>
+  <div class="text-center mat-typography" *ngIf="dataSource.data.length == 0 && !loading">
+    <mat-icon class="big">help_outline</mat-icon>
+    <h3>Nenhum resultado encontrado.</h3>
   </div>
   <!-- LOADERS END -->
 
   <!-- LIST START -->
   <div class="flex content-page" [ngClass]="{'hide': dataSource.data.length == 0}">
     <div class="flex full-width mat-elevation-z4">
-      <div style="display: none" class="loading-shade full-width" *ngIf="(loadingResults || timeout)">
-        <mat-spinner *ngIf="loadingResults" mode="indeterminate" diameter="40" strokeWidth="5" style="padding: 0"></mat-spinner>
-        <div *ngIf="timeout" class="mat-typography text-center">
-          <div><mat-icon style="font-size: 50px">sync_problem</mat-icon></div>
-          <div>Não foi possível executar a ação. Tente novamente mais tarde.</div>
-        </div>
-      </div>
-    
+      
       <mat-table #table [dataSource]="dataSource" class="example-table"
-        matSort matSortActive="id" matSortDirection="desc">    
+        matSort matSortActive="id" matSortDirection="desc">
+        <!-- Checkbox Column -->
+        <ng-container matColumnDef="select">
+          <mat-header-cell *matHeaderCellDef class="id-column">
+            <mat-checkbox (change)="$event ? masterToggle(dataSourceCopy, selection) : null"
+                          [checked]="selection.hasValue() && isAllSelected(dataSourceCopy, selection)"
+                          [indeterminate]="selection.hasValue() && !isAllSelected(dataSourceCopy, selection)">
+            </mat-checkbox>
+          </mat-header-cell>
+          <mat-cell *matCellDef="let row" class="id-column">
+            <mat-checkbox (click)="$event.stopPropagation()"
+                          (change)="$event ? selection.toggle(row) : null"
+                          [checked]="selection.isSelected(row)">
+            </mat-checkbox>
+          </mat-cell>
+        </ng-container>
+
         <!-- ID Column -->
         <ng-container matColumnDef="id">
           <mat-header-cell *matHeaderCellDef mat-sort-header class="id-column"> ID </mat-header-cell>

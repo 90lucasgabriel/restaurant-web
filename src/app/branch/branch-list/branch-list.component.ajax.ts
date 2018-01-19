@@ -4,10 +4,10 @@ import { MatSort, MatTableDataSource, MatPaginator, MatDialog, MAT_DIALOG_DATA} 
 import { Router }                 from '@angular/router';
 
 
-import { LoaderService }          from '../../loader.service';
-import { MaterialService }        from '../../material/material.service';
-import { QueryInput }             from '../../common/model/query-input.model';
-import { AppComponent }           from '../../app.component';
+import { LoaderService }          from '@r-service/loader.service';
+import { MaterialService }        from '@r-material/material.service';
+import { QueryInput }             from '@r-model/query-input.model';
+import { AppComponent }           from '@r-app/app.component';
 
 import { Branch }                 from '../branch.model';
 import { BranchService }          from '../branch.service';

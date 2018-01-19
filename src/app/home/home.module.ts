@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 
 import { HomeRoutingModule } from './home-routing.module';
 import { HomeAdminComponent } from './home-admin/home-admin.component';
-import { MaterialModule } from '../material/material.module';
+import { MaterialModule } from '@r-material/material.module';
 
 @NgModule({
   imports: [

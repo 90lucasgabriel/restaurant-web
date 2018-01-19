@@ -2,16 +2,17 @@ import { Component, OnInit, ViewEncapsulation, AfterViewInit, ViewChild, OnDestr
 import { Router, ActivatedRoute } from '@angular/router';
 import { Location }               from '@angular/common';
 
-import { AppComponent }           from '../../app.component';
-import { LoaderService }          from '../../loader.service';
-import { MaterialService }        from '../../material/material.service';
-import { QueryInput }             from '../../common/model/query-input.model';
+import { AppComponent }           from '@r-app/app.component';
+import { LoaderService }          from '@r-service/loader.service';
+import { MaterialService }        from '@r-material/material.service';
+import { QueryInput }             from '@r-model/query-input.model';
 
-import { Category }               from '../category.model';
-import { CategoryService }        from '../category.service';
+import { Category }               from '@r-category/category.model';
+import { CategoryService }        from '@r-category/category.service';
 
 /**
  * Category's details
+ * @export
  * @class CategoryDetailsComponent
  * @implements {OnInit}
  * @implements {OnDestroy}
@@ -23,18 +24,81 @@ import { CategoryService }        from '../category.service';
   encapsulation:            ViewEncapsulation.None
 })
 export class CategoryDetailsComponent implements OnInit, OnDestroy {
+// DECLARATIONS --------------------------
   private sub:              any;
-  readMode:                 boolean;
   loading:                  boolean;
   submitted:                boolean;
   item:                     Category;
   oldItem:                  Category;
 
+
+
+
+// MAIN ----------------------------------
   /**
-   * Constructor
-   * @param ActivatedRoute  route
-   * @param CategoryService   service
-   * @param MatSnackBar     snackBar
+   * Execute before onInit
+   */
+  public start() {
+    this.submitted = false;
+    this.sub = this.route.params.subscribe(params => {
+      this.get(+params['id']);
+    });
+  }
+
+  /**
+   * Show item details
+   * @param {number} id
+   * @memberof CategoryDetailsComponent
+   */
+  public get(id: number) {
+    this.service.get(id, {'include': 'parent'}).subscribe(success => {
+      this.item    = success.data;
+      this.oldItem = JSON.parse(JSON.stringify(this.item)); // copy
+    }, error => {
+      this.material.error('Erro ao pesquisar categoria.', error);
+    });
+  }
+
+  /**
+   * Open dialog to confirm delete
+   * @param {Category} item
+   * @memberof CategoryDetailsComponent
+   */
+  public deleteConfirm(item: Category) {
+    this.material.openDialog(item, 'Excluir', 'Deseja excluir essa categoria?', 'CANCELAR', 'EXCLUIR').subscribe(data => {
+      if (data) {
+        this.delete(item.id);
+      }
+    });
+  }
+
+  /**
+   * Delete resource
+   * @param {number} id
+   * @memberof CategoryDetailsComponent
+   */
+  public delete(id: number) {
+    this.submitted = true;
+    this.service.delete(id).subscribe(data => {
+      this.material.snackBar('Categoria excluída.', 'OK');
+      this.goBack();
+    }, error => {
+      this.material.error('Erro ao excluir categoria.', error);
+    });
+  }
+
+
+
+
+// OTHERS --------------------------------
+  /**
+   * Creates an instance of CategoryDetailsComponent.
+   * @param {ActivatedRoute} route
+   * @param {Location} location
+   * @param {CategoryService} service
+   * @param {MaterialService} material
+   * @param {LoaderService} loader
+   * @memberof CategoryDetailsComponent
    */
   constructor(
     private route:          ActivatedRoute,
@@ -47,54 +111,6 @@ export class CategoryDetailsComponent implements OnInit, OnDestroy {
       this.loading = isLoading;
     });
     this.start();
-  }
-
-  public start() {
-    this.submitted = false;
-    this.sub = this.route.params.subscribe(params => {
-      this.get(+params['id']);
-    });
-  }
-
-  /**
-   * Show item details
-   * @param number id
-   */
-  public get(id: number) {
-    this.service.get(id, {'include': 'parent'}).subscribe(success => {
-      this.item    = success.data;
-      this.oldItem = JSON.parse(JSON.stringify(this.item)); //copy
-    }, error => {
-      console.log('Erro ao pesquisar categoria', error);
-      this.material.snackBar('Erro ao pesquisar categoria. Detalhes no console (F12).', 'OK');
-    });
-  }
-
-  /**
-   * Open dialog to confirm delete
-   * @param Category item
-   */
-  public deleteConfirm(item: Category) {
-    this.material.openDialog(item, 'Excluir', 'Deseja excluir essa categoria?', 'CANCELAR', 'EXCLUIR').subscribe(data => {
-      if (data === true) {
-        this.delete(item.id);
-      }
-    });
-  }
-
-  /**
-   * Delete resource
-   * @param number id
-   */
-  public delete(id: number) {
-    this.submitted = true;
-    this.service.delete(id).subscribe(data => {
-      this.material.snackBar('Categoria excluída.', 'OK');
-      this.goBack();
-    }, error => {
-      console.log('Erro ao excluir categoria', error);
-      this.material.snackBar('Erro ao excluir categoria. Detalhes no console (F12).', 'OK');
-    });
   }
 
   /**

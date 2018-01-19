@@ -2,12 +2,12 @@ import { Component, OnInit, ViewEncapsulation, AfterViewInit, ViewChild, OnDestr
 import { Router, ActivatedRoute } from '@angular/router';
 import { Location }               from '@angular/common';
 
-import { LoaderService }          from '../../loader.service';
-import { MaterialService }        from '../../material/material.service';
-import { QueryInput }             from '../../common/model/query-input.model';
+import { LoaderService }          from '@r-service/loader.service';
+import { MaterialService }        from '@r-material/material.service';
+import { QueryInput }             from '@r-model/query-input.model';
 
-import { Branch }                 from '../branch.model';
-import { BranchService }          from '../branch.service';
+import { Branch }                 from '@r-branch/branch.model';
+import { BranchService }          from '@r-branch/branch.service';
 
 @Component({
   selector:                 'app-branch-form',
@@ -16,39 +16,25 @@ import { BranchService }          from '../branch.service';
   encapsulation:            ViewEncapsulation.None
 })
 export class BranchFormComponent implements OnInit, OnDestroy {
+// DECLARATIONS --------------------------
   private sub:              any;
   loading:                  boolean;
   submitted:                boolean;
 
-  item:                     Branch = {};
+  item:                     Branch = new Branch();
   oldItem:                  Branch;
   company_id:               number;
 
   newItemMode:              boolean;
   title:                    string;
 
-  /**
-   * Constructor
-   * @param Router          router
-   * @param ActivatedRoute  route
-   * @param Location        location
-   * @param BranchService   service
-   * @param MaterialService material
-   */
-  constructor(
-    private router:         Router,
-    private route:          ActivatedRoute,
-    private location:       Location,
-    private service:        BranchService,
-    public  material:       MaterialService,
-    public  loader:         LoaderService
-  ) {
-    loader.onLoadingChanged.subscribe(isLoading => {
-      this.loading = isLoading;
-    });
-    this.start();
-  }
 
+
+
+// MAIN ----------------------------------
+  /**
+   * Execute before onInit
+   */
   public start() {
     this.submitted   = false;
     this.newItemMode = true;
@@ -56,20 +42,12 @@ export class BranchFormComponent implements OnInit, OnDestroy {
     this.sub = this.route.params.subscribe(params => {
       if (params['id'] != null) {
         this.get(+params['id']);
-      }
-      else {
+      } else {
         this.company_id      = +params['company_id'];
         this.item.company_id = +params['company_id'];
         this.setNewItem(true);
       }
     });
-  }
-
-  /**
-   * Execute on init
-   */
-  public ngOnInit() {
-
   }
 
   /**
@@ -80,8 +58,7 @@ export class BranchFormComponent implements OnInit, OnDestroy {
     if (value) {
       this.newItemMode = true;
       this.title       = 'Nova Filial';
-    }
-    else {
+    } else {
       this.newItemMode = false;
       this.title       = 'Editar Filial';
     }
@@ -95,7 +72,7 @@ export class BranchFormComponent implements OnInit, OnDestroy {
     this.service.get(id).subscribe(success => {
       this.setNewItem(false);
       this.item    = success.data;
-      this.oldItem = JSON.parse(JSON.stringify(this.item)); //copy
+      this.oldItem = JSON.parse(JSON.stringify(this.item)); // copy
     });
   }
 
@@ -107,8 +84,7 @@ export class BranchFormComponent implements OnInit, OnDestroy {
     this.submitted = true;
     if (this.newItemMode) {
       this.save(item);
-    }
-    else {
+    } else {
       this.update(item, this.oldItem.id);
     }
   }
@@ -142,6 +118,48 @@ export class BranchFormComponent implements OnInit, OnDestroy {
     });
   }
 
+
+
+
+// OTHERS --------------------------------
+  /**
+   * Creates an instance of BranchFormComponent.
+   * @param {Router} router
+   * @param {ActivatedRoute} route
+   * @param {Location} location
+   * @param {BranchService} service
+   * @param {MaterialService} material
+   * @param {LoaderService} loader
+   * @memberof BranchFormComponent
+   */
+  constructor(
+    private router:         Router,
+    private route:          ActivatedRoute,
+    private location:       Location,
+    private service:        BranchService,
+    public  material:       MaterialService,
+    public  loader:         LoaderService
+  ) {
+    loader.onLoadingChanged.subscribe(isLoading => {
+      this.loading = isLoading;
+    });
+    this.start();
+  }
+
+  /**
+   * Execute on init
+   */
+  public ngOnInit() {
+
+  }
+
+  /**
+   * Go to latest route
+   */
+  public goBack() {
+    this.location.back();
+  }
+
   /**
    * Cancel form and read mode
    */
@@ -154,12 +172,5 @@ export class BranchFormComponent implements OnInit, OnDestroy {
    */
   public ngOnDestroy() {
     this.sub.unsubscribe();
-  }
-
-  /**
-   * Go to latest route
-   */
-  public goBack() {
-    this.location.back();
   }
 }

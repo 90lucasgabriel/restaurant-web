@@ -4,15 +4,15 @@ import { SelectionModel }         from '@angular/cdk/collections';
 import { Router }                 from '@angular/router';
 import { FormControl }            from '@angular/forms';
 
-import { LoaderService }          from '../../loader.service';
-import { MaterialService }        from '../../material/material.service';
-import { MenuTime }               from '../../common/model/menu-time.model';
-import { QueryInput }             from '../../common/model/query-input.model';
-import { AppComponent }           from '../../app.component';
-import { AppConfig }              from '../../app.config';
+import { LoaderService }          from '@r-service/loader.service';
+import { MaterialService }        from '@r-material/material.service';
+import { MenuTime }               from '@r-model/menu-time.model';
+import { QueryInput }             from '@r-model/query-input.model';
+import { AppComponent }           from '@r-app/app.component';
+import { AppConfig }              from '@r-app/app.config';
 
-import { Menu }                   from '../menu.model';
-import { MenuService }            from '../menu.service';
+import { Menu }                   from '@r-menu/menu.model';
+import { MenuService }            from '@r-menu/menu.service';
 
 import {Observable} from 'rxjs/Observable';
 import 'rxjs/add/observable/merge';
@@ -24,12 +24,13 @@ import 'rxjs/add/operator/switchMap';
 
 
 
+
 /**
- * List Menu
- *
  * @export
  * @class MenuListComponent
  * @implements {OnInit}
+ * @implements {OnDestroy}
+ * @implements {AfterViewInit}
  */
 @Component({
   selector:           'app-menu-list',
@@ -38,6 +39,7 @@ import 'rxjs/add/operator/switchMap';
   encapsulation:      ViewEncapsulation.None
 })
 export class MenuListComponent implements OnInit, OnDestroy, AfterViewInit {
+// DECLARATIONS ----------------------
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;
   selection:          SelectionModel<Menu>;
@@ -56,26 +58,14 @@ export class MenuListComponent implements OnInit, OnDestroy, AfterViewInit {
 
   timeList:           Array<MenuTime>;
 
-  /**
-   * Constructor
-   *
-   * @param MenuService service
-   */
-  constructor(
-    private router:           Router,
-    private service:          MenuService,
-    private material:         MaterialService,
-    public  loader:           LoaderService
-  ) {
 
-    this.start();
-  }
 
+
+// MAIN ------------------------------
   /**
    * Execute before onInit
    */
   private start() {
-    this.loading        = true;
     this.actionClick    = false;
     this.showFilter     = false;
     this.total          = 0;
@@ -109,7 +99,6 @@ export class MenuListComponent implements OnInit, OnDestroy, AfterViewInit {
       this.total               = data.data.length;
       this.dataSource.data     = data.data;
       this.dataSourceCopy.data = data.data;
-      this.loading             = false;
     }, error => {
       this.material.error('Erro ao pesquisar na API.', error);
     });
@@ -117,7 +106,8 @@ export class MenuListComponent implements OnInit, OnDestroy, AfterViewInit {
 
   /**
    * Open dialog to confirm delete
-   * @param Menu item
+   * @param {SelectionModel<Menu>} item
+   * @memberof MenuListComponent
    */
   public deleteConfirm(item: SelectionModel<Menu>) {
     this.actionClick = true;
@@ -132,25 +122,31 @@ export class MenuListComponent implements OnInit, OnDestroy, AfterViewInit {
 
   /**
    * Delete resource
-   * @param number id
+   * @param {number} id
+   * @memberof MenuListComponent
    */
   public delete(id: number) {
     const dataTmp              = JSON.parse(JSON.stringify(this.dataSource.data));
     dataTmp.splice(this.dataSource.data.findIndex(i => i.id === id), 1);
     this.dataSource.data       = JSON.parse(JSON.stringify(dataTmp));
+    this.selection.deselect(this.selection.selected.find(i => i.id === id));
 
     this.service.delete(id).subscribe(data => {
       this.dataSourceCopy.data = JSON.parse(JSON.stringify(this.dataSource.data));
       this.material.snackBar('Cardápio excluído.', 'OK');
     }, error => {
+      this.selection.select(this.selection.selected.find(i => i.id === id));
       this.dataSource.data     = JSON.parse(JSON.stringify(this.dataSourceCopy.data));
       this.material.error('Erro ao excluir cardápio.', error);
     });
   }
 
-  // TIME SECTION --------------------
+
+
+
+  // TIME SECTION ----------------------
   /**
-   * List all times of this menu
+   * List all 7 weekdays with index and name
    */
   public queryTime() {
     this.timeList = new Array<any>();
@@ -158,18 +154,20 @@ export class MenuListComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   /**
-   * Verify if menu contains a day and print
-   * @param day any
-   * @param list Array<any>
+   * Verify if specific day exists in MenuTime menu's list
+   * @param {*} day
+   * @param {Array<any>} list
+   * @returns {MenuTime}
+   * @memberof MenuListComponent
    */
-  public verifyDays(day: any, list: Array<any>) {
-    return list.find(time => time.day === day);
+  public verifyDays(day: number, list: Array<MenuTime>): MenuTime {
+    return list.find(menuTime => menuTime.day === day);
   }
 
 
 
 
-  // DATATABLE AUX SECTION ---------------------------
+// DATATABLE AUX SECTION -------------
   /**
    * List all branch selection of this menu
    */
@@ -208,11 +206,32 @@ export class MenuListComponent implements OnInit, OnDestroy, AfterViewInit {
 
 
 
-  // OTHERS -----------------------------------
+// OTHERS ----------------------------
+  /**
+   * Creates an instance of MenuListComponent.
+   * @param {Router} router
+   * @param {MenuService} service
+   * @param {MaterialService} material
+   * @param {LoaderService} loader
+   * @memberof MenuListComponent
+   */
+  constructor(
+    private router:           Router,
+    private service:          MenuService,
+    private material:         MaterialService,
+    public  loader:           LoaderService
+  ) {
+    loader.onLoadingChanged.subscribe(isLoading => {
+      this.loading = isLoading;
+    });
+    this.start();
+  }
+
   /**
    * Go to details
-   * @param company_id number
-   * @param id number
+   * @param {number} company_id
+   * @param {number} id
+   * @memberof MenuListComponent
    */
   public goDetails(company_id: number, id: number) {
     if (!this.actionClick) {

@@ -14,6 +14,20 @@
     "lib": [
       "es2017",
       "dom"
-    ]
+    ],
+    "baseUrl": "src",
+    "paths": {
+      "@r-app/*":         ["app/*"],
+      "@r-branch/*":      ["app/branch/*"],
+      "@r-category/*":    ["app/category/*"],
+      "@r-enum/*":        ["app/common/enum/*"],
+      "@r-interceptor/*": ["app/common/interceptor/*"],
+      "@r-model/*":       ["app/common/model/*"],
+      "@r-service/*":     ["app/common/service/*"],
+      "@r-company/*":     ["app/company/*"],
+      "@r-material/*":    ["app/material/*"],
+      "@r-menu/*":        ["app/menu/*"],
+      "@r-product/*":     ["app/product/*"]
+    }
   }
 }

@@ -5,23 +5,23 @@ import { HttpClientModule, HTTP_INTERCEPTORS }  from '@angular/common/http';
 import { FormsModule, ReactiveFormsModule }     from '@angular/forms';
 import { FlexLayoutModule }           from '@angular/flex-layout';
 
-import { AppComponent }               from './app.component';
-import { AppConfig }                  from './app.config';
-import { AppRoutingModule }           from './app-routing.module';
-import { MaterialModule }             from './material/material.module';
+import { AppComponent }               from '@r-app/app.component';
+import { AppConfig }                  from '@r-app/app.config';
+import { AppRoutingModule }           from '@r-app/app-routing.module';
+import { MaterialModule }             from '@r-material/material.module';
 
-import { MaterialService }            from './material/material.service';
-import { LoaderService }              from './loader.service';
-import { LoaderInterceptor }          from './loader.interceptor';
-import { HeaderInterceptor }          from './header.interceptor';
+import { MaterialService }            from '@r-material/material.service';
+import { LoaderService }              from '@r-service/loader.service';
+import { LoaderInterceptor }          from '@r-interceptor/loader.interceptor';
+import { HeaderInterceptor }          from '@r-interceptor/header.interceptor';
 
-import { BranchModule }               from './branch/branch.module';
-import { CategoryModule }             from './category/category.module';
-import { CompanyModule }              from './company/company.module';
-import { HomeModule }                 from './home/home.module';
-import { MenuModule }                 from './menu/menu.module';
-import { ProductModule }              from './product/product.module';
-import { CustomCommonModule }         from './common/custom-common.module';
+import { BranchModule }               from '@r-branch/branch.module';
+import { CategoryModule }             from '@r-category/category.module';
+import { CompanyModule }              from '@r-company/company.module';
+// import { HomeModule }                 from '@r-home/home.module';
+import { MenuModule }                 from '@r-menu/menu.module';
+import { ProductModule }              from '@r-product/product.module';
+// import { CustomCommonModule }         from '@r-common/custom-common.module';
 
 
 @NgModule({
@@ -36,14 +36,14 @@ import { CustomCommonModule }         from './common/custom-common.module';
     FormsModule,
     ReactiveFormsModule,
 
-    CustomCommonModule,
+    // CustomCommonModule,
     AppRoutingModule,
     MaterialModule,
 
     BranchModule,
     CategoryModule,
     CompanyModule,
-    HomeModule,
+    // HomeModule,
     MenuModule,
     ProductModule
   ],

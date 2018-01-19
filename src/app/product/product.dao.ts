@@ -2,13 +2,14 @@ import { Injectable, Injector }     from '@angular/core';
 import { HttpClient, HttpHeaders, HttpParams }               from '@angular/common/http';
 import { Observable }               from 'rxjs/Observable';
 
-import { AppConfig }                from '../app.config';
-import { Presenter }                from '../common/model/presenter.model';
-import { QueryInput }               from '../common/model/query-input.model';
+import { AppConfig }                from '@r-app/app.config';
+import { Presenter }                from '@r-model/presenter.model';
+import { QueryInput }               from '@r-model/query-input.model';
 
-import { Product }                  from './product.model';
+import { Product }                  from '@r-product/product.model';
 
 /**
+ * @export
  * @class ProductDao
  */
 @Injectable()
@@ -16,23 +17,26 @@ export class ProductDao {
   private path: string;
 
   /**
-   * Constructor
-   * @param HttpClient http
+   * Creates an instance of ProductDao.
+   * @param {HttpClient} http
+   * @memberof ProductDao
    */
   constructor(private http: HttpClient) {
-    this.path = AppConfig.BASE_URL + '/api/company/' + AppConfig.COMPANY_ID + '/product/';
+    this.path = `${AppConfig.BASE_URL}/api/company/${AppConfig.COMPANY_ID}/product/`;
   }
 
   /**
-   * Display a listing of resource
-   * @param QueryInput queryInput
+   * Returns a list of the resource
+   * @param {QueryInput} queryInput
+   * @returns {Observable<Presenter<Array<Product>>>} 
+   * @memberof ProductDao
    */
   public query(queryInput: QueryInput): Observable<Presenter<Array<Product>>> {
     return this.http.get(this.path, {params: <HttpParams> queryInput});
   }
 
   /**
-   * Display details of resource on database
+   *  Returns only one item of the resource
    * @param number id
    */
   public get(id: number, queryInput: QueryInput): Observable<Presenter<Product>> {

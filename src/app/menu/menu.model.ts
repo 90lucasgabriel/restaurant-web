@@ -1,9 +1,9 @@
-import { Presenter } 		from '../common/model/presenter.model';
-import { Company } 			from '../company/company.model';
-import { BranchMenu }   from '../common/model/branch-menu.model';
-import { MenuProduct } 	from '../common/model/menu-product.model';
-import { Product }      from '../product/product.model';
-import { Branch }       from '../branch/branch.model';
+import { Presenter } 		from '@r-model/presenter.model';
+import { Company } 			from '@r-company/company.model';
+import { BranchMenu }   from '@r-model/branch-menu.model';
+import { MenuProduct } 	from '@r-model/menu-product.model';
+import { Product }      from '@r-product/product.model';
+import { Branch }       from '@r-branch/branch.model';
 
 /**
  * Model Menu

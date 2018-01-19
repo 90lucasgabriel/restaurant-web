@@ -1,4 +1,4 @@
-import { Day } from './day.enum';
+import { Day } from '@r-enum/day.enum';
 
 export class AppConfig {
   public static BASE_URL = 'http://localhost:8000';

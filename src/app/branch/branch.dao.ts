@@ -3,8 +3,8 @@ import { HttpClient, HttpHeaders, HttpParams }               from '@angular/comm
 import { Observable }               from 'rxjs/Observable';
 
 import { AppConfig }                from '../app.config';
-import { Presenter }                from '../common/model/presenter.model';
-import { QueryInput }               from '../common/model/query-input.model';
+import { Presenter }                from '@r-model/presenter.model';
+import { QueryInput }               from '@r-model/query-input.model';
 
 import { Branch }                   from './branch.model';
 
@@ -16,24 +16,29 @@ export class BranchDao {
   private path: string;
 
   /**
-   * Constructor
-   * @param HttpClient http
+   * Creates an instance of BranchDao.
+   * @param {HttpClient} http
+   * @memberof BranchDao
    */
   constructor(private http: HttpClient) {
-    this.path = AppConfig.BASE_URL + '/api/company/' + AppConfig.COMPANY_ID + '/branch/';
+    this.path = `${AppConfig.BASE_URL}/api/company/${AppConfig.COMPANY_ID}/branch/`;
   }
 
   /**
-   * Display a listing of resource
-   * @param QueryInput queryInput
+   * Returns a list of the resource
+   * @param {QueryInput} queryInput
+   * @returns {Observable<Presenter<Array<Branch>>>}
+   * @memberof BranchDao
    */
   public query(queryInput: QueryInput): Observable<Presenter<Array<Branch>>> {
     return this.http.get(this.path, {params: <HttpParams> queryInput});
   }
 
   /**
-   * Display details of resource on database
-   * @param number id
+   *  Returns only one item of the resource
+   * @param {number} id
+   * @returns {Observable<Presenter<Branch>>}
+   * @memberof BranchDao
    */
   public get(id: number): Observable<Presenter<Branch>> {
     return this.http.get(this.path + id);
@@ -41,7 +46,9 @@ export class BranchDao {
 
    /**
    * Create new itemof resource on database
-   * @param Branch item
+   * @param {Branch} item
+   * @returns {Observable<any>}
+   * @memberof BranchDao
    */
   public save(item: Branch): Observable<any> {
     return this.http.post(this.path, item);
@@ -49,8 +56,10 @@ export class BranchDao {
 
   /**
    * Update details of resource on database
-   * @param Branch item
-   * @param number id
+   * @param {Branch} item
+   * @param {number} id
+   * @returns {Observable<any>}
+   * @memberof BranchDao
    */
   public update(item: Branch, id: number): Observable<any> {
     return this.http.put(this.path + id, item);
@@ -58,7 +67,9 @@ export class BranchDao {
 
   /**
    * Delete resource on database
-   * @param number id
+   * @param {number} id
+   * @returns {Observable<any>}
+   * @memberof BranchDao
    */
   public delete(id: number): Observable<any> {
     return this.http.delete(this.path + id);

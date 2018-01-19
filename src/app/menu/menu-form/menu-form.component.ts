@@ -1,23 +1,22 @@
 import { Component, OnInit, ViewEncapsulation, AfterViewInit, ViewChild, OnDestroy,  Inject, EventEmitter } from '@angular/core';
 import { MatSort, MatTableDataSource, MatPaginator, MatDialog, MAT_DIALOG_DATA} from '@angular/material';
 import { SelectionModel }         from '@angular/cdk/collections';
-
 import { Router, ActivatedRoute } from '@angular/router';
 import { Location }               from '@angular/common';
 
-import { AppConfig }              from '../../app.config';
-import { LoaderService }          from '../../loader.service';
-import { MaterialService }        from '../../material/material.service';
-import { QueryInput }             from '../../common/model/query-input.model';
-import { MenuTime }               from '../../common/model/menu-time.model';
+import { AppConfig }              from '@r-app/app.config';
+import { LoaderService }          from '@r-service/loader.service';
+import { MaterialService }        from '@r-material/material.service';
+import { QueryInput }             from '@r-model/query-input.model';
+import { MenuTime }               from '@r-model/menu-time.model';
 
-import { Day }                    from '../../day.enum';
-import { Product }                from '../../product/product.model';
-import { ProductService }         from '../../product/product.service';
-import { Branch }                 from '../../branch/branch.model';
-import { BranchService }          from '../../branch/branch.service';
-import { Menu }                   from '../menu.model';
-import { MenuService }            from '../menu.service';
+import { Day }                    from '@r-enum/day.enum';
+import { Product }                from '@r-product/product.model';
+import { ProductService }         from '@r-product/product.service';
+import { Branch }                 from '@r-branch/branch.model';
+import { BranchService }          from '@r-branch/branch.service';
+import { Menu }                   from '@r-menu/menu.model';
+import { MenuService }            from '@r-menu/menu.service';
 
 import {Observable} from 'rxjs/Observable';
 import 'rxjs/add/observable/merge';
@@ -28,7 +27,13 @@ import 'rxjs/add/operator/startWith';
 import 'rxjs/add/operator/switchMap';
 
 
-
+/**
+ * @export
+ * @class MenuFormComponent
+ * @implements {OnInit}
+ * @implements {OnDestroy}
+ * @implements {AfterViewInit}
+ */
 @Component({
   selector:                 'app-menu-form',
   templateUrl:              './menu-form.component.html',
@@ -36,6 +41,7 @@ import 'rxjs/add/operator/switchMap';
   encapsulation:            ViewEncapsulation.None
 })
 export class MenuFormComponent implements OnInit, OnDestroy, AfterViewInit  {
+// DECLARATIONS --------------------------
   private sub:               any;
   submitted:                 boolean;
   loading = {
@@ -82,31 +88,10 @@ export class MenuFormComponent implements OnInit, OnDestroy, AfterViewInit  {
   branchDataSourceCopy:     any;
   branchFilter:             Branch;
 
-  /**
-   * Constructor
-   * @param Router          router
-   * @param ActivatedRoute  route
-   * @param Location        location
-   * @param MenuService     service
-   * @param MaterialService material
-   */
-  constructor(
-    private router:             Router,
-    private route:              ActivatedRoute,
-    private location:           Location,
-    public  material:           MaterialService,
-    public  loader:             LoaderService,
-    private service:            MenuService,
-    private productService:     ProductService,
-    private branchService:      BranchService,
-  ) {
-    loader.onLoadingChanged.subscribe(isLoading => {
-      this.loading.get = isLoading;
-    });
 
-    this.start();
-  }
 
+
+// MAIN ----------------------------------
   /**
    * Execute before onInit
    */
@@ -133,7 +118,6 @@ export class MenuFormComponent implements OnInit, OnDestroy, AfterViewInit  {
     this.startBranch();
   }
 
-
   /**
    * Execute after load all components
    */
@@ -145,11 +129,10 @@ export class MenuFormComponent implements OnInit, OnDestroy, AfterViewInit  {
     this.branchDataSource.paginator  = this.branchPaginator;
   }
 
-
-
   /**
    * Determine if is new item or edit item
-   * @param boolean value
+   * @param {boolean} value
+   * @memberof MenuFormComponent
    */
   public setNewItem(value: boolean) {
     if (value) {
@@ -167,7 +150,8 @@ export class MenuFormComponent implements OnInit, OnDestroy, AfterViewInit  {
 
   /**
    * Show item details
-   * @param number id
+   * @param {number} id
+   * @memberof MenuFormComponent
    */
   public get(id: number) {
     this.service.get(id, {'include': 'category,time,branch,product'}).subscribe(success => {
@@ -183,7 +167,8 @@ export class MenuFormComponent implements OnInit, OnDestroy, AfterViewInit  {
 
   /**
    * Submit data to create or update
-   * @param Menu item
+   * @param {Menu} item
+   * @memberof MenuFormComponent
    */
   public submitForm(item: Menu) {
     this.submitted       = true;
@@ -198,7 +183,8 @@ export class MenuFormComponent implements OnInit, OnDestroy, AfterViewInit  {
 
   /**
    * Send request to save
-   * @param Menu item
+   * @param {Menu} item
+   * @memberof MenuFormComponent
    */
   public save(item: Menu) {
     Observable.of(this.service.save(item))
@@ -210,14 +196,15 @@ export class MenuFormComponent implements OnInit, OnDestroy, AfterViewInit  {
     .subscribe(success  => {
       this.accomplished();
     }, error => {
-      this.material.error('Erro ao atualizar cardápio', error);
+      this.material.error('Erro ao criar cardápio', error);
     });
   }
 
   /**
    * Send update request
-   * @param Menu item
-   * @param number id
+   * @param {Menu} item
+   * @param {number} id
+   * @memberof MenuFormComponent
    */
   public update(item: Menu, id: number) {
     Observable.of(this.service.update(item, id))
@@ -321,7 +308,7 @@ export class MenuFormComponent implements OnInit, OnDestroy, AfterViewInit  {
 
 
 
-  // DATATABLE AUX SECTION ---------------------------
+// DATATABLE AUX SECTION -----------------
   /**
    * List all branch selection of this menu
    */
@@ -381,7 +368,38 @@ export class MenuFormComponent implements OnInit, OnDestroy, AfterViewInit  {
   }
 
 
-  // OTHERS SECTION ---------------------------
+
+
+// OTHERS SECTION ------------------------
+  /**
+   * Creates an instance of MenuFormComponent.
+   * @param {Router} router
+   * @param {ActivatedRoute} route
+   * @param {Location} location
+   * @param {MaterialService} material
+   * @param {LoaderService} loader
+   * @param {MenuService} service
+   * @param {ProductService} productService
+   * @param {BranchService} branchService
+   * @memberof MenuFormComponent
+   */
+  constructor(
+    private router:             Router,
+    private route:              ActivatedRoute,
+    private location:           Location,
+    public  material:           MaterialService,
+    public  loader:             LoaderService,
+    private service:            MenuService,
+    private productService:     ProductService,
+    private branchService:      BranchService,
+  ) {
+    loader.onLoadingChanged.subscribe(isLoading => {
+      this.loading.get = isLoading;
+    });
+
+    this.start();
+  }
+
   /**
    * Go back and show message.
    */
