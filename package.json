@@ -9,7 +9,6 @@
     "lint": "ng lint",
     "e2e": "ng e2e",
     "install": "npm install",
-    "preinstall": "npm install -g @angular/cli @angular/compiler-cli typescript",
     "postinstall": "ng build --aot -prod",
     "start": "node server.js"
   },
