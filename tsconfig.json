@@ -27,7 +27,8 @@
       "@r-company/*":     ["app/company/*"],
       "@r-material/*":    ["app/material/*"],
       "@r-menu/*":        ["app/menu/*"],
-      "@r-product/*":     ["app/product/*"]
+      "@r-product/*":     ["app/product/*"],
+      "@r-environment/*": ["environments/*"]
     }
   }
 }

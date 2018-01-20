@@ -2,7 +2,7 @@ import { Injectable, Injector }     from '@angular/core';
 import { HttpClient, HttpHeaders, HttpParams }               from '@angular/common/http';
 import { Observable }               from 'rxjs/Observable';
 
-import { AppConfig }                from '../app.config';
+import { environment }              from '@r-environment/environment';
 import { Presenter }                from '@r-model/presenter.model';
 import { QueryInput }               from '@r-model/query-input.model';
 
@@ -21,7 +21,7 @@ export class BranchDao {
    * @memberof BranchDao
    */
   constructor(private http: HttpClient) {
-    this.path = `${AppConfig.BASE_URL}/api/company/${AppConfig.COMPANY_ID}/branch/`;
+    this.path = `${environment.apiUrl}/api/company/${environment.COMPANY_ID}/branch/`;
   }
 
   /**

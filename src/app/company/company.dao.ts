@@ -2,7 +2,7 @@ import { Injectable, Injector }     from '@angular/core';
 import { HttpClient, HttpParams }   from '@angular/common/http';
 import { Observable }               from 'rxjs/Observable';
 
-import { AppConfig }                from '@r-app/app.config';
+import { environment }              from '@r-environment/environment';
 import { Presenter }                from '@r-model/presenter.model';
 import { QueryInput }               from '@r-model/query-input.model';
 
@@ -22,7 +22,7 @@ export class CompanyDao {
   constructor(
     private http:      HttpClient
   ) {
-    this.path = `${AppConfig.BASE_URL}/api/company/`;
+    this.path = `${environment.apiUrl}/api/company/`;
   }
 
   /**

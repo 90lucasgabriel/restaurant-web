@@ -1,6 +1,6 @@
 import { Component, ViewChild }     from '@angular/core';
 import { MatSidenav }               from '@angular/material';
-import { AppConfig }                from '@r-app/app.config';
+import { environment }              from '@r-environment/environment';
 import { MaterialService }          from '@r-material/material.service';
 import { LoaderService }            from '@r-service/loader.service';
 
@@ -29,22 +29,22 @@ export class AppComponent {
     {
       name: 'Filiais',
       icon: 'store',
-      link: 'company/' + AppConfig.COMPANY_ID + '/branch'
+      link: 'company/' + environment.COMPANY_ID + '/branch'
     },
     {
       name: 'Categorias',
       icon: 'label',
-      link: 'company/' + AppConfig.COMPANY_ID + '/category'
+      link: 'company/' + environment.COMPANY_ID + '/category'
     },
     {
       name: 'Produtos',
       icon: 'shopping_cart',
-      link: 'company/' + AppConfig.COMPANY_ID + '/product'
+      link: 'company/' + environment.COMPANY_ID + '/product'
     },
     {
       name: 'Cardápios',
       icon: 'restaurant',
-      link: 'company/' + AppConfig.COMPANY_ID + '/menu'
+      link: 'company/' + environment.COMPANY_ID + '/menu'
     },
     {
       name: 'Pedidos',
