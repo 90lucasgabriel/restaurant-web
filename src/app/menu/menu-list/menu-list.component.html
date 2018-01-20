@@ -5,7 +5,7 @@
       <div class="flex-65 text-title">Cardápios</div>
       <div class="flex-30 text-right">
         <button mat-icon-button (click)="showFilter = !showFilter" matTooltip="Filtrar"><mat-icon>filter_list</mat-icon></button>
-        <button mat-icon-button (click)="deleteConfirm(row)" matTooltip="Exportar"><mat-icon>share</mat-icon></button>
+        <button mat-icon-button matTooltip="Exportar"><mat-icon>share</mat-icon></button>
         <button mat-icon-button *ngIf="selection.selected.length > 0" (click)="deleteConfirm(selection)" matTooltip="Excluir"><mat-icon>delete</mat-icon></button>
       </div>  
     </div>

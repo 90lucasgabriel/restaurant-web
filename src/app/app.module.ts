@@ -18,10 +18,8 @@ import { HeaderInterceptor }          from '@r-interceptor/header.interceptor';
 import { BranchModule }               from '@r-branch/branch.module';
 import { CategoryModule }             from '@r-category/category.module';
 import { CompanyModule }              from '@r-company/company.module';
-// import { HomeModule }                 from '@r-home/home.module';
 import { MenuModule }                 from '@r-menu/menu.module';
 import { ProductModule }              from '@r-product/product.module';
-// import { CustomCommonModule }         from '@r-common/custom-common.module';
 
 
 @NgModule({
@@ -36,14 +34,12 @@ import { ProductModule }              from '@r-product/product.module';
     FormsModule,
     ReactiveFormsModule,
 
-    // CustomCommonModule,
     AppRoutingModule,
     MaterialModule,
 
     BranchModule,
     CategoryModule,
     CompanyModule,
-    // HomeModule,
     MenuModule,
     ProductModule
   ],

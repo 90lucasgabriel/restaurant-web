@@ -5,7 +5,7 @@
     <div class="flex-65 text-title">Categorias</div>
     <div class="flex-30 text-right">
       <button mat-icon-button (click)="showFilter = !showFilter" matTooltip="Filtrar"><mat-icon>filter_list</mat-icon></button>
-      <button mat-icon-button (click)="deleteConfirm(row)" matTooltip="Exportar"><mat-icon>share</mat-icon></button>
+      <button mat-icon-button matTooltip="Exportar"><mat-icon>share</mat-icon></button>
       <button mat-icon-button *ngIf="selection.selected.length > 0" (click)="deleteConfirm(selection)" matTooltip="Excluir"><mat-icon>delete</mat-icon></button>
     </div>  
   </div>
@@ -62,14 +62,7 @@
   <!-- LIST START -->
   <div class="flex content-page" [ngClass]="{'hide': dataSource.data.length == 0}">
     <div class="flex full-width mat-elevation-z4">
-      <div style="display: none" class="loading-shade full-width" *ngIf="(loadingResults || timeout)">
-        <mat-spinner *ngIf="loadingResults" mode="indeterminate" diameter="40" strokeWidth="5" style="padding: 0"></mat-spinner>
-        <div *ngIf="timeout" class="mat-typography text-center">
-          <div><mat-icon style="font-size: 50px">sync_problem</mat-icon></div>
-          <div>Não foi possível executar a ação. Tente novamente mais tarde.</div>
-        </div>
-      </div>
-    
+
       <mat-table #table [dataSource]="dataSource" class="example-table"
         matSort matSortActive="id" matSortDirection="desc">    
         <!-- Checkbox Column -->
