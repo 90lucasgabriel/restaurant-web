@@ -2,7 +2,6 @@
   "name": "restaurant-desktop",
   "version": "0.0.0",
   "license": "MIT",
-  "main": "app.js",
   "scripts": {
     "ng": "ng",
     "build": "ng build",
