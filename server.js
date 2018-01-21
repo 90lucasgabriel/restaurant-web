@@ -3,7 +3,7 @@ const express = require('express');
 const http = require('http');
 const path = require('path');
 
-const api = require('.server/routes/api');
+//const api = require('.app/app-routing');
 const app = express();
 // Run the app by serving the static files
 // in the dist directory
