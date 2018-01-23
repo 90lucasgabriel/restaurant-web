@@ -10,7 +10,8 @@
     "lint": "ng lint",
     "e2e": "ng e2e",
     "postinstall": "ng build --prod",
-    "start": "node server.js"
+    "start": "node server.js",
+    "deploy": "ng build --prod && firebase deploy && firebase open hosting:site"
   },
   "private": true,
   "dependencies": {
