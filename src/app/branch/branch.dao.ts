@@ -41,7 +41,7 @@ export class BranchDao {
    * @returns {Observable<Presenter<Category>>}
    * @memberof CategoryDao
    */
-  public get(id: number, queryInput: QueryInput): Observable<Presenter<Category>> {
+  public get(id: number, queryInput: QueryInput): Observable<Presenter<Branch>> {
     return this.http.get(`${this.path}/${id}`, {params: <HttpParams> queryInput});
   }
 

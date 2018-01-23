@@ -35,8 +35,8 @@ export class BranchService {
    * @returns {Observable<Presenter<Branch>>}
    * @memberof BranchService
    */
-  public get(id: number): Observable<Presenter<Branch>> {
-    return this.dao.get(id);
+  public get(id: number, queryInput?: QueryInput): Observable<Presenter<Branch>> {
+    return this.dao.get(id, queryInput);
   }
 
   /**
