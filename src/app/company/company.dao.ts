@@ -22,7 +22,7 @@ export class CompanyDao {
   constructor(
     private http:      HttpClient
   ) {
-    this.path = `${environment.apiUrl}/api/company/`;
+    this.path = `${environment.apiUrl}/api/company`;
   }
 
   /**

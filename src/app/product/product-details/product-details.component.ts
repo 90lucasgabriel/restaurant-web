@@ -61,7 +61,7 @@ export class ProductDetailsComponent implements OnInit, OnDestroy {
    * @param number id
    */
   public get(id: number) {
-    this.service.get(id, {'include': 'parent'}).subscribe(success => {
+    this.service.get(id, {'include': 'category'}).subscribe(success => {
       this.item    = success.data;
       this.oldItem = JSON.parse(JSON.stringify(this.item)); //copy
     }, error => {

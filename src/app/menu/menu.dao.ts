@@ -23,7 +23,7 @@ export class MenuDao {
    * @memberof MenuDao
    */
   constructor(private http: HttpClient) {
-    this.path = environment.apiUrl + '/api/company/' + environment.COMPANY_ID + '/menu/';
+    this.path = environment.apiUrl + '/api/company/' + environment.COMPANY_ID + '/menu';
   }
 
   /**
@@ -44,7 +44,7 @@ export class MenuDao {
    * @memberof MenuDao
    */
   public get(id: number, queryInput: QueryInput): Observable<Presenter<Menu>> {
-    return this.http.get(this.path + id, {params: <HttpParams> queryInput});
+    return this.http.get(`${this.path}/${id}`, {params: <HttpParams> queryInput});
   }
 
    /**
@@ -65,7 +65,7 @@ export class MenuDao {
    * @memberof MenuDao
    */
   public update(item: Menu, id: number): Observable<Presenter<Menu>> {
-    return this.http.put(this.path + id, item);
+    return this.http.put(`${this.path}/${id}`, item);
   }
 
   /**
@@ -75,7 +75,7 @@ export class MenuDao {
    * @memberof MenuDao
    */
   public delete(id: number): Observable<any> {
-    return this.http.delete(this.path + id);
+    return this.http.delete(`${this.path}/${id}`);
   }
 
 
@@ -90,7 +90,7 @@ export class MenuDao {
    * @memberof MenuDao
    */
   public syncTime(items: Array<any>, menu_id: number): Observable<Presenter<any>> {
-    const path = this.path + menu_id + '/time';
+    const path = `${this.path}/${menu_id}/time`;
     return this.http.post(path, {'time': items});
   }
 
@@ -106,7 +106,7 @@ export class MenuDao {
    * @memberof MenuDao
    */
   public syncProduct(items: Array<Product>, menu_id: number): Observable<Presenter<Product>> {
-    const path = this.path + menu_id + '/product';
+    const path = `${this.path}/${menu_id}/product`;
     return this.http.post(path, {'product': items});
   }
 
@@ -122,7 +122,7 @@ export class MenuDao {
    * @memberof MenuDao
    */
   public syncBranch(items: Array<Branch>, menu_id: number): Observable<Presenter<Branch>> {
-    const path = this.path + menu_id + '/branch';
+    const path = `${this.path}/${menu_id}/branch`;
     return this.http.post(path, {'branch': items});
   }
 }

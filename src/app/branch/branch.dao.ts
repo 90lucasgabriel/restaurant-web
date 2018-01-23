@@ -21,7 +21,7 @@ export class BranchDao {
    * @memberof BranchDao
    */
   constructor(private http: HttpClient) {
-    this.path = `${environment.apiUrl}/api/company/${environment.COMPANY_ID}/branch/`;
+    this.path = `${environment.apiUrl}/api/company/${environment.COMPANY_ID}/branch`;
   }
 
   /**
@@ -37,11 +37,12 @@ export class BranchDao {
   /**
    *  Returns only one item of the resource
    * @param {number} id
-   * @returns {Observable<Presenter<Branch>>}
-   * @memberof BranchDao
+   * @param {QueryInput} queryInput
+   * @returns {Observable<Presenter<Category>>}
+   * @memberof CategoryDao
    */
-  public get(id: number): Observable<Presenter<Branch>> {
-    return this.http.get(this.path + id);
+  public get(id: number, queryInput: QueryInput): Observable<Presenter<Category>> {
+    return this.http.get(`${this.path}/${id}`, {params: <HttpParams> queryInput});
   }
 
    /**
@@ -62,7 +63,7 @@ export class BranchDao {
    * @memberof BranchDao
    */
   public update(item: Branch, id: number): Observable<any> {
-    return this.http.put(this.path + id, item);
+    return this.http.put(`${this.path}/${id}`, item);
   }
 
   /**
@@ -72,6 +73,6 @@ export class BranchDao {
    * @memberof BranchDao
    */
   public delete(id: number): Observable<any> {
-    return this.http.delete(this.path + id);
+    return this.http.delete(`${this.path}/${id}`);
   }
 }

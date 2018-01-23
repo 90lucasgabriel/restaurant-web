@@ -22,13 +22,13 @@ export class ProductDao {
    * @memberof ProductDao
    */
   constructor(private http: HttpClient) {
-    this.path = `${environment.apiUrl}/api/company/${environment.COMPANY_ID}/product/`;
+    this.path = `${environment.apiUrl}/api/company/${environment.COMPANY_ID}/product`;
   }
 
   /**
    * Returns a list of the resource
    * @param {QueryInput} queryInput
-   * @returns {Observable<Presenter<Array<Product>>>} 
+   * @returns {Observable<Presenter<Array<Product>>>}
    * @memberof ProductDao
    */
   public query(queryInput: QueryInput): Observable<Presenter<Array<Product>>> {
@@ -40,7 +40,7 @@ export class ProductDao {
    * @param number id
    */
   public get(id: number, queryInput: QueryInput): Observable<Presenter<Product>> {
-    return this.http.get(this.path + id, {params: <HttpParams> queryInput});
+    return this.http.get(`${this.path}/${id}`, {params: <HttpParams> queryInput});
   }
 
    /**
@@ -57,7 +57,7 @@ export class ProductDao {
    * @param number id
    */
   public update(item: Product, id: number): Observable<any> {
-    return this.http.put(this.path + id, item);
+    return this.http.put(`${this.path}/${id}`, item);
   }
 
   /**
@@ -65,6 +65,6 @@ export class ProductDao {
    * @param number id
    */
   public delete(id: number): Observable<any> {
-    return this.http.delete(this.path + id);
+    return this.http.delete(`${this.path}/${id}`);
   }
 }

@@ -22,7 +22,7 @@ export class CategoryDao {
    * @memberof CategoryDao
    */
   constructor(private http: HttpClient) {
-    this.path = `${environment.apiUrl}/api/company/${environment.COMPANY_ID}/category/`;
+    this.path = `${environment.apiUrl}/api/company/${environment.COMPANY_ID}/category`;
   }
 
   /**
@@ -43,7 +43,7 @@ export class CategoryDao {
    * @memberof CategoryDao
    */
   public get(id: number, queryInput: QueryInput): Observable<Presenter<Category>> {
-    return this.http.get(this.path + id, {params: <HttpParams> queryInput});
+    return this.http.get(`${this.path}/${id}`, {params: <HttpParams> queryInput});
   }
 
    /**
@@ -64,7 +64,7 @@ export class CategoryDao {
    * @memberof CategoryDao
    */
   public update(item: Category, id: number): Observable<any> {
-    return this.http.put(this.path + id, item);
+    return this.http.put(`${this.path}/${id}`, item);
   }
 
   /**
@@ -74,6 +74,6 @@ export class CategoryDao {
    * @memberof CategoryDao
    */
   public delete(id: number): Observable<any> {
-    return this.http.delete(this.path + id);
+    return this.http.delete(`${this.path}/${id}`);
   }
 }
