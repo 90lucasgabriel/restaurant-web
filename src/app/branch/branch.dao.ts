@@ -25,7 +25,7 @@ export class BranchDao {
   }
 
   /**
-   * Returns a list of the resource
+   * Returns a list of the resource.
    * @param {QueryInput} queryInput
    * @returns {Observable<Presenter<Array<Branch>>>}
    * @memberof BranchDao

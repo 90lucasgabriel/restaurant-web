@@ -36,7 +36,7 @@ export class CategoryDao {
   }
 
   /**
-   *  Returns only one item of the resource
+   *  Returns only one item of the resource.
    * @param {number} id
    * @param {QueryInput} queryInput
    * @returns {Observable<Presenter<Category>>}
@@ -47,7 +47,7 @@ export class CategoryDao {
   }
 
    /**
-   * Create new itemof resource on database
+   * Create new itemof resource on database.
    * @param {Category} item
    * @returns {Observable<any>}
    * @memberof CategoryDao

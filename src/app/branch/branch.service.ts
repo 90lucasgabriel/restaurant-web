@@ -30,7 +30,7 @@ export class BranchService {
   }
 
   /**
-   * Returns only one item of the resource.
+   * Returns only one item of the resource
    * @param {number} id
    * @returns {Observable<Presenter<Branch>>}
    * @memberof BranchService

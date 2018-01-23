@@ -26,7 +26,7 @@ export class ProductDao {
   }
 
   /**
-   * Returns a list of the resource
+   * Returns a list of the resource.
    * @param {QueryInput} queryInput
    * @returns {Observable<Presenter<Array<Product>>>}
    * @memberof ProductDao

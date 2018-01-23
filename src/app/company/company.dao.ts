@@ -16,7 +16,7 @@ export class CompanyDao {
   private path: string;
 
   /**
-   * Constructor
+   * Constructor.
    * @param HttpClient http
    */
   constructor(
