@@ -1,9 +1,6 @@
 import { Day } from '@r-enum/day.enum';
 
 export class AppConfig {
-  public static BASE_URL = 'http://localhost:8000';
-  public static COMPANY_ID = 1;
-
   public static DAYS = [
     {day: Day.SUNDAY,     name: 'Domingo'},
     {day: Day.MONDAY,     name: 'Segunda-feira'},

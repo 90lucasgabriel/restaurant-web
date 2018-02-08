@@ -1,0 +1,106 @@
+<div class="container-flex" [ngClass]="{'flex-center': true}">
+  <!-- BACK AND TITLE START -->
+  <div class="mat-typography container-flex header-page content-page">
+    <div class="flex-5"><button mat-icon-button><mat-icon>shopping_cart</mat-icon></button></div>
+    <div class="flex-65 text-title">Status</div>
+    <div class="flex-30 text-right">
+      <button mat-icon-button (click)="showFilter = !showFilter" matTooltip="Filtrar"><mat-icon>filter_list</mat-icon></button>
+      <button mat-icon-button matTooltip="Exportar"><mat-icon>share</mat-icon></button>
+      <button mat-icon-button *ngIf="selection.selected.length > 0" (click)="deleteConfirm(selection)" matTooltip="Excluir"><mat-icon>delete</mat-icon></button>
+    </div>  
+  </div>
+  <!--BACK AND TITLE END -->
+
+  <!-- FILTER START -->
+  <div class="flex container-flex content-page margin-bottom" *ngIf="showFilter">
+    <div class="flex-20 margin-right">
+      <mat-form-field class="full-width">
+        <input matInput placeholder="ID" [(ngModel)]="filter.id" name="filter.id" (keyup)="applyFilter(dataSource, dataSourceCopy, filter)">
+      </mat-form-field>
+    </div>
+    <div class="flex-20 margin-right">
+      <mat-form-field class="full-width">
+        <input matInput placeholder="Nome" [(ngModel)]="filter.name" name="filter.name" (keyup)="applyFilter(dataSource, dataSourceCopy, filter)">
+      </mat-form-field>
+    </div>
+    <div class="flex-20 margin-right">
+      <mat-form-field class="full-width">
+        <input matInput placeholder="Descrição" [(ngModel)]="filter.description" name="filter.description" (keyup)="applyFilter(dataSource, dataSourceCopy, filter)">
+      </mat-form-field>
+    </div>
+  </div>
+  <!-- FILTER END -->
+
+  <!-- LOADERS START -->
+  <div class="content-page" *ngIf="loading">
+    <mat-progress-spinner mode="indeterminate" diameter="30" strokeWidth="4"></mat-progress-spinner>
+  </div>
+  <div class="text-center mat-typography" *ngIf="dataSource.data.length == 0 && !loading">
+    <mat-icon class="big">help_outline</mat-icon>
+    <h3>Nenhum resultado encontrado.</h3>
+  </div>
+  <!-- LOADERS END -->
+
+  <!-- LIST START -->
+  <div class="flex content-page" [ngClass]="{'hide': dataSource.data.length == 0}">
+    <div class="flex full-width mat-elevation-z4">
+    
+      <mat-table #table [dataSource]="dataSource" 
+        matSort matSortActive="id" matSortDirection="desc">
+        <!-- Checkbox Column -->
+        <ng-container matColumnDef="select">
+          <mat-header-cell *matHeaderCellDef class="id-column">
+            <mat-checkbox (change)="$event ? masterToggle(dataSourceCopy, selection) : null"
+                          [checked]="selection.hasValue() && isAllSelected(dataSourceCopy, selection)"
+                          [indeterminate]="selection.hasValue() && !isAllSelected(dataSourceCopy, selection)">
+            </mat-checkbox>
+          </mat-header-cell>
+          <mat-cell *matCellDef="let row" class="id-column">
+            <mat-checkbox (click)="$event.stopPropagation()"
+                          (change)="$event ? selection.toggle(row) : null"
+                          [checked]="selection.isSelected(row)">
+            </mat-checkbox>
+          </mat-cell>
+        </ng-container>
+        
+        <!-- ID Column -->
+        <ng-container matColumnDef="id">
+          <mat-header-cell *matHeaderCellDef mat-sort-header class="id-column"> ID </mat-header-cell>
+          <mat-cell *matCellDef="let row" class="id-column"> {{row.id}} </mat-cell>
+        </ng-container>
+
+        <!-- Name Column -->
+        <ng-container matColumnDef="name">
+          <mat-header-cell *matHeaderCellDef mat-sort-header> Nome </mat-header-cell>
+          <mat-cell *matCellDef="let row"> {{row.name}} </mat-cell>
+        </ng-container>
+
+        <!-- Description Column -->
+        <ng-container matColumnDef="description">
+          <mat-header-cell *matHeaderCellDef mat-sort-header> Descrição </mat-header-cell>
+          <mat-cell *matCellDef="let row"> {{row.description}} </mat-cell>
+        </ng-container>
+
+        <!-- Actions Column -->
+        <ng-container matColumnDef="actions">
+          <mat-header-cell *matHeaderCellDef class="actions-column"></mat-header-cell>
+          <mat-cell *matCellDef="let row" class="hover-child actions-column">
+              <button mat-icon-button [routerLink]="[row.id, 'edit']" matTooltip="Editar"><mat-icon>edit</mat-icon></button>
+              <button mat-icon-button (click)="deleteConfirm({selected: [row]})" matTooltip="Excluir"><mat-icon>delete</mat-icon></button>
+          </mat-cell>
+        </ng-container>
+
+        <!-- HEADERS AND ROWS -->
+        <mat-header-row *matHeaderRowDef="columns"></mat-header-row>
+        <mat-row class="hover-parent pointer" *matRowDef="let row; columns: columns;" (click)="goDetails(row.id)"></mat-row>
+      </mat-table>
+    
+      <mat-paginator [length]="total" [pageSize]="20" [pageSizeOptions]="[5, 10, 25, 100]"></mat-paginator>
+    </div>
+  </div>
+  <!-- LIST END -->
+
+  <div class="fab-position">
+    <button mat-fab [routerLink]="['new']" matTooltip="Novo" matTooltipPosition="left"><mat-icon>add</mat-icon></button>
+  </div>
+</div>

@@ -138,8 +138,14 @@ export class MaterialService {
    * @memberof MaterialService
    */
   public filterList(item: any, filter: any) {
+
     for (const tag in item) { // Verify property by property
       if (filter[tag]) {      // Verify undefined
+        if (item[tag].data) {
+          if (item[tag].data.constructor === Array) {
+            return item[tag].data.filter(i => this.filterList(i, filter[tag]));
+          }
+        }
         if (!item[tag].toString().trim().toLowerCase().includes(filter[tag].toString().trim().toLowerCase())) {
           return false;
         }
@@ -149,6 +155,16 @@ export class MaterialService {
   }
 
 
+  // public filterList(item: any, filter: any) {
+  //   for (const tag in item) { // Verify property by property
+  //     if (filter[tag]) {      // Verify undefined
+  //       if (!item[tag].toString().trim().toLowerCase().includes(filter[tag].toString().trim().toLowerCase())) {
+  //         return false;
+  //       }
+  //     }
+  //   }
+  //   return true;
+  // }
 
 
 // OTHERS -----------------------------

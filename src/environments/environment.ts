@@ -6,5 +6,6 @@
 export const environment = {
   production: false,
   apiUrl: 'http://localhost:8000',
-  COMPANY_ID: 1
+  COMPANY_ID: 1,
+  BRANCH_ID: 5
 };

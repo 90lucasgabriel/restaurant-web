@@ -1,0 +1,72 @@
+<div class="container-flex" [ngClass]="{'flex-center': true}">
+  <!-- BACK AND TITLE START -->
+  <div class="mat-typography container-flex header-page content-page">
+    <div class="flex-5"><button mat-icon-button><mat-icon>assignment</mat-icon></button></div>
+    <div class="flex-65 text-title">Contas</div>
+    <div class="flex-30 text-right">
+      <button mat-icon-button (click)="showFilter = !showFilter" matTooltip="Filtrar"><mat-icon>filter_list</mat-icon></button>
+      <button mat-icon-button matTooltip="Exportar"><mat-icon>share</mat-icon></button>
+    </div>  
+  </div>
+  <!--BACK AND TITLE END -->
+
+  <!-- FILTER START -->
+  <div class="flex container-flex content-page margin-bottom" *ngIf="false && showFilter">
+    <div class="flex-20 margin-right">
+    </div>
+    <div class="flex-20 margin-right">
+      <mat-form-field class="full-width">
+        <mat-select placeholder="Status conta" [(ngModel)]="filter.order_status_id" name="filter.order_status_id" (change)="applyFilter(orderList, orderListCopy, filter)">
+            <mat-option>-</mat-option>
+            <mat-option value="1">Aberto</mat-option>
+            <mat-option value="2">Pendente</mat-option>
+            <mat-option value="3">Pago</mat-option>
+          </mat-select>
+      </mat-form-field>
+    </div>
+    <div class="flex-20 margin-right">
+      <mat-form-field class="full-width">        
+        <mat-select placeholder="Status" [(ngModel)]="filter.orderDetail.order_detail_status_id" name="filter.orderDetail.order_detail_status_id" (change)="applyFilter(orderList, orderListCopy, filter)">
+          <mat-option>-</mat-option>
+          <mat-option *ngFor="let status of statusList" [value]="status.id">
+            {{ status.name }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+  </div>
+  <!-- FILTER END -->
+  
+
+
+  <!-- LIST START -->
+  <div *ngFor="let ol of orderList" class="container-flex content-page margin-bottom">
+    <mat-card class="flex-95">
+      <mat-card-header>
+        <mat-card-title>#{{ol.id}} - Mesa: {{ol.diningtable.data.code}}</mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+          <mat-list *ngFor="let d of ol.orderDetail.data">
+            <mat-list-item>
+              <img matListAvatar src="{{d.product.data.image}}" class="margin-right">
+              <div class="flex-15">
+                {{d.product.data.name}}
+              </div>
+              <div class="flex-5">{{d.quantity}}</div>
+              <div class="flex-5">{{d.orderDetailStatus.data.name}}</div>
+              <div class="flex-5 text-right">
+                <button mat-icon-button matTooltip="Cancelar"><mat-icon>clear</mat-icon></button>
+                <button mat-icon-button matTooltip="Concluir"><mat-icon>check</mat-icon></button>
+              </div>
+            </mat-list-item>
+          </mat-list>
+      </mat-card-content>
+    </mat-card>
+    
+  </div>
+  <!-- LIST END -->
+
+  <div class="fab-position">
+    <button mat-fab [routerLink]="['new']" matTooltip="Novo" matTooltipPosition="left"><mat-icon>add</mat-icon></button>
+  </div>
+</div>

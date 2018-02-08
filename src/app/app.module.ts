@@ -19,6 +19,9 @@ import { BranchModule }               from '@r-branch/branch.module';
 import { CategoryModule }             from '@r-category/category.module';
 import { CompanyModule }              from '@r-company/company.module';
 import { MenuModule }                 from '@r-menu/menu.module';
+import { OrderModule }                from '@r-order/order.module';
+import { OrderDetailModule }          from '@r-order-detail/order-detail.module';
+import { OrderStatusModule }          from '@r-order-status/order-status.module';
 import { ProductModule }              from '@r-product/product.module';
 
 
@@ -41,6 +44,9 @@ import { ProductModule }              from '@r-product/product.module';
     CategoryModule,
     CompanyModule,
     MenuModule,
+    OrderModule,
+    OrderDetailModule,
+    OrderStatusModule,
     ProductModule
   ],
   exports: [
