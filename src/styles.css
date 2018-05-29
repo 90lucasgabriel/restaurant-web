@@ -1,20 +1,34 @@
 /* You can add global styles to this file, and also import other style files */
-@import "~@angular/material/prebuilt-themes/indigo-pink.css";
+/*@import "~@angular/material/prebuilt-themes/indigo-pink.css";*/
+/*@import "~@angular/material/prebuilt-themes/purple-green.css";*/
 
 /*GENERAL--------------------------------------------------------------*/
-html, body, material-app, mat-sidenav-container, .my-content {
+html, body, material-app, .my-content, .total-absolute {
   margin:             0;
   width:              100%;
   height:             100%;
-  color:            #666;
+  /*color:            #666;*/
 }
 
-.color-accent {
-  color:            red;
+.total-absolute {
+  position:           absolute;
+}
+
+.main-content{
+  max-height: none !important;
 }
 
 mat-card mat-icon, mat-table mat-icon{
-  color:            #666;
+  /*color:            #666;*/
+}
+
+.rounded-border {
+  border-radius:      15px;
+  overflow:           hidden;
+}
+
+mat-table {
+  overflow-x:         auto;
 }
 
 .pointer, mat-icon-button{
@@ -58,8 +72,21 @@ mat-card-title-group{
   width:              calc(92% + 48px);
 }
 
+.no-margin-bottom {
+  margin-bottom:      0 !important;
+}
+
+.no-padding-bottom {
+  padding-bottom:     0 !important;
+}
+
 .padding{
-  padding:            20px;
+  padding:            15px;
+}
+
+.padding-side {
+  padding-left:       5px;
+  padding-right:      5px;
 }
 
 .padding-5{
@@ -214,15 +241,19 @@ mat-card-title-group{
 
 .actions-column{
   text-align:         right;
+  min-width:          90px;
   max-width:          90px;
 }
 
 .id-column{
-  max-width:          50px;
+  min-width:          50px;
+  max-width:          60px;
 }
 
 .number-column{
+  min-width:          80px;
   max-width:          100px;
+  text-align:         right;
 }
 
 mat-row:hover{
@@ -265,32 +296,16 @@ mat-row:hover{
 
 /*MATERIAL-------------------------------------------------------------*/
 /*SIDENAV*/
-mat-sidenav-container{
-  top:                5px;
-  height:             calc(100% - 75px);
-}
 
-mat-sidenav{
-  width:              200px;
-  overflow-y:         hidden !important;
-}
 
-mat-sidenav:hover{
-  overflow-y:         auto !important;
-}
 
-.mat-drawer{
-  background-color:   transparent;
-}
 
 /*TOOLBAR*/
-.space-center{
-  flex:               1 1 auto;
-}
-
 mat-toolbar{
   box-shadow:         0px 2px 7px #000000;
 }
+
+
 
 /*BUTTON*/
 .full-width{
@@ -306,9 +321,7 @@ mat-list, mat-list-item, mat-list-item:focus, .mat-list-focus:focus, textarea:fo
 
 
 /*PROGRESS SPINNER*/
-mat-progress-spinner{
-  margin:             0 auto;
-}
+
 
 /*FAB BUTTON*/
 .fab-position{
@@ -344,7 +357,7 @@ mat-icon.big{
   font-size:          180px; 
   height:             180px; 
   width:              180px;
-  color:              #666;
+  /*color:              #666;*/
 }
 
 .mat-tab-label mat-icon{

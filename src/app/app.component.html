@@ -1,36 +1,55 @@
-<mat-progress-bar style="position: absolute; top: 0" #progressBar *ngIf="progressBarVisible" color="accent" mode="query"></mat-progress-bar>
+<mat-progress-bar style="position: absolute; top: 0; z-index: 4" #progressBar *ngIf="progressBarVisible" color="accent" mode="indeterminate"></mat-progress-bar>
 
-<!-- TOOLBAR START -->
-<mat-toolbar color="primary">
-  <button mat-icon-button (click)="sidenav.toggle()">
-    <mat-icon>menu</mat-icon>
-  </button>
-  <span routerLink="" class="pointer">Restaurante</span>
-  <span class="space-center"></span>
-  <span>
-    <button mat-icon-button><mat-icon>notifications</mat-icon></button>
-    <button mat-icon-button><mat-icon>account_circle</mat-icon></button>
-  </span>
-</mat-toolbar>
-<!-- TOOLBAR END -->
+<div class="container mat-typography" [class.is-mobile]="mobileQuery.matches">
+  <!-- TOOLBAR START -->
+  <mat-toolbar fxLayout="row" fxLayoutAlign="space-between center" color="primary" class="toolbar">
+    <div fxLayout="row" fxLayoutAlign="start center">
+      <button mat-icon-button (click)="sidenav.toggle()">
+        <mat-icon>menu</mat-icon>
+      </button>
+      <span routerLink="" class="pointer">Restaurante</span>
+    </div>
+    
+    <div>
+      <button mat-icon-button [matMenuTriggerFor]="theme" matTooltip="Temas"><mat-icon>format_color_fill</mat-icon></button>
+      <mat-menu #theme="matMenu" xPosition="before" yPosition="below">
+        <button mat-menu-item *ngFor="let theme of themeList" (click)="selectTheme(theme.value)">{{theme.label}}</button>
+      </mat-menu>
+      <button mat-icon-button matTooltip="Notificações"><mat-icon>notifications</mat-icon></button>
+      <button fxHide.lt-md="true"  mat-icon-button matTooltip="Perfil"><mat-icon>account_circle</mat-icon></button>
+    </div>
+  </mat-toolbar>
+  <!-- TOOLBAR END  -->
 
-<mat-sidenav-container style="z-index: 0">
-  <!-- SIDE MENU START-->
-  <mat-sidenav #sidenav mode="side" opened="true">
-    <mat-list>
-      <mat-list-item *ngFor="let menu of menus" class="button-menu" routerLink='{{menu.link}}'>
-        <mat-icon mat-list-icon>{{menu.icon}}</mat-icon>
-        <h4 mat-line>{{menu.name}}</h4>
-      </mat-list-item>
-    </mat-list>
-  </mat-sidenav>
-  <!-- SIDE MENU END-->
+  <!-- SIDENAV START -->
+  <mat-sidenav-container class="sidenav-container">
+    <mat-sidenav #sidenav fixedTopGap="56" [mode]="mobileQuery.matches ? 'over' : 'side'">
+      <div class="total-absolute" (swiperight)="sidenav.open()" (swipeleft)="sidenav.close()">
+        <div fxHide.gt-sm="true" fxLayout="column" class="padding" style="background:rgba(0,0,0,0.5); color: white">
+          <div fxLayout="row" fxLayoutAlign="center center" style="width:45px; height: 45px; border-radius: 100%; padding: 10px; background:darkslategray; border: 2px solid white; margin-bottom: 10px">U</div>
+          <div>Nome do usuário</div>
+          <div>emaildousuario@email.com.br</div>
+        </div>
+        <mat-nav-list>
+          <mat-list>
+            <mat-list-item *ngFor="let menu of menus" class="button-menu" (click)="closeSideNav()" routerLink='{{menu.link}}'>
+              <mat-icon mat-list-icon>{{menu.icon}}</mat-icon>
+              <h4 mat-line>{{menu.name}}</h4>
+            </mat-list-item>
+          </mat-list>
+        </mat-nav-list>
+      </div>
+    </mat-sidenav>
 
-  <!-- CONTENT START-->
-  <div class="container">
-    <router-outlet></router-outlet>
-  </div>
-  <!-- CONTENT END-->
-</mat-sidenav-container>
-  
-  
+    <!-- CONTENT START -->
+    <mat-sidenav-content>
+      <div class="total-absolute" (swiperight)="sidenav.open()" (swipeleft)="sidenav.close()">
+        <router-outlet></router-outlet>
+      </div>
+    </mat-sidenav-content>
+    <!-- CONTENT END -->
+    
+  </mat-sidenav-container>
+  <!-- SIDENAV END -->
+
+</div>

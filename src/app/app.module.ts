@@ -3,7 +3,6 @@ import { BrowserModule }              from '@angular/platform-browser';
 import { BrowserAnimationsModule }    from '@angular/platform-browser/animations';
 import { HttpClientModule, HTTP_INTERCEPTORS }  from '@angular/common/http';
 import { FormsModule, ReactiveFormsModule }     from '@angular/forms';
-import { FlexLayoutModule }           from '@angular/flex-layout';
 
 import { AppComponent }               from '@r-app/app.component';
 import { AppConfig }                  from '@r-app/app.config';
@@ -32,7 +31,6 @@ import { ProductModule }              from '@r-product/product.module';
   imports: [
     BrowserModule,
     BrowserAnimationsModule,
-    FlexLayoutModule,
     HttpClientModule,
     FormsModule,
     ReactiveFormsModule,

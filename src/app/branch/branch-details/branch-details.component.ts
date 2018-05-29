@@ -1,4 +1,5 @@
 import { Component, OnInit, ViewEncapsulation, AfterViewInit, ViewChild, OnDestroy, Inject } from '@angular/core';
+import { trigger, state, style, animate, transition }   from '@angular/animations';
 import { Router, ActivatedRoute } from '@angular/router';
 import { Location }               from '@angular/common';
 
@@ -6,6 +7,7 @@ import { AppComponent }           from '@r-app/app.component';
 import { LoaderService }          from '@r-service/loader.service';
 import { MaterialService }        from '@r-material/material.service';
 import { QueryInput }             from '@r-model/query-input.model';
+import { ANIMATION }              from '@r-material/material-animation';
 
 import { Branch }                 from '@r-branch/branch.model';
 import { BranchService }          from '@r-branch/branch.service';
@@ -21,7 +23,8 @@ import { BranchService }          from '@r-branch/branch.service';
   selector:                 'app-branch-details',
   templateUrl:              './branch-details.component.html',
   styleUrls:                ['./branch-details.component.css'],
-  encapsulation:            ViewEncapsulation.None
+  encapsulation:            ViewEncapsulation.None,
+  animations:               [ ANIMATION ]
 })
 export class BranchDetailsComponent implements OnInit, OnDestroy {
 // DECLARATIONS --------------------------

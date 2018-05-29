@@ -1,10 +1,12 @@
 import { Component, OnInit, ViewEncapsulation, AfterViewInit, ViewChild, OnDestroy,  Inject } from '@angular/core';
+import { trigger, state, style, animate, transition }   from '@angular/animations';
 import { Router, ActivatedRoute } from '@angular/router';
 import { Location }               from '@angular/common';
 
 import { LoaderService }          from '@r-service/loader.service';
 import { MaterialService }        from '@r-material/material.service';
 import { QueryInput }             from '@r-model/query-input.model';
+import { ANIMATION }              from '@r-material/material-animation';
 
 import { Category }               from '@r-category/category.model';
 import { CategoryService }        from '@r-category/category.service';
@@ -12,10 +14,11 @@ import { Product }                from '@r-product/product.model';
 import { ProductService }         from '@r-product/product.service';
 
 @Component({
-  selector:                 'app-product-form',
-  templateUrl:              './product-form.component.html',
-  styleUrls:                ['./product-form.component.css'],
-  encapsulation:            ViewEncapsulation.None
+  selector:           'app-product-form',
+  templateUrl:        './product-form.component.html',
+  styleUrls:          ['./product-form.component.css'],
+  encapsulation:      ViewEncapsulation.None,
+  animations:         [ ANIMATION ]
 })
 export class ProductFormComponent implements OnInit, OnDestroy {
   private sub:              any;
@@ -69,8 +72,7 @@ export class ProductFormComponent implements OnInit, OnDestroy {
     this.sub = this.route.params.subscribe(params => {
       if (params['id'] != null) {
         this.get(+params['id']);
-      }
-      else {
+      } else {
         this.company_id      = +params['company_id'];
         this.item.company_id = +params['company_id'];
         this.setNewItem(true);
@@ -86,8 +88,7 @@ export class ProductFormComponent implements OnInit, OnDestroy {
     if (value) {
       this.newItemMode = true;
       this.title       = 'Novo Produto';
-    }
-    else {
+    } else {
       this.newItemMode = false;
       this.title       = 'Editar Produto';
     }
@@ -101,7 +102,7 @@ export class ProductFormComponent implements OnInit, OnDestroy {
     this.service.get(id, {'include': 'parent'}).subscribe(success => {
       this.setNewItem(false);
       this.item    = success.data;
-      this.oldItem = JSON.parse(JSON.stringify(this.item)); //copy
+      this.oldItem = JSON.parse(JSON.stringify(this.item)); // copy
     });
   }
 
@@ -113,8 +114,7 @@ export class ProductFormComponent implements OnInit, OnDestroy {
     this.submitted = true;
     if (this.newItemMode) {
       this.save(item);
-    }
-    else {
+    } else {
       this.update(item, this.oldItem.id);
     }
   }

@@ -1,4 +1,5 @@
 import { Component, OnInit, ViewEncapsulation, AfterViewInit, ViewChild, OnDestroy,  Inject, EventEmitter } from '@angular/core';
+import { trigger, state, style, animate, transition }   from '@angular/animations';
 import { MatSort, MatTableDataSource, MatPaginator, MatDialog, MAT_DIALOG_DATA} from '@angular/material';
 import { SelectionModel }         from '@angular/cdk/collections';
 import { Router }                 from '@angular/router';
@@ -10,6 +11,7 @@ import { MenuTime }               from '@r-model/menu-time.model';
 import { QueryInput }             from '@r-model/query-input.model';
 import { AppComponent }           from '@r-app/app.component';
 import { AppConfig }              from '@r-app/app.config';
+import { ANIMATION }              from '@r-material/material-animation';
 
 import { Menu }                   from '@r-menu/menu.model';
 import { MenuService }            from '@r-menu/menu.service';
@@ -36,7 +38,8 @@ import 'rxjs/add/operator/switchMap';
   selector:           'app-menu-list',
   templateUrl:        './menu-list.component.html',
   styleUrls:          ['./menu-list.component.css'],
-  encapsulation:      ViewEncapsulation.None
+  encapsulation:      ViewEncapsulation.None,
+  animations:         [ ANIMATION ]
 })
 export class MenuListComponent implements OnInit, OnDestroy, AfterViewInit {
 // DECLARATIONS ----------------------

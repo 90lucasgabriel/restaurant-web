@@ -1,349 +1,344 @@
-<div class="container-flex flex-center">
-  <!-- BACK AND TITLE START -->
-  <div class="mat-typography container-flex header-page width-padding">
-    <div class="flex-5"><button mat-icon-button (click)="goBack()" matTooltip="Voltar"><mat-icon>arrow_back</mat-icon></button></div>
-    <div class="flex-95 text-title">{{title}}</div>
-  </div>
-  <!--BACK AND TITLE END -->  
+<!-- LOADERS START -->
+<div fxLayout="column" fxFlexFill fxLayoutAlign="center center" *ngIf="loading.get && !submitted">
+  <mat-progress-spinner mode="indeterminate" diameter="30" strokeWidth="4"></mat-progress-spinner>
+</div>
+<!-- LOADERS END -->
 
-  <mat-vertical-stepper class="flex full-width" style="background: transparent" [ngClass]="{'hide': !loading.get && !submitted}">
-    
-    
-    
-    
-    <!-- CREATE AND EDIT FORM START ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
-    <mat-step label="Cardápio">
-      <div *ngIf="loading.get && !submitted">
-        <mat-progress-spinner mode="indeterminate" diameter="30" strokeWidth="4"></mat-progress-spinner>
+<div fxLayout="row" fxLayoutAlign="center start" ngClass.gt-sm="padding" class="mat-typography">
+  <div fxLayout="column" fxFlex="85" fxFlex.lt-md="100" fxLayoutGap="10px" *ngIf="!loading.get || submitted">
+
+    <!-- BACK AND TITLE START -->
+    <div ngClass.lt-md="padding no-padding-bottom">
+      <div fxLayoutAlign="space-between center" fxLayout="row">
+        <h3 fxLayout="row" fxLayoutAlign="start center" class="no-margin-bottom">
+          <button mat-icon-button (click)="goBack()" matTooltip="Voltar"><mat-icon>arrow_back</mat-icon></button> {{title}}
+        </h3>
       </div>
-      <mat-card class="flex margin-bottom" *ngIf="!loading.get || submitted">
-        <mat-card-content>
-          <mat-card-title-group>
-            <mat-card-subtitle>Informações</mat-card-subtitle>
-          </mat-card-title-group>
-          <div class="container-flex margin-bottom">
-            <div class="flex-5 align-top">
-              <p><mat-icon>info_outline</mat-icon></p>
-            </div>
-            <div class="flex-95">
-              <div class="container-flex">
-                <div class="flex-10 margin-right">
-                  <mat-form-field class="full-width">
-                    <input matInput placeholder="Nome" [(ngModel)]="item.name" name="name" required>
-                  </mat-form-field>
-                </div>
-              </div>
-              <div class="container-flex">
-                <div class="flex-10 margin-right">
-                  <mat-form-field class="full-width">
-                    <textarea matInput placeholder="Descrição" [(ngModel)]="item.description" name="description"  matTextareaAutosize matAutosizeMinRows="1"></textarea>
-                  </mat-form-field>
-                </div>
-              </div>
-            </div>
+    </div>
+    <!--BACK AND TITLE END -->  
+
+    <!-- CONTENT START -->
+    
+    <div fxLayout="row" fxLayoutAlign="center center">
+      <mat-tab-group class="flex width-padding">
+        <!-- MENU TAB START ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
+        <mat-tab>
+          <ng-template mat-tab-label>
+            <mat-icon>restaurant</mat-icon> Cardápio
+          </ng-template>
+          <!-- LOADERS START -->
+          <div fxLayout="column" fxFlexFill fxLayoutAlign="center center" *ngIf="loading.get && !submitted">
+            <mat-progress-spinner mode="indeterminate" diameter="30" strokeWidth="4"></mat-progress-spinner>
           </div>
-          <mat-card-title-group>
-            <mat-card-subtitle>Horários</mat-card-subtitle>
-          </mat-card-title-group>
-          <div class="container-flex margin-bottom">
-            <div class="flex-5 align-top">
-              <p><mat-icon>schedule</mat-icon></p>
-            </div>
-            <div class="flex-95">
-            <!-- LIST START -->
-            <div class="flex">
-              <div class="flex full-width">
+          <!-- LOADERS END -->
+          <mat-card *ngIf="!loading.get || submitted">
+            <mat-card-content fxLayout="column" fxLayoutGap="10px">
+              <!-- MENU TAB CONTENT START -->
+              <mat-card-title-group>
+                <mat-card-subtitle>Informações</mat-card-subtitle>
+              </mat-card-title-group>
+              <div fxLayout="row" fxFlexFill fxLayoutGap="10px">
+                <div fxFlex="40px" fxHide.lt-md="true">
+                  <p><mat-icon>info_outline</mat-icon></p>
+                </div>
+                <div fxFlex>
+                  <div fxLayout="row wrap" fxLayout.lt-md="column" fxLayoutGap.lt-md="10px">
+                    <mat-form-field fxFlex="100">
+                      <input matInput placeholder="Nome" [(ngModel)]="item.name" name="name" required>
+                    </mat-form-field>
+                    <mat-form-field fxFlex="100">
+                      <textarea matInput placeholder="Descrição" [(ngModel)]="item.description" name="description"  matTextareaAutosize matAutosizeMinRows="1"></textarea>
+                    </mat-form-field>
+                  </div>
+                </div>
+              </div>
+
+              <mat-card-title-group>
+                <mat-card-subtitle>Horários</mat-card-subtitle>
+              </mat-card-title-group>
+              <div fxLayout="row" fxFlexFill fxLayoutGap="10px">
+                <div fxFlex="40px" fxHide.lt-md="true">
+                  <p><mat-icon>schedule</mat-icon></p>
+                </div>
+                <div fxFlex>
+                  <mat-table #timeTable [dataSource]="timeDataSource">            
+                    <!-- Checkbox Column -->
+                  <ng-container matColumnDef="select">
+                      <mat-header-cell *matHeaderCellDef class="id-column">
+                        <mat-checkbox (change)="$event ? masterToggle(timeDataSourceCopy, timeSelection) : null"
+                                      [checked]="timeSelection.hasValue() && isAllSelected(timeDataSourceCopy, timeSelection)"
+                                      [indeterminate]="timeSelection.hasValue() && !isAllSelected(timeDataSourceCopy, timeSelection)">
+                        </mat-checkbox>
+                      </mat-header-cell>
+                      <mat-cell *matCellDef="let row" class="id-column">
+                        <mat-checkbox (click)="$event.stopPropagation()"
+                                      (change)="$event ? timeSelection.toggle(row) : null"
+                                      [checked]="timeSelection.isSelected(row)">
+                        </mat-checkbox>
+                      </mat-cell>
+                    </ng-container>
+                  
+                    <!-- Name Column -->
+                    <ng-container matColumnDef="day">
+                      <mat-header-cell *matHeaderCellDef> Dia </mat-header-cell>
+                      <mat-cell *matCellDef="let row"> {{row.name}} </mat-cell>
+                    </ng-container>
+  
+                    <!-- Category id Column -->
+                    <ng-container matColumnDef="time_start">
+                      <mat-header-cell *matHeaderCellDef> Início </mat-header-cell>
+                      <mat-cell *matCellDef="let row"> 
+                        <mat-form-field *ngIf="timeSelection.isSelected(row)">
+                          <input matInput type="time" [(ngModel)]="row.time_start" name="row.time_start">
+                        </mat-form-field>
+                      </mat-cell>
+                    </ng-container>
+  
+                    <!-- Category name Column -->
+                    <ng-container matColumnDef="time_end">
+                      <mat-header-cell *matHeaderCellDef> Fim </mat-header-cell>
+                      <mat-cell *matCellDef="let row">
+                        <mat-form-field *ngIf="timeSelection.isSelected(row)">
+                          <input matInput type="time" [(ngModel)]="row.time_end" name="row.time_end">
+                        </mat-form-field>
+                      </mat-cell>
+                    </ng-container>
+  
+                    <!-- HEADERS AND ROWS -->
+                    <mat-header-row *matHeaderRowDef="timeColumns"></mat-header-row>
+                    <mat-row class="hover-parent pointer" *matRowDef="let row; columns: timeColumns;"></mat-row>
+                  </mat-table>
+  
+                </div>
+              </div>
+              <!-- MENU TAB CONTENT END -->
+            </mat-card-content>
+          </mat-card>
+        </mat-tab>
+        <!-- MENU TAB END ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
+
+        <!-- PRODUCT TAB START ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
+        <mat-tab>
+          <ng-template mat-tab-label>
+            <mat-icon>shopping_cart</mat-icon> Produtos
+          </ng-template>
+          <mat-card>
+            <mat-card-content fxLayout="column" fxLayoutGap="10px">
+              <!-- PRODUCT TAB CONTENT START -->
+              <!-- FILTER START -->
+              <div fxLayout="row" fxLayout.lt-md="column" fxLayoutGap="10px" fxLayoutAlign="space-between">
+                <mat-form-field fxFlex>
+                  <input matInput placeholder="ID" [(ngModel)]="productFilter.id" name="productFilter.id" (keyup)="applyFilter(productDataSource, productDataSourceCopy, productFilter)">
+                </mat-form-field>
               
-                <mat-table #timeTable [dataSource]="timeDataSource">
+                <mat-form-field fxFlex>
+                  <input matInput placeholder="Nome" [(ngModel)]="productFilter.name" name="productFilter.name" (keyup)="applyFilter(productDataSource, productDataSourceCopy, productFilter)">
+                </mat-form-field>
+              
+                <mat-form-field fxFlex>
+                  <mat-select placeholder="Categoria" [(ngModel)]="productFilter.category_id" name="productFilter.category_id" (change)="applyFilter(productDataSource, productDataSourceCopy, productFilter)">
+                    <mat-option>-</mat-option>
+                    <mat-option *ngFor="let category of categoryList" [value]="category.id">
+                      {{ category.id }} - {{ category.name }}
+                    </mat-option>
+                  </mat-select>
+                </mat-form-field>     
+            
+              </div>
+              <!-- FILTER END -->
+              <!-- LOADERS START -->
+              <div *ngIf="loading.product" fxLayout="column" fxFlexFill fxLayoutAlign="center center">
+                <mat-progress-spinner mode="indeterminate" diameter="30" strokeWidth="4"></mat-progress-spinner>
+              </div>
+              <div fxFlex fxLayout="column" fxLayoutAlign="center center" *ngIf="productDataSource.data.length == 0">
+                <mat-icon class="medium">help_outline</mat-icon>
+                <h3>Nenhum resultado encontrado.</h3>
+              </div>
+              <!-- LOADERS END -->
+  
+              <!-- LIST START -->
+              <div [ngClass]="{'hide': productDataSource.data.length == 0}">
+                <mat-table #table [dataSource]="productDataSource" 
+                  matSort matSortActive="id" matSortDirection="desc">
                   <!-- Checkbox Column -->
                   <ng-container matColumnDef="select">
-                    <mat-header-cell *matHeaderCellDef class="id-column">
-                      <mat-checkbox (change)="$event ? masterToggle(timeDataSourceCopy, timeSelection) : null"
-                                    [checked]="timeSelection.hasValue() && isAllSelected(timeDataSourceCopy, timeSelection)"
-                                    [indeterminate]="timeSelection.hasValue() && !isAllSelected(timeDataSourceCopy, timeSelection)">
+                    <mat-header-cell *matHeaderCellDef fxFlex="60px">
+                      <mat-checkbox (change)="$event ? masterToggle(productDataSourceCopy, productSelection) : null"
+                                    [checked]="productSelection.hasValue() && isAllSelected(productDataSourceCopy, productSelection)"
+                                    [indeterminate]="productSelection.hasValue() && !isAllSelected(productDataSourceCopy, productSelection)">
                       </mat-checkbox>
                     </mat-header-cell>
-                    <mat-cell *matCellDef="let row" class="id-column">
+                    <mat-cell *matCellDef="let row" fxFlex="60px">
                       <mat-checkbox (click)="$event.stopPropagation()"
-                                    (change)="$event ? timeSelection.toggle(row) : null"
-                                    [checked]="timeSelection.isSelected(row)">
+                                    (change)="$event ? productSelection.toggle(row) : null"
+                                    [checked]="productSelection.isSelected(row)">
                       </mat-checkbox>
                     </mat-cell>
                   </ng-container>
-                
+                  
+                  <!-- Image Column -->
+                  <ng-container matColumnDef="image">
+                    <mat-header-cell *matHeaderCellDef fxFlex="60px">  </mat-header-cell>
+                    <mat-cell *matCellDef="let row" fxFlex="60px"> 
+                      <img [src]='row.image' class="avatar-list" *ngIf="row.image" /> 
+                      <div class="avatar-list" *ngIf="!row.image">
+                        <p>{{row.name.substring(0,1) | uppercase}}</p>
+                      </div>
+                    </mat-cell>
+                  </ng-container>
+                  <!-- ID Column -->
+                  <ng-container matColumnDef="id">
+                    <mat-header-cell *matHeaderCellDef mat-sort-header fxFlex="60px"> ID </mat-header-cell>
+                    <mat-cell *matCellDef="let row" fxFlex="60px"> {{row.id}} </mat-cell>
+                  </ng-container>
+        
                   <!-- Name Column -->
-                  <ng-container matColumnDef="day">
-                    <mat-header-cell *matHeaderCellDef> Dia </mat-header-cell>
-                    <mat-cell *matCellDef="let row"> {{row.name}} </mat-cell>
+                  <ng-container matColumnDef="name">
+                    <mat-header-cell *matHeaderCellDef mat-sort-header fxFlex fxFlex.lt-md="300px"> Nome </mat-header-cell>
+                    <mat-cell *matCellDef="let row" fxFlex fxFlex.lt-md="300px"> {{row.name}} </mat-cell>
                   </ng-container>
-
+        
                   <!-- Category id Column -->
-                  <ng-container matColumnDef="time_start">
-                    <mat-header-cell *matHeaderCellDef> Início </mat-header-cell>
-                    <mat-cell *matCellDef="let row"> 
-                      <mat-form-field *ngIf="timeSelection.isSelected(row)">
-                        <input matInput type="time" [(ngModel)]="row.time_start" name="row.time_start">
-                      </mat-form-field>
-                    </mat-cell>
+                  <ng-container matColumnDef="category_id">
+                    <mat-header-cell *matHeaderCellDef mat-sort-header fxFlex="100px"> ID categoria </mat-header-cell>
+                    <mat-cell *matCellDef="let row" fxFlex="100px"> {{ row.category_id || null }} </mat-cell>
                   </ng-container>
-
+        
                   <!-- Category name Column -->
-                  <ng-container matColumnDef="time_end">
-                    <mat-header-cell *matHeaderCellDef> Fim </mat-header-cell>
-                    <mat-cell *matCellDef="let row">
-                      <mat-form-field *ngIf="timeSelection.isSelected(row)">
-                        <input matInput type="time" [(ngModel)]="row.time_end" name="row.time_end">
-                      </mat-form-field>
-                    </mat-cell>
+                  <ng-container matColumnDef="category.data.name">
+                    <mat-header-cell *matHeaderCellDef mat-sort-header fxFlex fxFlex.lt-md="150px" > Nome categoria </mat-header-cell>
+                    <mat-cell *matCellDef="let row" fxFlex fxFlex.lt-md="150px" > {{ row.category.data.name || null }} </mat-cell>
                   </ng-container>
 
+                  <!-- Price Column -->
+                  <ng-container matColumnDef="price">
+                    <mat-header-cell *matHeaderCellDef mat-sort-header fxFlex fxFlex.lt-md="100px"> Preço </mat-header-cell>
+                    <mat-cell *matCellDef="let row" fxFlex fxFlex.lt-md="100px"> 
+                        <mat-form-field *ngIf="productSelection.isSelected(row)">
+                          <span matPrefix>R$&nbsp;</span>
+                          <input matInput [(ngModel)]="row.price" name="row.price">
+                        </mat-form-field>
+                    </mat-cell>
+                  </ng-container>
+        
                   <!-- HEADERS AND ROWS -->
-                  <mat-header-row *matHeaderRowDef="timeColumns"></mat-header-row>
-                  <mat-row class="hover-parent pointer" *matRowDef="let row; columns: timeColumns;"></mat-row>
+                  <mat-header-row *matHeaderRowDef="productColumns" style="display: none"></mat-header-row>
+                  <mat-row class="hover-parent pointer" *matRowDef="let row; columns: productColumns;" (click)="goDetails(row.company_id, row.id)"></mat-row>
                 </mat-table>
-
+              
+                <mat-paginator [length]="productTotal" [pageSize]="20" [pageSizeOptions]="[5, 10, 25, 100]"></mat-paginator>
               </div>
-            </div>
-            <!-- LIST END -->
-            
-            </div>
-          </div>
-          
-        </mat-card-content>
-      </mat-card>
-    </mat-step>
-    <!-- CREATE AND EDIT FORM END ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
+              <!-- LIST END --> 
+              <!-- PRODUCT TAB CONTENT END -->
+            </mat-card-content>
+          </mat-card>
+        </mat-tab>
+        <!-- PRODUCT TAB END ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
 
-
-
-
-
-    <!-- PRODUCTS ADD OR REMOVE START ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
-    <mat-step label="Produtos">
-      <!-- FILTER START -->
-      <div class="container-flex margin-bottom">
-        <div class="flex-20 margin-right">
-          <mat-form-field class="full-width">
-            <input matInput placeholder="ID" [(ngModel)]="productFilter.id" name="productFilter.id" (keyup)="applyFilter(productDataSource, productDataSourceCopy, productFilter)">
-          </mat-form-field>
-        </div>
-        <div class="flex-20 margin-right">
-          <mat-form-field class="full-width">
-            <input matInput placeholder="Nome" [(ngModel)]="productFilter.name" name="productFilter.name" (keyup)="applyFilter(productDataSource, productDataSourceCopy, productFilter)">
-          </mat-form-field>
-        </div>
-        <div class="flex-20 margin-right" *ngIf="false">
-          <mat-form-field class="full-width">
-            <mat-select placeholder="Categoria" [(ngModel)]="productFilter.category_id" name="productFilter.category_id" (change)="applyFilter(productDataSource, productDataSourceCopy, productFilter)">
-              <mat-option>-</mat-option>
-              <mat-option *ngFor="let category of categoryList" [value]="category.id">
-                {{ category.id }} - {{ category.name }}
-              </mat-option>
-            </mat-select>
-          </mat-form-field>
-        </div>
-      </div>
-      <!-- FILTER END -->
-
-      <!-- LOADERS START -->
-      <div class="content-page" *ngIf="loading.product">
-        <mat-progress-spinner mode="indeterminate" diameter="30" strokeWidth="4"></mat-progress-spinner>
-      </div>
-      <div class="text-center mat-typography" *ngIf="productDataSource.data.length == 0">
-        <mat-icon class="medium">help_outline</mat-icon>
-        <h3>Nenhum resultado encontrado.</h3>
-      </div>
-      <!-- LOADERS END -->
-
-      <!-- LIST START -->
-      <div class="flex" [ngClass]="{'hide': productDataSource.data.length == 0}">
-        <div class="flex full-width mat-elevation-z4">
-        
-          <mat-table #productTable [dataSource]="productDataSource" 
-            matSort matSortActive="id" matSortDirection="desc">    
-            <!-- Checkbox Column -->
-            <ng-container matColumnDef="select">
-              <mat-header-cell *matHeaderCellDef class="id-column">
-                <mat-checkbox (change)="$event ? masterToggle(productDataSourceCopy, productSelection) : null"
-                              [checked]="productSelection.hasValue() && isAllSelected(productDataSourceCopy, productSelection)"
-                              [indeterminate]="productSelection.hasValue() && !isAllSelected(productDataSourceCopy, productSelection)">
-                </mat-checkbox>
-              </mat-header-cell>
-              <mat-cell *matCellDef="let row" class="id-column">
-                <mat-checkbox (click)="$event.stopPropagation()"
-                              (change)="$event ? productSelection.toggle(row) : null"
-                              [checked]="productSelection.isSelected(row)">
-                </mat-checkbox>
-              </mat-cell>
-            </ng-container>
-            
-            <!-- Image Column -->
-            <ng-container matColumnDef="image">
-              <mat-header-cell *matHeaderCellDef class="id-column">  </mat-header-cell>
-              <mat-cell *matCellDef="let row" class="id-column"> 
-                <img [src]='row.image' class="avatar-list" *ngIf="row.image" /> 
-                <div class="avatar-list" *ngIf="!row.image">
-                  <p>{{row.name.substring(0,1) | uppercase}}</p>
-                </div>
-              </mat-cell>
-            </ng-container>
-            
-            <!-- ID Column -->
-            <ng-container matColumnDef="id">
-              <mat-header-cell *matHeaderCellDef mat-sort-header class="id-column"> ID </mat-header-cell>
-              <mat-cell *matCellDef="let row" class="id-column"> {{row.id}} </mat-cell>
-            </ng-container>
-
-            <!-- Name Column -->
-            <ng-container matColumnDef="name">
-              <mat-header-cell *matHeaderCellDef mat-sort-header> Nome </mat-header-cell>
-              <mat-cell *matCellDef="let row"> {{row.name}} </mat-cell>
-            </ng-container>
-
-            <!-- Category id Column -->
-            <ng-container matColumnDef="category_id">
-              <mat-header-cell *matHeaderCellDef mat-sort-header class="number-column"> ID categoria </mat-header-cell>
-              <mat-cell *matCellDef="let row" class="number-column"> {{ row.category_id || null }} </mat-cell>
-            </ng-container>
-
-            <!-- Category name Column -->
-            <ng-container matColumnDef="category.data.name">
-              <mat-header-cell *matHeaderCellDef mat-sort-header> Nome categoria </mat-header-cell>
-              <mat-cell *matCellDef="let row"> {{ row.category.data.name || null }} </mat-cell>
-            </ng-container>
-
-            <!-- Price Column -->
-            <ng-container matColumnDef="price">
-              <mat-header-cell *matHeaderCellDef mat-sort-header> Preço </mat-header-cell>
-              <mat-cell *matCellDef="let row"> 
-                <mat-form-field *ngIf="productSelection.isSelected(row)">
-                  <span matPrefix>R$&nbsp;</span>
-                  <input matInput [(ngModel)]="row.price" name="row.price">
+        <!-- BRANCH TAB START ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
+        <mat-tab>
+          <ng-template mat-tab-label>
+            <mat-icon>store</mat-icon> Filiais
+          </ng-template>
+          <mat-card>
+            <mat-card-content fxLayout="column" fxLayoutGap="10px">
+              <!-- BRANCH TAB CONTENT START -->
+              <!-- FILTER START -->
+              <div fxLayout="row" fxLayout.lt-md="column" fxLayoutGap="10px" fxLayoutAlign="space-between">
+                <mat-form-field fxFlex>
+                  <input matInput placeholder="ID" [(ngModel)]="branchFilter.id" name="branchFilter.id" (keyup)="applyFilter(branchDataSource, branchDataSourceCopy, branchFilter)">
                 </mat-form-field>
-              </mat-cell>
-            </ng-container>
-
-            <!-- HEADERS AND ROWS -->
-            <mat-header-row *matHeaderRowDef="productColumns"></mat-header-row>
-            <mat-row class="hover-parent pointer" *matRowDef="let row; columns: productColumns;"></mat-row>
-          </mat-table>
+              
+                <mat-form-field fxFlex>
+                  <input matInput placeholder="Endereço" [(ngModel)]="branchFilter.address" name="branchFilter.address" (keyup)="applyFilter(branchDataSource, branchDataSourceCopy, branchFilter)">
+                </mat-form-field>            
+              </div>
+              <!-- FILTER END -->
+              <!-- LOADERS START -->
+              <div *ngIf="loading.branch" fxLayout="column" fxFlexFill fxLayoutAlign="center center">
+                <mat-progress-spinner mode="indeterminate" diameter="30" strokeWidth="4"></mat-progress-spinner>
+              </div>
+              <div fxFlex fxLayout="column" fxLayoutAlign="center center" *ngIf="branchDataSource.data.length == 0">
+                <mat-icon class="medium">help_outline</mat-icon>
+                <h3>Nenhum resultado encontrado.</h3>
+              </div>
+              <!-- LOADERS END -->
+  
+              <!-- LIST START -->
+              <div [ngClass]="{'hide': branchDataSource.data.length == 0}">
+                <mat-table #table [dataSource]="branchDataSource" 
+                  matSort matSortActive="id" matSortDirection="desc">
+                  <!-- Checkbox Column -->
+                  <ng-container matColumnDef="select">
+                    <mat-header-cell *matHeaderCellDef fxFlex="60px">
+                      <mat-checkbox (change)="$event ? masterToggle(branchDataSourceCopy, branchSelection) : null"
+                                    [checked]="branchSelection.hasValue() && isAllSelected(branchDataSourceCopy, branchSelection)"
+                                    [indeterminate]="branchSelection.hasValue() && !isAllSelected(branchDataSourceCopy, branchSelection)">
+                      </mat-checkbox>
+                    </mat-header-cell>
+                    <mat-cell *matCellDef="let row" fxFlex="60px">
+                      <mat-checkbox (click)="$event.stopPropagation()"
+                                    (change)="$event ? branchSelection.toggle(row) : null"
+                                    [checked]="branchSelection.isSelected(row)">
+                      </mat-checkbox>
+                    </mat-cell>
+                  </ng-container>
+                  
+                  <!-- ID Column -->
+                  <ng-container matColumnDef="id">
+                    <mat-header-cell *matHeaderCellDef mat-sort-header fxFlex="60px"> ID </mat-header-cell>
+                    <mat-cell *matCellDef="let row" fxFlex="60px"> {{row.id}} </mat-cell>
+                  </ng-container>
         
-          <mat-paginator #productPaginator [length]="productTotal" [pageSize]="20" [pageSizeOptions]="[5, 10, 25, 100]"></mat-paginator>
-        </div>
-      </div>
-      <!-- LIST END -->
-    </mat-step>
-    <!-- PRODUCTS ADD OR REMOVE END ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
-    
+                  <!-- Address Column -->
+                  <ng-container matColumnDef="address">
+                    <mat-header-cell *matHeaderCellDef mat-sort-header fxFlex fxFlex.lt-md="300px"> Endereço </mat-header-cell>
+                    <mat-cell *matCellDef="let row" fxFlex fxFlex.lt-md="300px"> {{row.address}} </mat-cell>
+                  </ng-container>
+
+                  <!-- City Column -->
+                  <ng-container matColumnDef="city">
+                    <mat-header-cell *matHeaderCellDef mat-sort-header fxFlex fxFlex.lt-md="300px"> Cidade </mat-header-cell>
+                    <mat-cell *matCellDef="let row" fxFlex fxFlex.lt-md="300px"> {{row.city}} </mat-cell>
+                  </ng-container>
+
+                  <!-- State Column -->
+                  <ng-container matColumnDef="state">
+                    <mat-header-cell *matHeaderCellDef mat-sort-header fxFlex fxFlex.lt-md="100px"> Estado </mat-header-cell>
+                    <mat-cell *matCellDef="let row" fxFlex fxFlex.lt-md="100px"> {{row.state}} </mat-cell>
+                  </ng-container>
+
+                  <!-- Phone Column -->
+                  <ng-container matColumnDef="phone_1">
+                    <mat-header-cell *matHeaderCellDef mat-sort-header fxFlex fxFlex.lt-md="100px"> Telefone </mat-header-cell>
+                    <mat-cell *matCellDef="let row" fxFlex fxFlex.lt-md="100px"> {{row.phone_1}} </mat-cell>
+                  </ng-container>
+        
+                  <!-- HEADERS AND ROWS -->
+                  <mat-header-row *matHeaderRowDef="branchColumns" style="display: none"></mat-header-row>
+                  <mat-row class="hover-parent pointer" *matRowDef="let row; columns: branchColumns;" (click)="goDetails(row.company_id, row.id)"></mat-row>
+                </mat-table>
+              
+                <mat-paginator [length]="branchTotal" [pageSize]="20" [pageSizeOptions]="[5, 10, 25, 100]"></mat-paginator>
+              </div>
+              <!-- LIST END --> 
+              <!-- PRODUCT TAB CONTENT END -->
+            </mat-card-content>
+          </mat-card>
+        </mat-tab>
+        <!-- BRANCH TAB END ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
+      </mat-tab-group>
 
 
+    </div>  
+          <!-- FORM ACTIONS START -->
+          <div class="width-padding text-right">
+              <button mat-button (click)="cancelForm()">CANCELAR</button>
+              <button mat-raised-button (click)="submitForm(item)" color="primary">SALVAR</button>
+            </div>
+            <!-- FORM ACTIONS END -->
+    <!-- CONTENT END -->    
 
-
-    <!-- BRANCHES ADD OR REMOVE START ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
-    <mat-step label="Filiais">
-      <!-- FILTER START -->
-      <div class="container-flex margin-bottom">
-        <div class="flex-20 margin-right">
-          <mat-form-field class="full-width">
-            <input matInput placeholder="ID" [(ngModel)]="branchFilter.id" name="branchFilter.id" (keyup)="applyFilter(branchDataSource, branchDataSourceCopy, branchFilter)">
-          </mat-form-field>
-        </div>
-        <div class="flex-20 margin-right">
-          <mat-form-field class="full-width">
-            <input matInput placeholder="Endereço" [(ngModel)]="branchFilter.address" name="branchFilter.address" (keyup)="applyFilter(branchDataSource, branchDataSourceCopy, branchFilter)">
-          </mat-form-field>
-        </div>
-      </div>
-      <!-- FILTER END -->
-      
-      <!-- LOADERS START -->
-      <div class="flex content-page" *ngIf="loading.branch">
-        <mat-progress-spinner mode="indeterminate" diameter="30" strokeWidth="4"></mat-progress-spinner>
-      </div>
-      <div class="text-center mat-typography" *ngIf="branchDataSource.data.length == 0">
-        <mat-icon class="medium">help_outline</mat-icon>
-        <h3>Nenhum resultado encontrado.</h3>
-      </div>
-      <!-- LOADERS END -->
-
-      <!-- LIST START -->
-      <div class="flex full-width mat-elevation-z4" [ngClass]="{'hide': branchDataSource.data.length == 0}">
-        <mat-table #table [dataSource]="branchDataSource" class="example-table"
-          matSort matSortActive="id" matSortDirection="desc">    
-          
-          <!-- Checkbox Column -->
-          <ng-container matColumnDef="select">
-            <mat-header-cell *matHeaderCellDef class="id-column">
-              <mat-checkbox (change)="$event ? masterToggle(branchDataSourceCopy, branchSelection) : null"
-                            [checked]="branchSelection.hasValue() && isAllSelected(branchDataSourceCopy, branchSelection)"
-                            [indeterminate]="branchSelection.hasValue() && !isAllSelected(branchDataSourceCopy, branchSelection)">
-              </mat-checkbox>
-            </mat-header-cell>
-            <mat-cell *matCellDef="let row" class="id-column">
-              <mat-checkbox (click)="$event.stopPropagation()"
-                            (change)="$event ? branchSelection.toggle(row) : null"
-                            [checked]="branchSelection.isSelected(row)">
-              </mat-checkbox>
-            </mat-cell>
-          </ng-container>
-          
-          <!-- ID Column -->
-          <ng-container matColumnDef="id">
-            <mat-header-cell *matHeaderCellDef mat-sort-header class="id-column"> ID </mat-header-cell>
-            <mat-cell *matCellDef="let row" class="id-column" > {{row.id}} </mat-cell>
-          </ng-container>
-      
-          <!-- Address Column -->
-          <ng-container matColumnDef="address">
-            <mat-header-cell *matHeaderCellDef mat-sort-header> Endereço </mat-header-cell>
-            <mat-cell *matCellDef="let row"> {{row.address}} </mat-cell>
-          </ng-container>
-
-          <!-- Number Column -->
-          <ng-container matColumnDef="number">
-            <mat-header-cell *matHeaderCellDef mat-sort-header  class="number-column"> Número </mat-header-cell>
-            <mat-cell *matCellDef="let row"  class="number-column"> {{row.number}} </mat-cell>
-          </ng-container>
-      
-          <!-- City Column -->
-          <ng-container matColumnDef="city">
-            <mat-header-cell *matHeaderCellDef mat-sort-header> Cidade </mat-header-cell>
-            <mat-cell *matCellDef="let row"> {{row.city}} </mat-cell>
-          </ng-container>
-
-          <!-- State Column -->
-          <ng-container matColumnDef="state">
-            <mat-header-cell *matHeaderCellDef mat-sort-header> UF </mat-header-cell>
-            <mat-cell *matCellDef="let row"> {{row.state}} </mat-cell>
-          </ng-container>
-
-          <!-- Phone Column -->
-          <ng-container matColumnDef="phone_1">
-            <mat-header-cell *matHeaderCellDef mat-sort-header> Telefone </mat-header-cell>
-            <mat-cell *matCellDef="let row"> {{row.phone_1}} </mat-cell>
-          </ng-container>
-
-          <!-- HEADERS AND ROWS -->
-          <mat-header-row *matHeaderRowDef="branchColumns"></mat-header-row>
-          <mat-row class="hover-parent pointer" *matRowDef="let row; columns: branchColumns;" (click)="branchSelection.toggle(row)"></mat-row>
-        </mat-table>
-      
-        <mat-paginator #branchPaginator [length]="branchTotal" [pageSize]="20" [pageSizeOptions]="[5, 10, 25, 100]"></mat-paginator>
-      </div>
-      <!-- LIST END -->
-    </mat-step>
-    <!-- BRANCHES ADD OR REMOVE END ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
-  </mat-vertical-stepper>
-
-
-
-
-
-  <!-- FORM ACTIONS START -->
-  <div class="width-padding text-right">
-    <button mat-button (click)="cancelForm()">CANCELAR</button>
-    <button mat-raised-button (click)="submitForm(item)" color="primary">SALVAR</button>
+    <div [fxHide.lt-md]="true"> </div>
   </div>
-  <!-- FORM ACTIONS END -->
-      
 </div>

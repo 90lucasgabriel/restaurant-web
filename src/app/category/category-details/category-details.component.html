@@ -1,47 +1,67 @@
-<div *ngIf="loading && !submitted">
+<!-- LOADERS START -->
+<div fxLayout="column" fxFlexFill fxLayoutAlign="center center" *ngIf="loading && !submitted">
   <mat-progress-spinner mode="indeterminate" diameter="30" strokeWidth="4"></mat-progress-spinner>
 </div>
+<!-- LOADERS END -->
 
-<div class="container-flex flex-center" *ngIf='!loading || submitted'>
-  <!-- BACK AND TITLE START -->
-  <div class="mat-typography container-flex header-page width-padding">
-    <div class="flex-5"><button mat-icon-button (click)="goBack()" matTooltip="Voltar"><mat-icon>arrow_back</mat-icon></button></div>
-    <div class="flex-95 text-title">Categoria Detalhes</div>
-    <div class="flex-30 text-right">
-      <button mat-icon-button [routerLink]="['/company', item.company_id, 'category', item.id, 'edit']" matTooltip="Editar"><mat-icon>edit</mat-icon></button>
-      <button mat-icon-button (click)="deleteConfirm(item)" matTooltip="Excluir"> <mat-icon>delete</mat-icon></button>
-    </div> 
-  </div>
-  <!--BACK AND TITLE END -->
+<div fxLayout="row" fxLayoutAlign="center start" ngClass.gt-sm="padding" class="mat-typography">
+  <div fxLayout="column" fxFlex="85" fxFlex.lt-md="100" fxLayoutGap="10px" *ngIf="!loading || submitted"  >
 
-  <mat-card class="flex content-page">
-    <mat-card-content>
-      <!-- DETAILS START -->
-      <div>
-        <mat-card-title-group>
-          <mat-card-subtitle>Informações</mat-card-subtitle>
-        </mat-card-title-group>
-        <div class="container-flex margin-bottom">
-          <div class="flex-5 align-top">
-            <p><mat-icon>info_outline</mat-icon></p>
-          </div>
-
-          <div class="flex-95">
-            <div class="container-flex">
-              <div class="flex-10"><p>Nome: </p></div>
-              <div class="flex-40"><p>{{item.name}}</p></div>
-              <div class="flex-10"><p>Categoria pai: </p></div>
-              <div class="flex-40"><p>{{item.parent?.data.id}} - {{item.parent?.data.name}}</p></div>
-            </div>
-            <div class="container-flex">
-              <div class="flex-10"><p>Descrição: </p></div>
-              <div class="flex-90"><p>{{item.description}}</p></div>
-            </div>
-          </div>
-
-        </div>
+    <!-- BACK AND TITLE START -->
+    <div ngClass.lt-md="padding no-padding-bottom">
+      <div fxLayoutAlign="space-between center" fxLayout="row">
+        <h3 fxLayout="row" fxLayoutAlign="start center" class="no-margin-bottom">
+          <button mat-icon-button (click)="goBack()" matTooltip="Voltar"><mat-icon>arrow_back</mat-icon></button> Categoria Detalhes
+        </h3>
+        <div>
+          <button mat-icon-button [routerLink]="['/company', item.company_id, 'category', item.id, 'edit']" matTooltip="Editar"><mat-icon>edit</mat-icon></button>
+          <button mat-icon-button (click)="deleteConfirm(item)" matTooltip="Excluir"> <mat-icon>delete</mat-icon></button>
+        </div> 
       </div>
-      <!-- DETAILS END -->
-    </mat-card-content>
-  </mat-card>
+    </div>
+    <!--BACK AND TITLE END -->  
+
+    <!-- CONTENT START -->
+    <div fxLayout="column" fxLayoutGap="10px">
+      <div ngClass.gt-sm="mat-elevation-z1 rounded-border">
+        <mat-card>
+          <mat-card-content>
+            <!-- CREATE AND EDIT FORM START -->
+                <mat-card-title-group>
+                  <mat-card-subtitle>Informações</mat-card-subtitle>
+                </mat-card-title-group>
+                <div fxLayout="column" fxLayoutAlign="start start">
+                  
+                  <div fxLayout="row" fxFlexFill fxLayoutGap="10px">
+                    <div fxFlex="40px" fxHide.lt-md="true">
+                      <p><mat-icon>info_outline</mat-icon></p>
+                    </div>
+                    <div fxFlex>
+                      <div fxLayout="row wrap" fxLayout.lt-md="column" fxLayoutGap.lt-md="10px">
+                        <div fxLayout="row" fxFlex fxFlex.gt-sm="50">
+                          <div fxFlex="120px"><p>Nome: </p></div>
+                          <div fxFlex><p>{{item.name}}</p></div>
+                        </div>
+                        <div fxLayout="row" fxFlex fxFlex.gt-sm="50">
+                          <div fxFlex="120px"><p>Categoria pai: </p></div>
+                          <div fxFlex><p>{{item.parent?.data.id}} - {{item.parent?.data.name}}</p></div>
+                        </div>
+                        <div fxLayout="row" fxFlexFill>
+                          <div fxFlex="120px"><p>Descrição: </p></div>
+                          <div fxFlex><p>{{item.description}}</p></div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                </div>
+              <!-- EDIT FORM END -->
+          </mat-card-content>
+        </mat-card>
+      </div>
+    </div>
+    <!-- CONTENT END -->    
+
+    <div [fxHide.lt-md]="true"> </div>
+  </div>
 </div>

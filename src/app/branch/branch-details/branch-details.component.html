@@ -1,109 +1,159 @@
-<div *ngIf="loading && !submitted">
+<!-- LOADERS START -->
+<div fxLayout="column" fxFlexFill fxLayoutAlign="center center" *ngIf="loading && !submitted">
   <mat-progress-spinner mode="indeterminate" diameter="30" strokeWidth="4"></mat-progress-spinner>
 </div>
+<!-- LOADERS END -->
 
-<div class="container-flex flex-center" *ngIf='!loading || submitted'>
-  <!-- BACK AND TITLE START -->
-  <div class="mat-typography container-flex header-page width-padding">
-    <div class="flex-5"><button mat-icon-button (click)="goBack()" matTooltip="Voltar"><mat-icon>arrow_back</mat-icon></button></div>
-    <div class="flex-95 text-title">Filial Detalhes</div>
-    <div class="flex-30 text-right">
-      <button mat-icon-button [routerLink]="['/company', item.company.data.id, 'branch', item.id, 'edit']" matTooltip="Editar"><mat-icon>edit</mat-icon></button>
-      <button mat-icon-button (click)="deleteConfirm(item)" matTooltip="Excluir"> <mat-icon>delete</mat-icon></button>
-    </div> 
-  </div>
-  <!--BACK AND TITLE END -->
+<div fxLayout="row" fxLayoutAlign="center start" ngClass.gt-sm="padding" class="mat-typography">
+  <div fxLayout="column" fxFlex="85" fxFlex.lt-md="100" fxLayoutGap="15px" *ngIf="!loading || submitted">
 
-  <mat-card class="flex content-page">
-    <mat-card-content>
-      <!-- DETAILS START -->
-      <div>
-        <mat-card-title-group>
-          <mat-card-subtitle>Localização</mat-card-subtitle>
-        </mat-card-title-group>
-        <div class="container-flex margin-bottom">
-          <div class="flex-5 align-top">
-            <p><mat-icon>place</mat-icon></p>
-          </div>
-          <div class="flex-95">
-          <div class="container-flex">
-            <div class="flex-10"><p>CEP: </p></div>
-            <div class="flex-90"><p>{{item.zipcode}}</p></div>
-          </div>
-          <div class="container-flex">
-            <div class="flex-10"><p>Endereço: </p></div>
-            <div class="flex-40"><p>{{item.address}}</p></div>
-            <div class="flex-10"><p>Número: </p></div>
-            <div class="flex-40"><p>{{item.number}}</p></div>
-          </div>
-          <div class="container-flex">
-            <div class="flex-10"><p>Complemento: </p></div>
-            <div class="flex-40"><p>{{item.complement}}</p></div>
-            <div class="flex-10"><p>Bairro: </p></div>
-            <div class="flex-40"><p>{{item.neighborhood}}</p></div>
-          </div>
-          <div class="container-flex">
-            <div class="flex-10"><p>Cidade: </p></div>
-            <div class="flex-40"><p>{{item.city}}</p></div>
-            <div class="flex-10"><p>Estado: </p></div>
-            <div class="flex-40"><p>{{item.state}}</p></div>
-          </div>
-        </div>
+    <!-- BACK AND TITLE START -->
+    <div ngClass.lt-md="padding no-padding-bottom">
+      <div fxLayoutAlign="space-between center" fxLayout="row">
+        <h3 fxLayout="row" fxLayoutAlign="start center" class="no-margin-bottom">
+            <button mat-icon-button (click)="goBack()" matTooltip="Voltar"><mat-icon>arrow_back</mat-icon></button> Filial Detalhes
+        </h3>
+        <div>
+          <button mat-icon-button [routerLink]="['/company', item.company.data.id, 'branch', item.id, 'edit']" matTooltip="Editar"><mat-icon>edit</mat-icon></button>
+          <button mat-icon-button (click)="deleteConfirm(item)" matTooltip="Excluir"> <mat-icon>delete</mat-icon></button>
+        </div> 
       </div>
+    </div>
+    <!--BACK AND TITLE END -->  
 
-        <mat-card-title-group>
-          <mat-card-title></mat-card-title>
-          <mat-card-subtitle>Contato</mat-card-subtitle>
-        </mat-card-title-group>
-        <div class="container-flex margin-bottom">
-          <div class="flex-5 align-top">
-            <p><mat-icon>email</mat-icon></p>
-          </div>
-          <div class="flex-95">
-            <div class="container-flex">
-              <div class="flex-10"><p>Email 1: </p></div>
-              <div class="flex-40"><p>{{item.email_1}}</p></div>
-              <div class="flex-10"><p>Email 2: </p></div>
-              <div class="flex-40"><p>{{item.email_2}}</p></div>
-            </div>
-            <div class="container-flex">
-              <div class="flex-10"><p>Telefone 1: </p></div>
-              <div class="flex-40"><p>{{item.phone_1}}</p></div>
-              <div class="flex-10"><p>Telefone 2: </p></div>
-              <div class="flex-40"><p>{{item.phone_2}}</p></div>
-            </div>
-          </div>
-        </div>
+    <!-- CONTENT START -->
+    <div ngClass.gt-sm="mat-elevation-z1 rounded-border">
+      <mat-card>
+        <mat-card-content fxLayout="column">
+          <!-- LABELS START -->
+          <!-- ADDRESS START -->
+          <mat-card-title-group>
+            <mat-card-subtitle>Localização</mat-card-subtitle>
+          </mat-card-title-group>
+          <div fxLayout="column" fxLayoutAlign="start start">
+            
+            <div fxLayout="row" fxFlexFill fxLayoutGap="10px">
+              <div fxFlex="40px" fxHide.lt-md="true">
+                <p><mat-icon>place</mat-icon></p>
+              </div>
+              <div fxFlex>
+                <div fxLayout="row wrap" fxLayout.lt-md="column" fxLayoutGap.lt-md="10px">
+                  <div fxLayout="row" fxFlexFill>
+                    <div fxFlex="120px"><p>CEP: </p></div>
+                    <div fxFlex><p>{{item.zipcode}}</p></div>
+                  </div>
 
-        <mat-card-title-group>
-          <mat-card-title></mat-card-title>
-          <mat-card-subtitle>Redes Sociais</mat-card-subtitle>
-        </mat-card-title-group>
-        <div class="container-flex">
-          <div class="flex-5 align-top">
-            <p><mat-icon>link</mat-icon></p>
+                  <div fxLayout="row" fxFlex="calc(50%-10px)">
+                    <div fxFlex="120px"><p>Endereço: </p></div>
+                  <div fxFlex><p>{{item.address}}</p></div>
+                  </div>                          
+                  <div fxLayout="row" fxFlex="calc(50%-10px)">
+                    <div fxFlex="120px"><p>Número: </p></div>
+                    <div fxFlex><p>{{item.number}}</p></div>
+                  </div>
+
+                  <div fxLayout="row" fxFlex="calc(50%-10px)">
+                    <div fxFlex="120px"><p>Complemento: </p></div>
+                    <div fxFlex><p>{{item.complement}}</p></div>
+                  </div>
+                  <div fxLayout="row" fxFlex="calc(50%-10px)">
+                    <div fxFlex="120px"><p>Bairro: </p></div>
+                    <div fxFlex><p>{{item.neighborhood}}</p></div>
+                  </div>
+
+                  <div fxLayout="row" fxFlex="calc(50%-10px)">
+                    <div fxFlex="120px"><p>Cidade: </p></div>
+                    <div fxFlex><p>{{item.city}}</p></div>
+                  </div>
+                  <div fxLayout="row" fxFlex="calc(50%-10px)">
+                    <div fxFlex="120px"><p>Estado: </p></div>
+                    <div fxFlex><p>{{item.state}}</p></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+          </div> 
+          <!-- ADDRESS END -->
+
+          <!-- CONTACT START -->
+          <mat-card-title-group>
+            <mat-card-subtitle>Contato</mat-card-subtitle>
+          </mat-card-title-group>
+          <div fxLayout="column" fxLayoutAlign="start start">
+            
+            <div fxLayout="row" fxFlexFill fxLayoutGap="10px">
+              <div fxFlex="40px" fxHide.lt-md="true">
+                <p><mat-icon>email</mat-icon></p>
+              </div>
+              <div fxFlex>
+                <div fxLayout="row wrap" fxLayout.lt-md="column" fxLayoutGap.lt-md="10px">
+                  <div fxLayout="row" fxFlex="calc(50%-10px)">
+                    <div fxFlex="120px"><p>Email 1: </p></div>
+                    <div fxFlex><p>{{item.email_1}}</p></div>
+                  </div>
+                  <div fxLayout="row" fxFlex="calc(50%-10px)">
+                    <div fxFlex="120px"><p>Email 2: </p></div>
+                    <div fxFlex><p>{{item.email_2}}</p></div>
+                  </div>
+
+                  <div fxLayout="row" fxFlex="calc(50%-10px)">
+                    <div fxFlex="120px"><p>Telefone 1: </p></div>
+                    <div fxFlex><p>{{item.phone_1}}</p></div>
+                  </div>
+                  <div fxLayout="row" fxFlex="calc(50%-10px)">
+                    <div fxFlex="120px"><p>Telefone 2: </p></div>
+                    <div fxFlex><p>{{item.phone_2}}</p></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
           </div>
-          <div class="flex-95">
-            <div class="container-flex">
-              <div class="flex-10"><p>Site: </p></div>
-              <div class="flex-90"><p>{{item.website}}</p></div>
+          <!-- CONTACT END -->
+
+          <!-- SOCIAL START -->
+          <mat-card-title-group>
+            <mat-card-subtitle>Redes Sociais</mat-card-subtitle>
+          </mat-card-title-group>
+          <div fxLayout="column" fxLayoutAlign="start start">
+            
+            <div fxLayout="row" fxFlexFill fxLayoutGap="10px">
+              <div fxFlex="40px" fxHide.lt-md="true">
+                <p><mat-icon>link</mat-icon></p>
+              </div>
+              <div fxFlex>
+                <div fxLayout="row wrap" fxLayout.lt-md="column" fxLayoutGap.lt-md="10px">
+                  <div fxLayout="row" fxFlex="calc(50%-10px)">
+                    <div fxFlex="120px"><p>Site: </p></div>
+                    <div fxFlex><p>{{item.website}}</p></div>
+                  </div>
+                  <div fxLayout="row" fxFlex="calc(50%-10px)">
+                    <div fxFlex="120px"><p>Facebook: </p></div>
+                    <div fxFlex><p>{{item.facebook}}</p></div>
+                  </div>
+
+                  <div fxLayout="row" fxFlex="calc(50%-10px)">
+                    <div fxFlex="120px"><p>Twitter: </p></div>
+                    <div fxFlex><p>{{item.twitter}}</p></div>
+                  </div>
+                  <div fxLayout="row" fxFlex="calc(50%-10px)">
+                    <div fxFlex="120px"><p>Instagram: </p></div>
+                    <div fxFlex><p>{{item.instagram}}</p></div>
+                  </div>
+                </div>
+              </div>
             </div>
-            <div class="container-flex">
-              <div class="flex-10"><p>Facebook: </p></div>
-              <div class="flex-90"><p>{{item.facebook}}</p></div>
-            </div>
-            <div class="container-flex">
-              <div class="flex-10"><p>Twitter: </p></div>
-              <div class="flex-90"><p>{{item.twitter}}</p></div>
-            </div>
-            <div class="container-flex">
-              <div class="flex-10"><p>Instagram: </p></div>
-              <div class="flex-90"><p>{{item.instagram}}</p></div>
-            </div>
+
           </div>
-        </div>
-      </div>
-      <!-- DETAILS END -->
-    </mat-card-content>
-  </mat-card>
+          <!-- SOCIAL END -->
+          <!-- LABELS END -->
+
+        </mat-card-content>
+      </mat-card>
+    </div>
+    <!-- CONTENT END -->    
+    
+    <div [fxHide.lt-md]="true"> </div>
+  </div>    
 </div>

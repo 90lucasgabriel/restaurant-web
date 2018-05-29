@@ -10,4 +10,11 @@ export class AppConfig {
     {day: Day.FRIDAY,     name: 'Sexta-feira'},
     {day: Day.SATURDAY,   name: 'Sábado'}
   ];
+
+  public static THEME_LIST = [
+    { value: 'light-theme', label: 'Claro'  },
+    { value: 'dark-theme',  label: 'Escuro' }
+  ];
+
+  public static THEME_SELECTED = 'light-theme';
 }

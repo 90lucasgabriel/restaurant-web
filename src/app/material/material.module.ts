@@ -26,6 +26,7 @@ import {
   MatToolbarModule,
   MatTooltipModule
 } from '@angular/material';
+import { FlexLayoutModule }           from '@angular/flex-layout';
 
 @NgModule({
   imports: [
@@ -52,7 +53,8 @@ import {
     MatTabsModule,
     MatTableModule,
     MatToolbarModule,
-    MatTooltipModule
+    MatTooltipModule,
+    FlexLayoutModule
   ],
   exports: [
     MatAutocompleteModule,
@@ -77,7 +79,8 @@ import {
     MatTabsModule,
     MatTableModule,
     MatToolbarModule,
-    MatTooltipModule
+    MatTooltipModule,
+    FlexLayoutModule
   ],
   declarations: [DialogComponent],
   entryComponents: [DialogComponent]

@@ -1,4 +1,5 @@
 import { Component, OnInit, ViewEncapsulation, AfterViewInit, ViewChild, OnDestroy, Inject } from '@angular/core';
+import { trigger, state, style, animate, transition }   from '@angular/animations';
 import { Router, ActivatedRoute } from '@angular/router';
 import { Location }               from '@angular/common';
 
@@ -6,6 +7,7 @@ import { AppComponent }           from '@r-app/app.component';
 import { LoaderService }          from '@r-service/loader.service';
 import { MaterialService }        from '@r-material/material.service';
 import { QueryInput }             from '@r-model/query-input.model';
+import { ANIMATION }              from '@r-material/material-animation';
 
 import { Category }               from '@r-category/category.model';
 import { CategoryService }        from '@r-category/category.service';
@@ -18,10 +20,11 @@ import { CategoryService }        from '@r-category/category.service';
  * @implements {OnDestroy}
  */
 @Component({
-  selector:                 'app-category-details',
-  templateUrl:              './category-details.component.html',
-  styleUrls:                ['./category-details.component.css'],
-  encapsulation:            ViewEncapsulation.None
+  selector:           'app-category-details',
+  templateUrl:        './category-details.component.html',
+  styleUrls:          ['./category-details.component.css'],
+  encapsulation:      ViewEncapsulation.None,
+  animations:         [ ANIMATION ]
 })
 export class CategoryDetailsComponent implements OnInit, OnDestroy {
 // DECLARATIONS --------------------------

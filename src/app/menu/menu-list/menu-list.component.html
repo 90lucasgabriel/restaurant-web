@@ -1,94 +1,97 @@
-<div class="container-flex" [ngClass]="{'flex-center': true}">
-    <!-- BACK AND TITLE START -->
-    <div class="mat-typography container-flex header-page content-page">
-      <div class="flex-5"><button mat-icon-button><mat-icon>restaurant</mat-icon></button></div>
-      <div class="flex-65 text-title">Cardápios</div>
-      <div class="flex-30 text-right">
-        <button mat-icon-button (click)="showFilter = !showFilter" matTooltip="Filtrar"><mat-icon>filter_list</mat-icon></button>
-        <button mat-icon-button matTooltip="Exportar"><mat-icon>share</mat-icon></button>
-        <button mat-icon-button *ngIf="selection.selected.length > 0" (click)="deleteConfirm(selection)" matTooltip="Excluir"><mat-icon>delete</mat-icon></button>
-      </div>  
-    </div>
-    <!--BACK AND TITLE END -->
-  
-    <!-- FILTER START -->
-    <div class="flex container-flex content-page margin-bottom" *ngIf="showFilter">
-      <div class="flex-20 margin-right">
-        <mat-form-field class="full-width">
+<div fxLayout="row" fxLayoutAlign="center start" ngClass.gt-sm="padding" class="mat-typography">
+  <div fxLayout="column" fxFlex="85" fxFlex.lt-md="100" fxLayoutGap="15px">
+
+    <div ngClass.lt-md="padding no-padding-bottom">
+      <!-- BACK AND TITLE START -->
+      <div fxLayoutAlign="space-between start" fxLayout="row">
+        <h3 fxLayout="row" fxLayoutAlign="start center" class="mat-h3 no-margin-bottom">
+          <button mat-icon-button><mat-icon>restaurant</mat-icon></button> Cardápios
+        </h3>
+        <div>
+          <button mat-icon-button (click)="showFilter = !showFilter" matTooltip="Filtrar"><mat-icon>filter_list</mat-icon></button>
+          <button mat-icon-button matTooltip="Exportar"><mat-icon>share</mat-icon></button>
+          <button mat-icon-button *ngIf="selection.selected.length > 0" (click)="deleteConfirm(selection)" matTooltip="Excluir" [@hfold]><mat-icon>delete</mat-icon></button>
+        </div>  
+      </div>
+      <!--BACK AND TITLE END -->
+      
+      <!-- FILTER START -->
+      <div fxLayout="row" fxLayout.lt-md="column" fxLayoutGap="5px" fxLayoutAlign="space-evenly" *ngIf="showFilter" [@vfold]>
+        <mat-form-field fxFlex>
           <input matInput placeholder="ID" [(ngModel)]="filter.id" name="filter.id" (keyup)="applyFilter(dataSource, dataSourceCopy, filter)">
         </mat-form-field>
-      </div>
-      <div class="flex-20 margin-right">
-        <mat-form-field class="full-width">
+      
+        <mat-form-field fxFlex>
           <input matInput placeholder="Nome" [(ngModel)]="filter.name" name="filter.name" (keyup)="applyFilter(dataSource, dataSourceCopy, filter)">
         </mat-form-field>
       </div>
+      <!-- FILTER END -->
+
+      <!-- LOADERS START -->
+      <div fxLayout="column" fxFlexFill fxLayoutAlign="center center" *ngIf="loading">
+        <mat-progress-spinner mode="indeterminate" diameter="30" strokeWidth="4"></mat-progress-spinner>
+      </div>
+      <div fxFlex fxLayout="column" fxLayoutAlign="center center" *ngIf="dataSource.data.length == 0 && !loading" class="mat-typography" >
+        <mat-icon class="big">help_outline</mat-icon>
+        <h3>Nenhum resultado encontrado.</h3>
+      </div>
+      <!-- LOADERS END -->
+
     </div>
-    <!-- FILTER END -->
-  
-    <!-- LOADERS START -->
-    <div class="content-page" *ngIf="loading">
-      <mat-progress-spinner mode="indeterminate" diameter="30" strokeWidth="4"></mat-progress-spinner>
-    </div>
-    <div class="text-center mat-typography" *ngIf="dataSource.data.length == 0 && !loading">
-      <mat-icon class="medium">help_outline</mat-icon>
-      <h3>Nenhum resultado encontrado.</h3>
-    </div>
-    <!-- LOADERS END -->
-  
+
     <!-- LIST START -->
-    <div class="flex content-page" [ngClass]="{'hide': dataSource.data.length == 0}">
-      <div class="flex full-width mat-elevation-z4">
+    <div [ngClass]="{'hide': dataSource.data.length == 0}">
+      <div fxFlex ngClass.gt-sm="mat-elevation-z1 rounded-border">
       
         <mat-table #table [dataSource]="dataSource" 
           matSort matSortActive="id" matSortDirection="desc">
           <!-- Checkbox Column -->
           <ng-container matColumnDef="select">
-            <mat-header-cell *matHeaderCellDef class="id-column">
+            <mat-header-cell *matHeaderCellDef fxFlex="60px">
               <mat-checkbox (change)="$event ? masterToggle(dataSourceCopy, selection) : null"
                             [checked]="selection.hasValue() && isAllSelected(dataSourceCopy, selection)"
                             [indeterminate]="selection.hasValue() && !isAllSelected(dataSourceCopy, selection)">
               </mat-checkbox>
             </mat-header-cell>
-            <mat-cell *matCellDef="let row" class="id-column">
+            <mat-cell *matCellDef="let row" fxFlex="60px">
               <mat-checkbox (click)="$event.stopPropagation()"
                             (change)="$event ? selection.toggle(row) : null"
                             [checked]="selection.isSelected(row)">
               </mat-checkbox>
             </mat-cell>
           </ng-container>
-          
+                    
           <!-- ID Column -->
           <ng-container matColumnDef="id">
-            <mat-header-cell *matHeaderCellDef mat-sort-header class="id-column"> ID </mat-header-cell>
-            <mat-cell *matCellDef="let row" class="id-column"> {{row.id}} </mat-cell>
+            <mat-header-cell *matHeaderCellDef mat-sort-header fxFlex="60px"> ID </mat-header-cell>
+            <mat-cell *matCellDef="let row" fxFlex="60px"> {{row.id}} </mat-cell>
           </ng-container>
-  
+
           <!-- Name Column -->
           <ng-container matColumnDef="name">
-            <mat-header-cell *matHeaderCellDef mat-sort-header> Nome </mat-header-cell>
-            <mat-cell *matCellDef="let row"> {{row.name}} </mat-cell>
+            <mat-header-cell *matHeaderCellDef mat-sort-header fxFlex fxFlex.lt-md="300px"> Nome </mat-header-cell>
+            <mat-cell *matCellDef="let row" fxFlex fxFlex.lt-md="300px"> {{row.name}} </mat-cell>
           </ng-container>
-  
+
           <!-- Days Column -->
           <ng-container matColumnDef="day">
-            <mat-header-cell *matHeaderCellDef class="actions-column text-left"> Dias </mat-header-cell>
-            <mat-cell *matCellDef="let row" class="actions-column text-left"> 
-              <span *ngFor="let t of timeList" style="font-size: x-small" [ngClass]="{'color-accent': verifyDays(t.day, row.time.data)}">
-                {{t.name.substring(0,1) | uppercase}}
-              </span>
+            <mat-header-cell *matHeaderCellDef mat-sort-header fxFlex="100px"> Dias </mat-header-cell>
+            <mat-cell *matCellDef="let row" fxFlex="100px"> 
+                <span *ngFor="let t of timeList" style="font-size: x-small" [ngClass]="{'accent': verifyDays(t.day, row.time.data)}">
+                  {{t.name.substring(0,1) | uppercase}}
+                </span>  
             </mat-cell>
           </ng-container>
-  
+
           <!-- Ações Column -->
           <ng-container matColumnDef="actions">
-            <mat-header-cell *matHeaderCellDef class="actions-column"></mat-header-cell>
-            <mat-cell *matCellDef="let row" class="hover-child actions-column">
+            <mat-header-cell *matHeaderCellDef fxFlex="90px"></mat-header-cell>
+            <mat-cell *matCellDef="let row" fxFlex="90px" ngClass.gt-sm="hover-child">
                 <button mat-icon-button [routerLink]="[row.id, 'edit']" matTooltip="Editar"><mat-icon>edit</mat-icon></button>
                 <button mat-icon-button (click)="deleteConfirm({selected: [row]})" matTooltip="Excluir"><mat-icon>delete</mat-icon></button>
             </mat-cell>
           </ng-container>
-  
+
           <!-- HEADERS AND ROWS -->
           <mat-header-row *matHeaderRowDef="columns"></mat-header-row>
           <mat-row class="hover-parent pointer" *matRowDef="let row; columns: columns;" (click)="goDetails(row.company_id, row.id)"></mat-row>
@@ -98,9 +101,9 @@
       </div>
     </div>
     <!-- LIST END -->
-  
+
     <div class="fab-position">
       <button mat-fab [routerLink]="['new']" matTooltip="Novo" matTooltipPosition="left"><mat-icon>add</mat-icon></button>
     </div>
   </div>
-  
+</div>

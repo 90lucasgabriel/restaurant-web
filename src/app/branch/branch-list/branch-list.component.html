@@ -1,134 +1,138 @@
-<div class="container-flex" [ngClass]="{'flex-center': true}">
-  <!-- BACK AND TITLE START -->
-  <div class="mat-typography container-flex header-page content-page">
-    <div class="flex-5"><button mat-icon-button><mat-icon>store</mat-icon></button></div>
-    <div class="flex-65 text-title">Filiais</div>
-    <div class="flex-30 text-right">
-      <button mat-icon-button (click)="showFilter = !showFilter" matTooltip="Filtrar"><mat-icon>filter_list</mat-icon></button>
-      <button mat-icon-button matTooltip="Exportar"><mat-icon>share</mat-icon></button>
-      <button mat-icon-button *ngIf="selection.selected.length > 0" (click)="deleteConfirm(selection)" matTooltip="Excluir"><mat-icon>delete</mat-icon></button>
-    </div>  
-  </div>
-  <!--BACK AND TITLE END -->
+<div fxLayout="row" fxLayoutAlign="center start" ngClass.gt-sm="padding" class="mat-typography">
+    <div fxLayout="column" fxFlex="85" fxFlex.lt-md="100" fxLayoutGap="15px">
 
-  <!-- FILTER START -->
-  <div class="flex container-flex content-page margin-bottom" *ngIf="showFilter">
-    <div class="flex-20 margin-right">
-      <mat-form-field class="full-width">
-        <input matInput placeholder="Endereço" [(ngModel)]="filter.address" name="filter.address" (keyup)="applyFilter(dataSource, dataSourceCopy, filter)">
-      </mat-form-field>
-    </div>
-    <div class="flex-20 margin-right">
-      <mat-form-field class="full-width">
-        <input matInput placeholder="Número" [(ngModel)]="filter.number" name="filter.number" (keyup)="applyFilter(dataSource, dataSourceCopy, filter)">
-      </mat-form-field>
-    </div>
-    <div class="flex-20 margin-right">
-      <mat-form-field class="full-width">
-        <input matInput placeholder="Cidade" [(ngModel)]="filter.city" name="filter.city" (keyup)="applyFilter(dataSource, dataSourceCopy, filter)">
-      </mat-form-field>
-    </div>
-    <div class="flex-20 margin-right">
-      <mat-form-field class="full-width">
-        <input matInput placeholder="UF" [(ngModel)]="filter.state" name="filter.state" (keyup)="applyFilter(dataSource, dataSourceCopy, filter)">
-      </mat-form-field>
-    </div>
-    <div class="flex-20 margin-right">
-      <mat-form-field class="full-width">
-        <input matInput placeholder="Telefone" [(ngModel)]="filter.phone_1" name="filter.phone_1" (keyup)="applyFilter(dataSource, dataSourceCopy, filter)">
-      </mat-form-field>
-    </div>
-  </div>
-  <!-- FILTER END -->
-
-  <!-- LOADERS START -->
-  <div class="content-page" *ngIf="loading">
-    <mat-progress-spinner mode="indeterminate" diameter="30" strokeWidth="4"></mat-progress-spinner>
-  </div>
-  <div class="text-center mat-typography" *ngIf="dataSource.data.length == 0 && !loading">
-    <mat-icon class="big">help_outline</mat-icon>
-    <h3>Nenhum resultado encontrado.</h3>
-  </div>
-  <!-- LOADERS END -->
-
-  <!-- LIST START -->
-  <div class="flex content-page" [ngClass]="{'hide': dataSource.data.length == 0}">
-    <div class="flex full-width mat-elevation-z4">
+    <div ngClass.lt-md="padding no-padding-bottom">
+      <!-- BACK AND TITLE START -->
+      <div fxLayoutAlign="space-between start" fxLayout="row">
+        <h3 fxLayout="row" fxLayoutAlign="start center" class="no-margin-bottom">
+          <button mat-icon-button><mat-icon>store</mat-icon></button> Filiais
+        </h3>
+        <div>
+          <button mat-icon-button (click)="showFilter = !showFilter" matTooltip="Filtrar"><mat-icon>filter_list</mat-icon></button>
+          <button mat-icon-button matTooltip="Exportar"><mat-icon>share</mat-icon></button>
+          <button mat-icon-button *ngIf="selection.selected.length > 0" (click)="deleteConfirm(selection)" matTooltip="Excluir" [@hfold]><mat-icon>delete</mat-icon></button>
+        </div>  
+      </div>
+      <!--BACK AND TITLE END -->
       
-      <mat-table #table [dataSource]="dataSource" class="example-table"
-        matSort matSortActive="id" matSortDirection="desc">
-        <!-- Checkbox Column -->
-        <ng-container matColumnDef="select">
-          <mat-header-cell *matHeaderCellDef class="id-column">
-            <mat-checkbox (change)="$event ? masterToggle(dataSourceCopy, selection) : null"
-                          [checked]="selection.hasValue() && isAllSelected(dataSourceCopy, selection)"
-                          [indeterminate]="selection.hasValue() && !isAllSelected(dataSourceCopy, selection)">
-            </mat-checkbox>
-          </mat-header-cell>
-          <mat-cell *matCellDef="let row" class="id-column">
-            <mat-checkbox (click)="$event.stopPropagation()"
-                          (change)="$event ? selection.toggle(row) : null"
-                          [checked]="selection.isSelected(row)">
-            </mat-checkbox>
-          </mat-cell>
-        </ng-container>
+      <!-- FILTER START -->
+      <div fxLayout="column" fxLayoutAlign="space-evenly" *ngIf="showFilter" [@vfold]>        
+        <div fxLayout="row" fxLayout.lt-md="column" fxLayoutGap="5px">
+          <mat-form-field fxFlex>
+            <input matInput placeholder="Endereço" [(ngModel)]="filter.address" name="filter.address" (keyup)="applyFilter(dataSource, dataSourceCopy, filter)">
+          </mat-form-field>
 
-        <!-- ID Column -->
-        <ng-container matColumnDef="id">
-          <mat-header-cell *matHeaderCellDef mat-sort-header class="id-column"> ID </mat-header-cell>
-          <mat-cell *matCellDef="let row" class="id-column" > {{row.id}} </mat-cell>
-        </ng-container>
-    
-        <!-- Address Column -->
-        <ng-container matColumnDef="address">
-          <mat-header-cell *matHeaderCellDef mat-sort-header> Endereço </mat-header-cell>
-          <mat-cell *matCellDef="let row"> {{row.address}} </mat-cell>
-        </ng-container>
+          <mat-form-field fxFlex>
+            <input matInput placeholder="Cidade" [(ngModel)]="filter.city" name="filter.city" (keyup)="applyFilter(dataSource, dataSourceCopy, filter)">
+          </mat-form-field>
+        </div>
+        <div fxLayout="row" fxLayout.lt-md="column" fxLayoutGap="5px">   
+          <mat-form-field fxFlex>
+            <input matInput placeholder="Número" [(ngModel)]="filter.number" name="filter.number" (keyup)="applyFilter(dataSource, dataSourceCopy, filter)">
+          </mat-form-field>
 
-        <!-- Number Column -->
-        <ng-container matColumnDef="number">
-          <mat-header-cell *matHeaderCellDef mat-sort-header  class="number-column"> Número </mat-header-cell>
-          <mat-cell *matCellDef="let row"  class="number-column"> {{row.number}} </mat-cell>
-        </ng-container>
-    
-        <!-- City Column -->
-        <ng-container matColumnDef="city">
-          <mat-header-cell *matHeaderCellDef mat-sort-header> Cidade </mat-header-cell>
-          <mat-cell *matCellDef="let row"> {{row.city}} </mat-cell>
-        </ng-container>
+          <mat-form-field fxFlex>
+            <input matInput placeholder="UF" [(ngModel)]="filter.state" name="filter.state" (keyup)="applyFilter(dataSource, dataSourceCopy, filter)">
+          </mat-form-field>
+        
+          <mat-form-field fxFlex>
+            <input matInput placeholder="Telefone" [(ngModel)]="filter.phone_1" name="filter.phone_1" (keyup)="applyFilter(dataSource, dataSourceCopy, filter)">
+          </mat-form-field>  
+        </div> 
+      </div>
+      <!-- FILTER END -->
 
-        <!-- State Column -->
-        <ng-container matColumnDef="state">
-          <mat-header-cell *matHeaderCellDef mat-sort-header> UF </mat-header-cell>
-          <mat-cell *matCellDef="let row"> {{row.state}} </mat-cell>
-        </ng-container>
+      <!-- LOADERS START -->
+      <div fxLayout="column" fxFlexFill fxLayoutAlign="center center" *ngIf="loading">
+        <mat-progress-spinner mode="indeterminate" diameter="30" strokeWidth="4"></mat-progress-spinner>
+      </div>
+      <div fxFlex fxLayout="column" fxLayoutAlign="center center" *ngIf="dataSource.data.length == 0 && !loading" class="mat-typography" >
+        <mat-icon class="big">help_outline</mat-icon>
+        <h3>Nenhum resultado encontrado.</h3>
+      </div>
+      <!-- LOADERS END -->
 
-        <!-- Phone Column -->
-        <ng-container matColumnDef="phone_1">
-          <mat-header-cell *matHeaderCellDef mat-sort-header> Telefone </mat-header-cell>
-          <mat-cell *matCellDef="let row"> {{row.phone_1}} </mat-cell>
-        </ng-container>
-
-        <!-- Phone Column -->
-        <ng-container matColumnDef="actions">
-          <mat-header-cell *matHeaderCellDef class="actions-column"></mat-header-cell>
-          <mat-cell *matCellDef="let row" class="hover-child actions-column">
-            <button mat-icon-button [routerLink]="[row.id, 'edit']" matTooltip="Editar"><mat-icon>edit</mat-icon></button>
-            <button mat-icon-button (click)="deleteConfirm(row)" matTooltip="Excluir"><mat-icon>delete</mat-icon></button>
-          </mat-cell>
-        </ng-container>
-
-        <!-- HEADERS AND ROWS -->
-        <mat-header-row *matHeaderRowDef="columns"></mat-header-row>
-        <mat-row class="hover-parent pointer" *matRowDef="let row; columns: columns;" (click)="goDetails(row.company_id, row.id)"></mat-row>
-      </mat-table>
-    
-      <mat-paginator #paginator [length]="total" [pageSize]="20" [pageSizeOptions]="[5, 10, 25, 100]"></mat-paginator>
     </div>
-  </div>
-  <!-- LIST END -->
 
-  <div class="fab-position">
-    <button mat-fab [routerLink]="['new']" matTooltip="Novo" matTooltipPosition="left"><mat-icon>add</mat-icon></button>
+    <!-- LIST START -->
+    <div [ngClass]="{'hide': dataSource.data.length == 0}">
+      <div fxFlex ngClass.gt-sm="mat-elevation-z1 rounded-border">
+      
+        <mat-table #table [dataSource]="dataSource" 
+          matSort matSortActive="id" matSortDirection="desc">
+          <!-- Checkbox Column -->
+          <ng-container matColumnDef="select">
+            <mat-header-cell *matHeaderCellDef fxFlex="60px">
+              <mat-checkbox (change)="$event ? masterToggle(dataSourceCopy, selection) : null"
+                            [checked]="selection.hasValue() && isAllSelected(dataSourceCopy, selection)"
+                            [indeterminate]="selection.hasValue() && !isAllSelected(dataSourceCopy, selection)">
+              </mat-checkbox>
+            </mat-header-cell>
+            <mat-cell *matCellDef="let row" fxFlex="60px">
+              <mat-checkbox (click)="$event.stopPropagation()"
+                            (change)="$event ? selection.toggle(row) : null"
+                            [checked]="selection.isSelected(row)">
+              </mat-checkbox>
+            </mat-cell>
+          </ng-container>
+                    
+          <!-- ID Column -->
+          <ng-container matColumnDef="id">
+            <mat-header-cell *matHeaderCellDef mat-sort-header fxFlex="60px"> ID </mat-header-cell>
+            <mat-cell *matCellDef="let row" fxFlex="60px"> {{row.id}} </mat-cell>
+          </ng-container>
+
+          <!-- Address Column -->
+          <ng-container matColumnDef="address">
+            <mat-header-cell *matHeaderCellDef mat-sort-header fxFlex fxFlex.lt-md="300px"> Endereço </mat-header-cell>
+            <mat-cell *matCellDef="let row" fxFlex fxFlex.lt-md="300px"> {{row.address}} </mat-cell>
+          </ng-container>
+
+          <!-- Number Column -->
+          <ng-container matColumnDef="number">
+            <mat-header-cell *matHeaderCellDef mat-sort-header fxFlex="70px"> Número </mat-header-cell>
+            <mat-cell *matCellDef="let row" fxFlex="70px"> {{ row.number || null }} </mat-cell>
+          </ng-container>
+
+          <!-- City Column -->
+          <ng-container matColumnDef="city">
+            <mat-header-cell *matHeaderCellDef mat-sort-header fxFlex fxFlex.lt-md="230px" > Cidade </mat-header-cell>
+            <mat-cell *matCellDef="let row" fxFlex fxFlex.lt-md="230px" > {{ row.city || null }} </mat-cell>
+          </ng-container>
+
+          <!-- State Column -->
+          <ng-container matColumnDef="state">
+            <mat-header-cell *matHeaderCellDef mat-sort-header fxFlex fxFlex.lt-md="50px" > UF </mat-header-cell>
+            <mat-cell *matCellDef="let row" fxFlex fxFlex.lt-md="50px" > {{ row.state || null }} </mat-cell>
+          </ng-container>
+
+          <!-- Phone Column -->
+          <ng-container matColumnDef="phone_1">
+            <mat-header-cell *matHeaderCellDef mat-sort-header fxFlex fxFlex.lt-md="130px" > Telefone </mat-header-cell>
+            <mat-cell *matCellDef="let row" fxFlex fxFlex.lt-md="130px" > {{ row.phone_1 || null }} </mat-cell>
+          </ng-container>
+
+          <!-- Ações Column -->
+          <ng-container matColumnDef="actions">
+            <mat-header-cell *matHeaderCellDef fxFlex="90px"></mat-header-cell>
+            <mat-cell *matCellDef="let row" fxFlex="90px" ngClass.gt-sm="hover-child">
+                <button mat-icon-button [routerLink]="[row.id, 'edit']" matTooltip="Editar"><mat-icon>edit</mat-icon></button>
+                <button mat-icon-button (click)="deleteConfirm({selected: [row]})" matTooltip="Excluir"><mat-icon>delete</mat-icon></button>
+            </mat-cell>
+          </ng-container>
+
+          <!-- HEADERS AND ROWS -->
+          <mat-header-row *matHeaderRowDef="columns"></mat-header-row>
+          <mat-row class="hover-parent pointer" *matRowDef="let row; columns: columns;" (click)="goDetails(row.company_id, row.id)"></mat-row>
+        </mat-table>
+      
+        <mat-paginator [length]="total" [pageSize]="20" [pageSizeOptions]="[5, 10, 25, 100]"></mat-paginator>
+      </div>
+    </div>
+    <!-- LIST END -->
+
+    <div class="fab-position">
+      <button mat-fab [routerLink]="['new']" matTooltip="Novo" matTooltipPosition="left"><mat-icon>add</mat-icon></button>
+    </div>
   </div>
 </div>

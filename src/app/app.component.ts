@@ -1,29 +1,23 @@
-import { Component, ViewChild }     from '@angular/core';
+import { ChangeDetectorRef, Component, ViewChild, AfterViewInit }      from '@angular/core';
+import { MediaMatcher }             from '@angular/cdk/layout';
 import { MatSidenav }               from '@angular/material';
 import { environment }              from '@r-environment/environment';
 import { MaterialService }          from '@r-material/material.service';
 import { LoaderService }            from '@r-service/loader.service';
-
+import { AppConfig }                from '@r-app/app.config';
 
 @Component({
   selector:     'app-root',
   templateUrl:  './app.component.html',
   styleUrls:    ['./app.component.css']
 })
-export class AppComponent {
+export class AppComponent implements AfterViewInit {
   title = 'app';
-  @ViewChild('sidenav') sidenav: MatSidenav;
   public progressBarVisible = true;
 
-  constructor(private loader: LoaderService) {
-    // change isLoading status whenever notified
-    loader
-      .onLoadingChanged
-      .subscribe(isLoading => {
-        this.progressBarVisible = isLoading;
-      });
-  }
-
+  mobileQuery: MediaQueryList;
+  private _mobileQueryListener: () => void;
+  @ViewChild('sidenav') sidenav: MatSidenav;
 
   menus = [
     {
@@ -62,4 +56,51 @@ export class AppComponent {
       link: `order-status`
     }*/
   ];
+
+  themeList = AppConfig.THEME_LIST;
+
+  constructor(
+    private loader:             LoaderService,
+    private changeDetectorRef:  ChangeDetectorRef,
+    private media:              MediaMatcher) {
+    // change isLoading status whenever notified
+    loader
+      .onLoadingChanged
+      .subscribe(isLoading => {
+        this.progressBarVisible = isLoading;
+      });
+
+    // Change mode of sidenav if mobile
+    this.verifyMobile(changeDetectorRef, media);
+  }
+
+  /**
+   * Execute after load all components
+   */
+  public ngAfterViewInit() {
+    this.openSideNav();
+  }
+
+  private verifyMobile(changeDetectorRef: ChangeDetectorRef, media: MediaMatcher) {
+    this.mobileQuery          = media.matchMedia('(max-width: 959px)');
+    this._mobileQueryListener = () => changeDetectorRef.detectChanges();
+    this.mobileQuery.addListener(this._mobileQueryListener);
+  }
+
+  public closeSideNav() {
+    if (this.mobileQuery.matches) {
+      this.sidenav.close();
+    }
+  }
+
+  public openSideNav() {
+    if (!this.mobileQuery.matches) {
+      this.sidenav.open();
+    }
+  }
+
+  public selectTheme(theme) {
+    document.body.className = '';
+    document.body.classList.add(theme, 'mat-app-background');
+  }
 }

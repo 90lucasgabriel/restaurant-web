@@ -1,64 +1,86 @@
-<div class="container-flex" [ngClass]="{'flex-center': true}">
-  <!-- BACK AND TITLE START -->
-  <div class="mat-typography container-flex header-page content-page">
-    <div class="flex-5"><button mat-icon-button><mat-icon>room_service</mat-icon></button></div>
-    <div class="flex-65 text-title">Pedidos</div>
-    <div class="flex-30 text-right">
-      <button mat-icon-button (click)="showFilter = !showFilter" matTooltip="Filtrar"><mat-icon>filter_list</mat-icon></button>
-      <button mat-icon-button matTooltip="Exportar"><mat-icon>share</mat-icon></button>
-    </div>  
-  </div>
-  <!--BACK AND TITLE END -->
-
-  <!-- FILTER START -->
-  <div class="flex container-flex content-page margin-bottom" *ngIf="false && showFilter">
-    <div class="flex-20 margin-right">
-    </div>
-    <div class="flex-20 margin-right">
-      <mat-form-field class="full-width">
-        <mat-select placeholder="Status conta" [(ngModel)]="filter.order_status_id" name="filter.order_status_id" (change)="applyFilter(orderDetailList, orderDetailListCopy, filter)">
+<div fxLayout="row" fxLayoutAlign="center start" ngClass.gt-sm="padding" class="mat-typography">
+  <div fxLayout="column" fxFlex="85" fxFlex.lt-md="100" fxLayoutGap="15px">
+    
+    <div ngClass.lt-md="padding no-padding-bottom">
+      <!-- BACK AND TITLE START -->
+      <div fxLayoutAlign="space-between start" fxLayout="row">
+          <h3 fxLayout="row" fxLayoutAlign="start center" class="no-margin-bottom">
+            <button mat-icon-button><mat-icon>room_service</mat-icon></button> Pedidos
+          </h3>
+          <div>
+            <button mat-icon-button (click)="showFilter = !showFilter" matTooltip="Filtrar"><mat-icon>filter_list</mat-icon></button>
+            <button mat-icon-button matTooltip="Exportar"><mat-icon>share</mat-icon></button>
+          </div>  
+        </div>
+        <!--BACK AND TITLE END -->
+      
+      <!-- FILTER START -->
+      <div fxLayout="row" fxLayout.lt-md="column" fxLayoutGap="5px" fxLayoutAlign="space-evenly" *ngIf="showFilter" [@vfold]>
+        
+        <mat-form-field fxFlex>
+          <input matInput placeholder="ID" [(ngModel)]="filter.id" name="filter.id" (keyup)="applyFilter(dataSource, dataSourceCopy, filter)">
+        </mat-form-field>
+      
+        <mat-form-field fxFlex>
+            <mat-select placeholder="Status conta" [(ngModel)]="filter.order_status_id" name="filter.order_status_id" (change)="applyFilter(orderList, orderListCopy, filter)">
+              <mat-option>-</mat-option>
+              <mat-option value="1">Aberto</mat-option>
+              <mat-option value="2">Pendente</mat-option>
+              <mat-option value="3">Pago</mat-option>
+            </mat-select>
+        </mat-form-field>
+        
+        <mat-form-field fxFlex>
+          <mat-select placeholder="Status" [(ngModel)]="filter.order_detail_status_id" name="filter.order_detail_status_id" (change)="applyFilter(orderList, orderListCopy, filter)">
             <mat-option>-</mat-option>
-            <mat-option value="1">Aberto</mat-option>
-            <mat-option value="2">Pendente</mat-option>
-            <mat-option value="3">Pago</mat-option>
+            <mat-option *ngFor="let status of statusList" [value]="status.id">
+              {{ status.name }}
+            </mat-option>
           </mat-select>
-      </mat-form-field>
+        </mat-form-field>      
+      </div>
+      <!-- FILTER END -->
+
+      <!-- LOADERS START 
+      <div *ngIf="loading">
+        <mat-progress-spinner mode="indeterminate" diameter="30" strokeWidth="4"></mat-progress-spinner>
+      </div>
+      <div fxFlex fxLayout="column" fxLayoutAlign="center center" *ngIf="dataSource.data.length == 0 && !loading" class="mat-typography" >
+        <mat-icon class="big">help_outline</mat-icon>
+        <h3>Nenhum resultado encontrado.</h3>
+      </div>
+        LOADERS END -->
+
     </div>
-    <div class="flex-20 margin-right">
-      <mat-form-field class="full-width">        
-        <mat-select placeholder="Status" [(ngModel)]="filter.orderDetail.order_detail_status_id" name="filter.orderDetail.order_detail_status_id" (change)="applyFilter(orderDetailList, orderDetailListCopy, filter)">
-          <mat-option>-</mat-option>
-          <mat-option *ngFor="let status of statusList" [value]="status.id">
-            {{ status.name }}
-          </mat-option>
-        </mat-select>
-      </mat-form-field>
-    </div>
-  </div>
-  <!-- FILTER END -->
-  
 
   <!-- LIST START -->
-  <div class="container-flex content-page margin-bottom">
-    <mat-card class="flex-95">
-      <mat-card-content>
-          <mat-list *ngFor="let odl of orderDetailList">
-            <mat-list-item>
-              <img matListAvatar src="{{odl.product.data.image}}" class="margin-right">
-              <div class="flex-15">
-                {{odl.product.data.name}}
-              </div>
-              <div class="flex-5">{{odl.quantity}}</div>
-              <div class="flex-5">{{odl.orderDetailStatus.data.name}}</div>
-              <div class="flex-5 text-right">
-                <button mat-icon-button matTooltip="Cancelar"><mat-icon>clear</mat-icon></button>
-                <button mat-icon-button matTooltip="Concluir"><mat-icon>check</mat-icon></button>
-              </div>
-            </mat-list-item>
-          </mat-list>
-      </mat-card-content>
-    </mat-card>
-    
+  <div fxLayout="column" fxLayoutGap="10px" >
+    <div ngClass.gt-sm="mat-elevation-z1 rounded-border">
+      <mat-card>
+        <mat-card-content style="overflow-x: auto">
+            <mat-list *ngFor="let odl of orderDetailList">
+              <mat-list-item fxLayout="column" fxLayoutAlign="space-between">
+                  <div fxLayout="row" fxLayoutAlign="start center" fxFlex="70%" fxFlex.lt-md fxLayoutGap="10px">
+                    <img matListAvatar src="{{odl.product.data.image}}">
+                  <div fxFlex fxFlex.lt-md="300px">
+                    {{odl.product.data.name}}
+                  </div>
+                </div>
+                <div fxLayout="row" fxLayoutAlign="end center" fxFlex>
+                  <div fxFlex="60px">{{odl.quantity}}</div>
+                  <div fxFlex="100px">{{odl.orderDetailStatus.data.name}}</div>
+                  <div fxFlex="90px">
+                    <button mat-icon-button matTooltip="Cancelar"><mat-icon>clear</mat-icon></button>
+                    <button mat-icon-button matTooltip="Concluir"><mat-icon>check</mat-icon></button>
+                  </div>
+                </div>
+              </mat-list-item>
+            </mat-list>
+        </mat-card-content>
+      </mat-card>
+      
+    </div>
+
   </div>
   <!-- LIST END -->
 

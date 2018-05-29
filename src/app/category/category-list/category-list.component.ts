@@ -1,8 +1,10 @@
 import { Component, OnInit, OnDestroy, ViewEncapsulation, AfterViewInit, ViewChild, Host, Inject } from '@angular/core';
+import { trigger, state, style, animate, transition }   from '@angular/animations';
 import { MatSort, MatTableDataSource, MatPaginator, MatDialog, MAT_DIALOG_DATA} from '@angular/material';
 import { SelectionModel }         from '@angular/cdk/collections';
 import { Router }                 from '@angular/router';
 import { FormControl }            from '@angular/forms';
+import { ANIMATION }              from '@r-material/material-animation';
 
 import { LoaderService }          from '@r-service/loader.service';
 import { MaterialService }        from '@r-material/material.service';
@@ -32,7 +34,8 @@ import 'rxjs/add/operator/switchMap';
   selector:           'app-category-list',
   templateUrl:        './category-list.component.html',
   styleUrls:          ['./category-list.component.css'],
-  encapsulation:      ViewEncapsulation.None
+  encapsulation:      ViewEncapsulation.None,
+  animations:         [ ANIMATION ]
 })
 export class CategoryListComponent implements OnInit, OnDestroy, AfterViewInit {
 // DECLARATIONS --------------------------

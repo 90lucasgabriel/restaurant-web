@@ -1,72 +1,82 @@
-<div *ngIf="loading && !submitted">
+<!-- LOADERS START -->
+<div fxLayout="column" fxFlexFill fxLayoutAlign="center center" *ngIf="loading && !submitted">
   <mat-progress-spinner mode="indeterminate" diameter="30" strokeWidth="4"></mat-progress-spinner>
 </div>
-  
-<div class="container-flex flex-center" *ngIf="!loading || submitted">
-  <!-- BACK AND TITLE START -->
-  <div class="mat-typography container-flex header-page width-padding">
-    <div class="flex-5"><button mat-icon-button (click)="goBack()" matTooltip="Voltar"><mat-icon>arrow_back</mat-icon></button></div>
-    <div class="flex-95 text-title">{{title}}</div>
+<!-- LOADERS END -->
+
+<div fxLayout="row" fxLayoutAlign="center start" ngClass.gt-sm="padding" class="mat-typography">
+  <div fxLayout="column" fxFlex="85" fxFlex.lt-md="100" fxLayoutGap="10px"  *ngIf="!loading || submitted"  >
+
+    <!-- BACK AND TITLE START -->
+    <div ngClass.lt-md="padding no-padding-bottom">
+      <div fxLayoutAlign="space-between start" fxLayout="row">
+        <h3 fxLayout="row" fxLayoutAlign="start center" class="no-margin-bottom">
+            <button mat-icon-button (click)="goBack()" matTooltip="Voltar"><mat-icon>arrow_back</mat-icon></button> {{title}}
+        </h3>
+      </div>
+    </div>
+    <!--BACK AND TITLE END -->  
+
+    <!-- CONTENT START -->
+    <div fxLayout="column" fxLayoutGap="10px" >
+      <div ngClass.gt-sm="mat-elevation-z1 rounded-border">
+        <mat-card>
+          <mat-card-content>
+            <!-- CREATE AND EDIT FORM START -->
+            <form #itemForm="ngForm">
+                <mat-card-title-group>
+                  <mat-card-subtitle>Informações</mat-card-subtitle>
+                </mat-card-title-group>
+                <div fxLayout="column" fxLayoutAlign="start start">
+                  
+                  <div fxLayout="row" fxFlexFill>
+                    <div fxFlex="40px" fxHide.lt-md="true">
+                      <p><mat-icon>info_outline</mat-icon></p>
+                    </div>
+                    <div fxFlex>
+                      <div fxLayout="row wrap" fxLayout.lt-md="column" fxLayoutGap="10px">                        
+                        <mat-form-field fxFlex="calc(50%-10px)">
+                          <input matInput placeholder="Nome" [(ngModel)]="item.name" name="name" required>
+                        </mat-form-field>
+                      
+                        <mat-form-field fxFlex="calc(50%-10px)">
+                          <mat-select placeholder="Categoria Pai" [(ngModel)]="item.category_id" name="item.category_id" required>
+                            <mat-option>-</mat-option>
+                            <mat-option *ngFor="let category of categoryList" [value]="category.id">
+                              {{ category.id }} - {{ category.name }}
+                            </mat-option>
+                          </mat-select>
+                        </mat-form-field>
+                        
+                        <mat-form-field fxFlex="100">
+                          <input matInput placeholder="Imagem" disabled [(ngModel)]="item.image" name="image" />
+                          <input type="file" #imageFile [(ngModel)]="imagePreview" name="imagePreview" hidden (change)="previewImage($event)">
+                          <button mat-icon-button matSuffix *ngIf="item.image" color="primary" (click)="item.image=null" ><mat-icon>close</mat-icon></button>
+                          <button mat-button matSuffix color="primary" (click)="imageFile.click()" >SELECIONAR</button>
+                        </mat-form-field>
+                        
+                        <mat-form-field fxFlex="100">
+                          <textarea matInput placeholder="Descrição" [(ngModel)]="item.description" name="description"  matTextareaAutosize matAutosizeMinRows="1"></textarea>
+                        </mat-form-field>                            
+                      </div>
+                    </div>
+                  </div>
+
+                </div>
+              </form>
+              <!-- EDIT FORM END -->
+          </mat-card-content>
+
+          <!-- FORM ACTIONS START -->
+          <mat-card-actions fxLayoutAlign="end">
+            <button mat-button (click)="cancelForm()">CANCELAR</button>
+            <button mat-button (click)="submitForm(item)" [disabled]="!itemForm.form.valid" color="primary">SALVAR</button>
+          </mat-card-actions>
+          <!-- FORM ACTIONS END -->
+        </mat-card>
+      </div>
+    </div>
+    <!-- CONTENT END -->    
+
   </div>
-  <!--BACK AND TITLE END -->  
-
-  <mat-card class="flex content-page">
-    <mat-card-content>
-      <!-- CREATE AND EDIT FORM START -->
-      <form #itemForm="ngForm">
-        <mat-card-title-group>
-          <mat-card-subtitle>Informações</mat-card-subtitle>
-        </mat-card-title-group>
-        <div class="container-flex margin-bottom">
-          <div class="flex-5 align-top">
-            <p><mat-icon>info_outline</mat-icon></p>
-          </div>
-          <div class="flex-95">
-            <div class="container-flex">
-              <div class="flex-10 margin-right">
-                <mat-form-field class="full-width">
-                  <input matInput placeholder="Nome" [(ngModel)]="item.name" name="name" required>
-                </mat-form-field>
-              </div>
-              <div class="flex-10 margin-right">
-                <mat-form-field class="full-width">
-                  <mat-select placeholder="Categoria" [(ngModel)]="item.category_id" name="item.category_id" required>
-                    <mat-option>-</mat-option>
-                    <mat-option *ngFor="let category of categoryList" [value]="category.id">
-                      {{ category.id }} - {{ category.name }}
-                    </mat-option>
-                  </mat-select>
-                </mat-form-field>
-              </div>
-              <div class="flex-10 margin-right">
-                <mat-form-field class="full-width">
-                  <input matInput placeholder="Imagem" disabled [(ngModel)]="item.image" name="image" />
-                  <input type="file" #imageFile [(ngModel)]="imagePreview" name="imagePreview" hidden (change)="previewImage($event)">
-                  <button mat-icon-button matSuffix *ngIf="item.image" color="primary" (click)="item.image=null" ><mat-icon>close</mat-icon></button>
-                  <button mat-button matSuffix color="primary" (click)="imageFile.click()" >SELECIONAR</button>
-                </mat-form-field>
-              </div>
-            </div>
-            <div class="container-flex">
-              <div class="flex-10 margin-right">
-                <mat-form-field class="full-width">
-                  <textarea matInput placeholder="Descrição" [(ngModel)]="item.description" name="description"  matTextareaAutosize matAutosizeMinRows="1"></textarea>
-                </mat-form-field>
-              </div>
-            </div>
-          </div>
-        </div>
-      </form>
-      <!-- EDIT FORM END -->
-    </mat-card-content>
-
-    <!-- FORM ACTIONS START -->
-    <mat-card-actions class="text-right">
-      <button mat-button (click)="cancelForm()">CANCELAR</button>
-      <button mat-button (click)="submitForm(item)" [disabled]="!itemForm.form.valid" color="primary">SALVAR</button>
-    </mat-card-actions>
-    <!-- FORM ACTIONS END -->
-
-  </mat-card>
 </div>
-  

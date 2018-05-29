@@ -1,4 +1,5 @@
 import { Component, OnInit, OnDestroy, ViewEncapsulation, AfterViewInit, ViewChild, Host, Inject } from '@angular/core';
+import { trigger, state, style, animate, transition }   from '@angular/animations';
 import { MatSort, MatTableDataSource, MatPaginator, MatDialog, MAT_DIALOG_DATA} from '@angular/material';
 import { SelectionModel }         from '@angular/cdk/collections';
 import { Router }                 from '@angular/router';
@@ -7,6 +8,7 @@ import { LoaderService }          from '@r-service/loader.service';
 import { MaterialService }        from '@r-material/material.service';
 import { QueryInput }             from '@r-model/query-input.model';
 import { AppComponent }           from '@r-app/app.component';
+import { ANIMATION }              from '@r-material/material-animation';
 
 import { Category }               from '@r-category/category.model';
 import { CategoryService }        from '@r-category/category.service';
@@ -32,7 +34,8 @@ import 'rxjs/add/operator/switchMap';
   selector:           'app-product-list',
   templateUrl:        './product-list.component.html',
   styleUrls:          ['./product-list.component.css'],
-  encapsulation:      ViewEncapsulation.None
+  encapsulation:      ViewEncapsulation.None,
+  animations:         [ ANIMATION ]
 })
 export class ProductListComponent implements OnInit, OnDestroy, AfterViewInit {
 // DECLARATIONS ---------------------

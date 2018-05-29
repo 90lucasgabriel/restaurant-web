@@ -1,4 +1,5 @@
 import { Component, OnInit, ViewEncapsulation, AfterViewInit, ViewChild, OnDestroy, Inject } from '@angular/core';
+import { trigger, state, style, animate, transition }   from '@angular/animations';
 import { Router, ActivatedRoute } from '@angular/router';
 import { Location }               from '@angular/common';
 
@@ -6,6 +7,7 @@ import { AppComponent }           from '@r-app/app.component';
 import { LoaderService }          from '@r-service/loader.service';
 import { MaterialService }        from '@r-material/material.service';
 import { QueryInput }             from '@r-model/query-input.model';
+import { ANIMATION }              from '@r-material/material-animation';
 
 import { Product }                from '@r-product/product.model';
 import { ProductService }         from '@r-product/product.service';
@@ -20,7 +22,8 @@ import { ProductService }         from '@r-product/product.service';
   selector:                 'app-product-details',
   templateUrl:              './product-details.component.html',
   styleUrls:                ['./product-details.component.css'],
-  encapsulation:            ViewEncapsulation.None
+  encapsulation:            ViewEncapsulation.None,
+  animations:               [ ANIMATION ]
 })
 export class ProductDetailsComponent implements OnInit, OnDestroy {
   private sub:              any;
@@ -63,7 +66,7 @@ export class ProductDetailsComponent implements OnInit, OnDestroy {
   public get(id: number) {
     this.service.get(id, {'include': 'category'}).subscribe(success => {
       this.item    = success.data;
-      this.oldItem = JSON.parse(JSON.stringify(this.item)); //copy
+      this.oldItem = JSON.parse(JSON.stringify(this.item)); // copy
     }, error => {
       console.log('Erro ao pesquisar produto', error);
       this.material.snackBar('Erro ao pesquisar produto. Detalhes no console (F12).', 'OK');
