@@ -24,21 +24,19 @@
   <!-- SIDENAV START -->
   <mat-sidenav-container class="sidenav-container">
     <mat-sidenav #sidenav fixedTopGap="56" [mode]="mobileQuery.matches ? 'over' : 'side'">
-      <div class="total-absolute" (swiperight)="sidenav.open()" (swipeleft)="sidenav.close()">
-        <div fxHide.gt-sm="true" fxLayout="column" class="padding" style="background:rgba(0,0,0,0.5); color: white">
-          <div fxLayout="row" fxLayoutAlign="center center" style="width:45px; height: 45px; border-radius: 100%; padding: 10px; background:darkslategray; border: 2px solid white; margin-bottom: 10px">U</div>
-          <div>Nome do usuário</div>
-          <div>emaildousuario@email.com.br</div>
-        </div>
-        <mat-nav-list>
-          <mat-list>
-            <mat-list-item *ngFor="let menu of menus" class="button-menu" (click)="closeSideNav()" routerLink='{{menu.link}}'>
-              <mat-icon mat-list-icon>{{menu.icon}}</mat-icon>
-              <h4 mat-line>{{menu.name}}</h4>
-            </mat-list-item>
-          </mat-list>
-        </mat-nav-list>
+      <div fxHide.gt-sm="true" fxLayout="column" class="padding" style="background:rgba(0,0,0,0.5); color: white">
+        <div fxLayout="row" fxLayoutAlign="center center" style="width:45px; height: 45px; border-radius: 100%; padding: 10px; background:darkslategray; border: 2px solid white; margin-bottom: 10px">U</div>
+        <div>Nome do usuário</div>
+        <div>emaildousuario@email.com.br</div>
       </div>
+      <mat-nav-list>
+        <mat-list>
+          <mat-list-item *ngFor="let menu of menus" class="button-menu" (click)="closeSideNav()" routerLink='{{menu.link}}'>
+            <mat-icon mat-list-icon>{{menu.icon}}</mat-icon>
+            <h4 mat-line>{{menu.name}}</h4>
+          </mat-list-item>
+        </mat-list>
+      </mat-nav-list>
     </mat-sidenav>
 
     <!-- CONTENT START -->
