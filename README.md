@@ -1,11 +1,14 @@
 
 # Restaurant Web
-This is an [Angular](http://angular.io/) + [Angular Material](https://material.angular.io/) application. 
+This is an [Angular 6](http://angular.io/) + [Angular Material](https://material.angular.io/) application. 
 
 
 ## Live Preview
 https://restaurant-web-90lucasgabriel.herokuapp.com/
-![print](/print-menu.jpg)
+<img height="283px" src="/preview_1.jpg">
+<img height="283px" src="/preview_3.jpg">
+<img height="283px" src="/preview_2.jpg">
+<img height="283px" src="/preview_4.jpg">
 
 ## Prerequisites
 Make sure you have [Node 6.9.0 or higher, together with NPM 3 or higher](https://nodejs.org/en/) installed.
