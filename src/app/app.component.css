@@ -15,7 +15,7 @@ mat-sidenav mat-list-item mat-icon{
   bottom: 0;
   left: 0;
   right: 0;
-  margin-bottom: 2px;
+  margin-bottom: 0px;
 }
 
 mat-sidenav-content {

@@ -5,6 +5,7 @@ import { environment }              from '@r-environment/environment';
 import { MaterialService }          from '@r-material/material.service';
 import { LoaderService }            from '@r-service/loader.service';
 import { AppConfig }                from '@r-app/app.config';
+import { Location }                 from '@angular/common';
 
 @Component({
   selector:     'app-root',
@@ -62,6 +63,7 @@ export class AppComponent implements AfterViewInit {
   constructor(
     private loader:             LoaderService,
     private changeDetectorRef:  ChangeDetectorRef,
+    private location:           Location,
     private media:              MediaMatcher) {
     // change isLoading status whenever notified
     loader
@@ -79,6 +81,7 @@ export class AppComponent implements AfterViewInit {
    */
   public ngAfterViewInit() {
     this.openSideNav();
+    this.location.go('company/1/branch');
   }
 
   private verifyMobile(changeDetectorRef: ChangeDetectorRef, media: MediaMatcher) {
