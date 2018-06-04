@@ -6,35 +6,39 @@ import { LoaderService }             from '@r-service/loader.service';
 import { MaterialService }           from '@r-material/material.service';
 import { QueryInput }                from '@r-model/query-input.model';
 
-import { OrderStatus }               from '@r-order-status/order-status.model';
-import { OrderStatusService }        from '@r-order-status/order-status.service';
+import { Branch }                    from '@r-branch/branch.model';
+import { BranchService }             from '@r-branch/branch.service';
+import { Diningtable }               from '@r-diningtable/diningtable.model';
+import { DiningtableService }        from '@r-diningtable/diningtable.service';
 
 /**
- * OrderStatusFormComponent
+ * DiningtableFormComponent
  * @export
- * @class OrderStatusFormComponent
+ * @class DiningtableFormComponent
  * @implements {OnInit}
  * @implements {OnDestroy}
  */
 @Component({
-  selector:                 'app-order-status-form',
-  templateUrl:              './order-status-form.component.html',
-  styleUrls:                ['./order-status-form.component.css'],
+  selector:                 'app-diningtable-form',
+  templateUrl:              './diningtable-form.component.html',
+  styleUrls:                ['./diningtable-form.component.css'],
   encapsulation:            ViewEncapsulation.None
 })
-export class OrderStatusFormComponent implements OnInit, OnDestroy {
+export class DiningtableFormComponent implements OnInit, OnDestroy {
 // DECLARATIONS --------------------------
   private sub:              any;
   loading:                  boolean;
   submitted:                boolean;
 
-  item:                     OrderStatus        = new OrderStatus();
-  oldItem:                  OrderStatus;
-  items:                    Array<OrderStatus> = new Array<OrderStatus>();
+  item:                     Diningtable        = new Diningtable();
+  oldItem:                  Diningtable;
+  items:                    Array<Diningtable> = new Array<Diningtable>();
   company_id:               number;
 
   newItemMode:              boolean;
   title:                    string;
+
+  branchList:               Array<Branch>;
 
 
 
@@ -46,6 +50,8 @@ export class OrderStatusFormComponent implements OnInit, OnDestroy {
   public start() {
     this.submitted   = false;
     this.newItemMode = true;
+
+    this.queryBranch();
 
     this.sub = this.route.params.subscribe(params => {
       if (params['id'] != null) {
@@ -60,15 +66,15 @@ export class OrderStatusFormComponent implements OnInit, OnDestroy {
   /**
    * Determine if is new item or edit item
    * @param {boolean} value
-   * @memberof OrderStatusFormComponent
+   * @memberof DiningtableFormComponent
    */
   public setNewItem(value: boolean) {
     if (value) {
       this.newItemMode = true;
-      this.title       = 'Novo Status de pedido';
+      this.title       = 'Nova Mesa';
     } else {
       this.newItemMode = false;
-      this.title       = 'Editar Status de pedido';
+      this.title       = 'Editar Mesa';
     }
   }
 
@@ -86,10 +92,10 @@ export class OrderStatusFormComponent implements OnInit, OnDestroy {
 
   /**
    * Submit data to create or update
-   * @param {OrderStatus} item
-   * @memberof OrderStatusFormComponent
+   * @param {Diningtable} item
+   * @memberof DiningtableFormComponent
    */
-  public submitForm(item: OrderStatus) {
+  public submitForm(item: Diningtable) {
     this.submitted = true;
     if (this.newItemMode) {
       this.save(item);
@@ -100,9 +106,9 @@ export class OrderStatusFormComponent implements OnInit, OnDestroy {
 
   /**
    * Send request to save
-   * @param OrderStatus item
+   * @param Diningtable item
    */
-  public save(item: OrderStatus) {
+  public save(item: Diningtable) {
     this.service.save(item).subscribe(success => {
       this.goBack();
       this.material.snackBar('Novo status de pedido criado', 'OK');
@@ -113,10 +119,10 @@ export class OrderStatusFormComponent implements OnInit, OnDestroy {
 
   /**
    * Send update request
-   * @param OrderStatus item
+   * @param Diningtable item
    * @param number id
    */
-  public update(item: OrderStatus, id: number) {
+  public update(item: Diningtable, id: number) {
     this.service.update(item, id).subscribe(success => {
       this.goBack();
       this.material.snackBar('Status de pedido atualizado', 'OK');
@@ -125,15 +131,19 @@ export class OrderStatusFormComponent implements OnInit, OnDestroy {
     });
   }
 
+
+
+
+// BRANCH SECTION -------------------------
   /**
-   * List all orderStatus.
+   * List all branch.
    */
-  public queryAll() {
-    this.service.query({
+  public queryBranch() {
+    this.branchService.query({
       'orderBy':      'id',
       'sortedBy':     'asc'
     }).subscribe(data => {
-      this.items = data.data;
+      this.branchList = data.data;
     });
   }
 
@@ -143,22 +153,23 @@ export class OrderStatusFormComponent implements OnInit, OnDestroy {
 
 // OTHERS --------------------------------
   /**
-   * Creates an instance of OrderStatusFormComponent.
+   * Creates an instance of DiningtableFormComponent.
    * @param {Router} router
    * @param {ActivatedRoute} route
    * @param {Location} location
-   * @param {OrderStatusService} service
+   * @param {DiningtableService} service
    * @param {MaterialService} material
    * @param {LoaderService} loader
-   * @memberof OrderStatusFormComponent
+   * @memberof DiningtableFormComponent
    */
   constructor(
     private router:         Router,
     private route:          ActivatedRoute,
     private location:       Location,
-    private service:        OrderStatusService,
     public  material:       MaterialService,
-    public  loader:         LoaderService
+    public  loader:         LoaderService,
+    private service:        DiningtableService,
+    private branchService:  BranchService,
   ) {
     loader.onLoadingChanged.subscribe(isLoading => {
       this.loading = isLoading;

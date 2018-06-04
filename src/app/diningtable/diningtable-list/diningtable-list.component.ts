@@ -7,6 +7,7 @@ import { LoaderService }              from '@r-service/loader.service';
 import { MaterialService }            from '@r-material/material.service';
 import { QueryInput }                 from '@r-model/query-input.model';
 import { AppComponent }               from '@r-app/app.component';
+import { ANIMATION }                  from '@r-material/material-animation';
 
 import { Diningtable }                from '@r-diningtable/diningtable.model';
 import { DiningtableService }         from '@r-diningtable/diningtable.service';
@@ -30,7 +31,8 @@ import 'rxjs/add/operator/switchMap';
   selector:           'app-diningtable-list',
   templateUrl:        './diningtable-list.component.html',
   styleUrls:          ['./diningtable-list.component.css'],
-  encapsulation:      ViewEncapsulation.None
+  encapsulation:      ViewEncapsulation.None,
+  animations:         [ ANIMATION ]
 })
 export class DiningtableListComponent implements OnInit, OnDestroy, AfterViewInit {
 // DECLARATIONS ---------------------
@@ -63,7 +65,7 @@ export class DiningtableListComponent implements OnInit, OnDestroy, AfterViewIni
     this.actionClick    = false;
     this.showFilter     = false;
     this.total          = 0;
-    this.columns        = ['select', 'id', 'name', 'description', 'actions'];
+    this.columns        = ['select', 'id', 'code', 'actions'];
     this.dataSource     = new MatTableDataSource();
     this.dataSourceCopy = new MatTableDataSource();
     this.selection      = new SelectionModel<Diningtable>(true, []);
@@ -84,7 +86,8 @@ export class DiningtableListComponent implements OnInit, OnDestroy, AfterViewIni
    */
   public query() {
     this.sub = this.service.query({
-      'page': 0
+      'page': 0,
+      'include': 'branch'
     }).subscribe(data => {
       this.total               = data.data.length;
       this.dataSource.data     = data.data;

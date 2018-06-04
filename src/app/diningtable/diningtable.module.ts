@@ -8,8 +8,8 @@ import { DiningtableRoutingModule }     from '@r-diningtable/diningtable-routing
 import { DiningtableService }           from '@r-diningtable/diningtable.service';
 import { DiningtableDao }               from '@r-diningtable/diningtable.dao';
 import { DiningtableListComponent }     from '@r-diningtable/diningtable-list/diningtable-list.component';
-// import { DiningtableDetailsComponent }  from '@r-diningtable/diningtable-details/diningtable-details.component';
-// import { DiningtableFormComponent }     from '@r-diningtable/diningtable-form/diningtable-form.component';
+import { DiningtableDetailsComponent }  from '@r-diningtable/diningtable-details/diningtable-details.component';
+import { DiningtableFormComponent }     from '@r-diningtable/diningtable-form/diningtable-form.component';
 
 @NgModule({
   imports: [
@@ -20,7 +20,7 @@ import { DiningtableListComponent }     from '@r-diningtable/diningtable-list/di
     ReactiveFormsModule,
     DiningtableRoutingModule
   ],
-  declarations: [DiningtableListComponent/*, DiningtableDetailsComponent, DiningtableFormComponent*/],
+  declarations: [DiningtableListComponent, DiningtableDetailsComponent, DiningtableFormComponent],
   providers:    [DiningtableService, DiningtableDao]
 })
 export class DiningtableModule {}

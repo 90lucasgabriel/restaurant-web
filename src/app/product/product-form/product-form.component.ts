@@ -35,7 +35,7 @@ export class ProductFormComponent implements OnInit, OnDestroy {
 
   imagePreview = '';
 
-  categoryList: Array<Category>;
+  categoryList:             Array<Category>;
 
   /**
    * Constructor

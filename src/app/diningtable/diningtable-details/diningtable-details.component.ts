@@ -7,39 +7,39 @@ import { LoaderService }              from '@r-service/loader.service';
 import { MaterialService }            from '@r-material/material.service';
 import { QueryInput }                 from '@r-model/query-input.model';
 
-import { OrderStatus }                from '@r-order-status/order-status.model';
-import { OrderStatusService }         from '@r-order-status/order-status.service';
+import { Diningtable }                from '@r-diningtable/diningtable.model';
+import { DiningtableService }         from '@r-diningtable/diningtable.service';
 
 /**
- * OrderStatus's details
- * @class OrderStatusDetailsComponent
+ * Diningtable's details
+ * @class DiningtableDetailsComponent
  * @implements {OnInit}
  * @implements {OnDestroy}
  */
 @Component({
-  selector:                 'app-order-status-details',
-  templateUrl:              './order-status-details.component.html',
-  styleUrls:                ['./order-status-details.component.css'],
+  selector:                 'app-diningtable-details',
+  templateUrl:              './diningtable-details.component.html',
+  styleUrls:                ['./diningtable-details.component.css'],
   encapsulation:            ViewEncapsulation.None
 })
-export class OrderStatusDetailsComponent implements OnInit, OnDestroy {
+export class DiningtableDetailsComponent implements OnInit, OnDestroy {
   private sub:              any;
   readMode:                 boolean;
   loading:                  boolean;
   submitted:                boolean;
-  item:                     OrderStatus;
-  oldItem:                  OrderStatus;
+  item:                     Diningtable;
+  oldItem:                  Diningtable;
 
   /**
    * Constructor
    * @param ActivatedRoute  route
-   * @param OrderStatusService   service
+   * @param DiningtableService   service
    * @param MatSnackBar     snackBar
    */
   constructor(
     private route:          ActivatedRoute,
     private location:       Location,
-    private service:        OrderStatusService,
+    private service:        DiningtableService,
     public  material:       MaterialService,
     public  loader:         LoaderService
   ) {
@@ -71,9 +71,9 @@ export class OrderStatusDetailsComponent implements OnInit, OnDestroy {
 
   /**
    * Open dialog to confirm delete
-   * @param OrderStatus item
+   * @param Diningtable item
    */
-  public deleteConfirm(item: OrderStatus) {
+  public deleteConfirm(item: Diningtable) {
     this.material.openDialog(item, 'Excluir', 'Deseja excluir status de pedido?', 'CANCELAR', 'EXCLUIR').subscribe(data => {
       if (data === true) {
         this.delete(item.id);
