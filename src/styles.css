@@ -3,23 +3,14 @@
 /*@import "~@angular/material/prebuilt-themes/purple-green.css";*/
 
 /*GENERAL--------------------------------------------------------------*/
-html, body, material-app, .my-content, .total-absolute {
+* {
+  outline:            0 !important;
+}
+
+html, body, material-app, .my-content {
   margin:             0;
   width:              100%;
   height:             100%;
-  /*color:            #666;*/
-}
-
-.total-absolute {
-  position:           absolute;
-}
-
-.main-content{
-  max-height: none !important;
-}
-
-mat-card mat-icon, mat-table mat-icon{
-  /*color:            #666;*/
 }
 
 .rounded-border {
@@ -27,49 +18,8 @@ mat-card mat-icon, mat-table mat-icon{
   overflow:           hidden;
 }
 
-mat-table {
-  overflow-x:         auto;
-}
-
 .pointer, mat-icon-button{
   cursor:             pointer
-}
-
-.margin-auto{
-  margin:             0 auto;
-}
-
-*{
-  outline:            0 !important;
-}
-
-.margin-right{
-  margin-right:       10px;
-}
-
-mat-card-title-group{
-  /*margin-top:               20px !important;*/
-}
-
-.text-title{
-  font-size:          20px;
-}
-
-.margin-bottom{
-  margin-bottom:      15px;
-}
-
-.header-page{
-  margin-bottom:      15px;
-  color:              #666 !important;
-}
-
-.content-page{
-  width:              92%;
-}
-
-.width-padding{
-  width:              calc(92% + 48px);
 }
 
 .no-margin-bottom {
@@ -80,191 +30,16 @@ mat-card-title-group{
   padding-bottom:     0 !important;
 }
 
-.padding{
+.padding {
   padding:            15px;
 }
 
-.padding-side {
-  padding-left:       5px;
-  padding-right:      5px;
+.transparent {
+  background:         transparent !important;
 }
 
-.padding-5{
-  padding:            5px;
-}
-
-.loading-shade {
-  position:           absolute;
-  top:                0;
-  left:               0;
-  bottom:             0;
-  right:              0;
-  height:             calc(100vh - 70px);
-  background:         rgba(255, 255, 255, 0.5);
-  z-index:            1;
-  display:            flex;
-  align-items:        center;
-  justify-content:    center;
-}
-
-.caption-text, .caption-text div{
-  font-size:          smaller;
-}
 
 /*CONTENT--------------------------------------------------------------*/
-.container-flex{
-  display:            flex; 
-  flex-flow:          wrap; 
-  justify-content:    space-between;
-  align-items:        center;
-}
-
-.flex-center{
-  justify-content:    center;
-}
-
-.flex-stretch{
-  align-items:        stretch;
-}
-
-.align-top{
-  align-self:         flex-start;
-}
-
-.align-middle{
-  align-items:        center;
-}
-
-.align-bottom{
-  align-self:         flex-end;
-}
-
-.flex{
-  flex:               flex;
-}
-
-.flex-5{
-  flex:               1;
-}
-
-.flex-10{
-  flex:               2;
-}
-
-.flex-15{
-  flex:               3;
-}
-
-.flex-20{
-  flex:               4;
-}
-
-.flex-25{
-  flex:               5;
-}
-
-.flex-30{
-  flex:               6;
-}
-
-.flex-35{
-  flex:               7;
-}
-
-.flex-40{
-  flex:               8;
-}
-
-.flex-45{
-  flex:               9;
-}
-
-.flex-50{
-  flex:               10;
-}
-
-.flex-55{
-  flex:               11;
-}
-
-.flex-60{
-  flex:               12;
-}
-
-.flex-65{
-  flex:               13;
-}
-
-.flex-70{
-  flex:               14;
-}
-
-.flex-75{
-  flex:               15;
-}
-
-.flex-80{
-  flex:               16;
-}
-
-.flex-85{
-  flex:               17;
-}
-
-.flex-90{
-  flex:               18;
-}
-
-.flex-95{
-  flex:               19;
-}
-
-.text-left{
-  text-align:         left !important;
-}
-
-.text-center{
-  text-align:         center;
-}
-
-.text-right{
-  text-align:         right;
-}
-
-.hover-parent .hover-child{
-  visibility:         hidden;
-}
-
-.hover-parent:hover .hover-child{
-  visibility:         visible;
-}
-
-.actions-column{
-  text-align:         right;
-  min-width:          90px;
-  max-width:          90px;
-}
-
-.id-column{
-  min-width:          50px;
-  max-width:          60px;
-}
-
-.number-column{
-  min-width:          80px;
-  max-width:          100px;
-  text-align:         right;
-}
-
-mat-row:hover{
-  background: rgba(0, 0, 0, 0.01);
-}
-
-.images{
-  height:             200px;
-  width:              200px;
-}
-
 .avatar-list{
   height:             35px; 
   width:              35px; 
@@ -278,38 +53,12 @@ mat-row:hover{
   text-align:         center;
 }
 
-.hide{
-  visibility:         hidden;
-  height:             0;
-  width:              0;
-}
-
-.soft{
-  border-bottom:      1px solid rgba(0, 0, 0, 0.03);
-}
-
-.soft mat-header-cell{
-  color:              #E2e2e2 !important;
-}
-
-
 
 /*MATERIAL-------------------------------------------------------------*/
-/*SIDENAV*/
-
-
-
-
 /*TOOLBAR*/
 mat-toolbar{
-  box-shadow:         0px 2px 7px #000000;
-}
-
-
-
-/*BUTTON*/
-.full-width{
-  width:              100%;
+  z-index:            2;
+  box-shadow:         0px 1px 5px rgba(0, 0, 0, 0.5);
 }
 
 /*LIST*/
@@ -319,10 +68,6 @@ mat-list, mat-list-item, mat-list-item:focus, .mat-list-focus:focus, textarea:fo
   outline:            0 !important;
 } 
 
-
-/*PROGRESS SPINNER*/
-
-
 /*FAB BUTTON*/
 .fab-position{
   position:           fixed; 
@@ -330,12 +75,11 @@ mat-list, mat-list-item, mat-list-item:focus, .mat-list-focus:focus, textarea:fo
   right:              40px;
 }
 
-/*INPUT*/
-.mat-form-field-underline{
-  background-color:   rgba(0, 0, 0, 0.2);
+/*TABLE*/
+mat-table {
+  overflow-x:         auto;
 }
 
-/*TABLE*/
 mat-row{
   min-height:         57px !important;
   border-bottom:      transparent !important;
@@ -345,19 +89,36 @@ mat-row{
   overflow:           initial !important;
 }
 
+.hover-parent .hover-child{
+  visibility:         hidden;
+}
+
+.hover-parent:hover .hover-child{
+  visibility:         visible;
+}
+
+.button-menu:hover{
+  cursor:           pointer;
+  border-radius:    0 66px 66px 0;
+  background:       rgba(0,0,0,.05);
+}
+
+mat-row:hover{
+  background: rgba(0, 0, 0, 0.01);
+}
+
+
 /*ICON*/
 mat-icon.medium{
   font-size:          80px; 
   height:             80px; 
   width:              80px;
-  color:              #666;
 }
 
 mat-icon.big{
   font-size:          180px; 
   height:             180px; 
   width:              180px;
-  /*color:              #666;*/
 }
 
 .mat-tab-label mat-icon{

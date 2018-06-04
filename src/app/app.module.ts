@@ -16,6 +16,7 @@ import { HeaderInterceptor }          from '@r-interceptor/header.interceptor';
 
 import { BranchModule }               from '@r-branch/branch.module';
 import { CategoryModule }             from '@r-category/category.module';
+import { DiningtableModule }          from '@r-diningtable/diningtable.module';
 import { CompanyModule }              from '@r-company/company.module';
 import { MenuModule }                 from '@r-menu/menu.module';
 import { OrderModule }                from '@r-order/order.module';
@@ -41,6 +42,7 @@ import { ProductModule }              from '@r-product/product.module';
     BranchModule,
     CategoryModule,
     CompanyModule,
+    DiningtableModule,
     MenuModule,
     OrderModule,
     OrderDetailModule,

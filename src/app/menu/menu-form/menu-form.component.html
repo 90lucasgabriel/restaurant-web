@@ -19,12 +19,12 @@
 
     <!-- CONTENT START -->
     
-    <div fxLayout="row" fxLayoutAlign="center center">
-      <mat-tab-group class="flex width-padding">
+    <div fxLayout="row" fxLayoutAlign="center start">
+      <mat-tab-group fxFlex="100">
         <!-- MENU TAB START ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
         <mat-tab>
           <ng-template mat-tab-label>
-            <mat-icon>restaurant</mat-icon> Cardápio
+            <mat-icon>restaurant</mat-icon> <span fxHide.lt-md="true">Cardápio</span>
           </ng-template>
           <!-- LOADERS START -->
           <div fxLayout="column" fxFlexFill fxLayoutAlign="center center" *ngIf="loading.get && !submitted">
@@ -49,6 +49,13 @@
                     <mat-form-field fxFlex="100">
                       <textarea matInput placeholder="Descrição" [(ngModel)]="item.description" name="description"  matTextareaAutosize matAutosizeMinRows="1"></textarea>
                     </mat-form-field>
+                    <mat-form-field fxFlex.gt-sm="50">
+                      <span matPrefix>R$&nbsp;</span>
+                      <input matInput placeholder="Valor do Rodízio" [(ngModel)]="item.price_person" name="price_person">
+                    </mat-form-field>
+                    <div fxFlex.gt-sm="50" fxLayout="column" fxLayoutAlign="center center"  fxLayoutAlign.lt-md="start">
+                      <mat-checkbox [(ngModel)]="item.allow_alacarte" name="allow_alacarte">Opção A La Carte</mat-checkbox>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -120,7 +127,7 @@
         <!-- PRODUCT TAB START ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
         <mat-tab>
           <ng-template mat-tab-label>
-            <mat-icon>shopping_cart</mat-icon> Produtos
+            <mat-icon>shopping_cart</mat-icon> <span fxHide.lt-md="true">Produtos</span>
           </ng-template>
           <mat-card>
             <mat-card-content fxLayout="column" fxLayoutGap="10px">
@@ -157,7 +164,7 @@
               <!-- LOADERS END -->
   
               <!-- LIST START -->
-              <div [ngClass]="{'hide': productDataSource.data.length == 0}">
+              <div [fxHide]="productDataSource.data.length == 0">
                 <mat-table #table [dataSource]="productDataSource" 
                   matSort matSortActive="id" matSortDirection="desc">
                   <!-- Checkbox Column -->
@@ -238,7 +245,7 @@
         <!-- BRANCH TAB START ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
         <mat-tab>
           <ng-template mat-tab-label>
-            <mat-icon>store</mat-icon> Filiais
+            <mat-icon>store</mat-icon> <span fxHide.lt-md="true">Filiais</span>
           </ng-template>
           <mat-card>
             <mat-card-content fxLayout="column" fxLayoutGap="10px">
@@ -265,7 +272,7 @@
               <!-- LOADERS END -->
   
               <!-- LIST START -->
-              <div [ngClass]="{'hide': branchDataSource.data.length == 0}">
+              <div [fxHide]="branchDataSource.data.length == 0">
                 <mat-table #table [dataSource]="branchDataSource" 
                   matSort matSortActive="id" matSortDirection="desc">
                   <!-- Checkbox Column -->
@@ -331,14 +338,14 @@
 
 
     </div>  
-          <!-- FORM ACTIONS START -->
-          <div class="width-padding text-right">
-              <button mat-button (click)="cancelForm()">CANCELAR</button>
-              <button mat-raised-button (click)="submitForm(item)" color="primary">SALVAR</button>
-            </div>
-            <!-- FORM ACTIONS END -->
+    <!-- FORM ACTIONS START -->
+    <div fxFlex fxLayout="row" fxLayoutAlign="end start" ngClass.lt-md="padding">
+      <button mat-button (click)="cancelForm()">CANCELAR</button>
+      <button mat-raised-button (click)="submitForm(item)" color="primary">SALVAR</button>
+    </div>
+    <!-- FORM ACTIONS END -->
     <!-- CONTENT END -->    
 
-    <div [fxHide.lt-md]="true"> </div>
+    <div [fxHide.lt-md]="false"> </div>
   </div>
 </div>

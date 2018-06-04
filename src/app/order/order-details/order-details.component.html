@@ -1,0 +1,147 @@
+<!-- LOADERS START -->
+<div fxLayout="column" fxFlexFill fxLayoutAlign="center center" *ngIf="loading && !submitted">
+  <mat-progress-spinner mode="indeterminate" diameter="30" strokeWidth="4"></mat-progress-spinner>
+</div>
+<!-- LOADERS END -->
+
+<div fxLayout="row" fxLayoutAlign="center start" ngClass.gt-sm="padding" class="mat-typography">
+  <div fxLayout="column" fxFlex="85" fxFlex.lt-md="100" fxLayoutGap="10px"  *ngIf="!loading || submitted"  >
+
+    <!-- BACK AND TITLE START -->
+    <div ngClass.lt-md="padding no-padding-bottom">
+      <div fxLayoutAlign="space-between start" fxLayout="row">
+        <h3 fxLayout="row" fxLayoutAlign="start center" class="no-margin-bottom">
+            <button mat-icon-button (click)="goBack()" matTooltip="Voltar"><mat-icon>arrow_back</mat-icon></button> Conta Detalhes
+        </h3>
+        <div>
+          <button mat-icon-button [routerLink]="['/company', item.company_id, 'branch', item.branch_id, 'order', item.id, 'edit']" matTooltip="Editar"><mat-icon>edit</mat-icon></button>
+          <button mat-icon-button (click)="deleteConfirm(item)" matTooltip="Excluir"> <mat-icon>delete</mat-icon></button>
+        </div> 
+      </div>
+    </div>
+    <!--BACK AND TITLE END -->  
+
+    <!-- CONTENT START -->
+    <div ngClass.gt-sm="mat-elevation-z1 rounded-border">
+      <mat-card>
+        <mat-card-content>
+          <!-- LABELS START -->
+          <mat-card-title-group>
+            <mat-card-subtitle>Informações</mat-card-subtitle>
+          </mat-card-title-group>
+          <div fxLayout="row" fxFlexFill fxLayoutGap="10px">
+            <div fxFlex="40px" fxHide.lt-md="true">
+              <p><mat-icon>info_outline</mat-icon></p>
+            </div>
+            <div fxFlex>
+              <div fxLayout="row wrap" fxLayout.lt-md="column" fxLayoutGap.lt-md="10px">
+                <div fxLayout="row" fxFlex fxFlex.gt-sm="50">
+                  <div fxFlex="120px"><p>ID: </p></div>
+                  <div fxFlex><p>{{item.id}}</p></div>
+                </div>
+                <div fxLayout="row" fxFlex fxFlex.gt-sm="50">
+                  <div fxFlex="120px"><p>Mesa: </p></div>
+                  <div fxFlex><p>{{item.diningtable_id}}</p></div>
+                </div>
+                <div fxLayout="row" fxFlex fxFlex.gt-sm="50">
+                  <div fxFlex="120px"><p>Status: </p></div>
+                  <div fxFlex><p>{{item.order_status_id}} - {{item.orderStatus.data.name}} </p></div>
+                </div>
+                <div fxLayout="row" fxFlex fxFlex.gt-sm="50">
+                  <div fxFlex="120px"><p>Total: </p></div>
+                  <div fxFlex><p>{{item.total}}</p></div>
+                </div>
+              </div>
+            </div>
+
+          </div>
+          <!-- LABELS END -->
+        </mat-card-content>
+      </mat-card>
+    </div>
+    <!-- CONTENT END -->    
+
+    <!-- LIST START -->
+    <div [fxHide]="dataSource.data.length == 0">
+      <div fxFlex ngClass.gt-sm="mat-elevation-z1 rounded-border">
+      
+        <mat-table #table [dataSource]="dataSource" 
+          matSort matSortActive="id" matSortDirection="desc">
+          <!-- Checkbox Column -->
+          <ng-container matColumnDef="select">
+            <mat-header-cell *matHeaderCellDef fxFlex="60px">
+              <mat-checkbox (change)="$event ? masterToggle(dataSourceCopy, selection) : null"
+                            [checked]="selection.hasValue() && isAllSelected(dataSourceCopy, selection)"
+                            [indeterminate]="selection.hasValue() && !isAllSelected(dataSourceCopy, selection)">
+              </mat-checkbox>
+            </mat-header-cell>
+            <mat-cell *matCellDef="let row" fxFlex="60px">
+              <mat-checkbox (click)="$event.stopPropagation()"
+                            (change)="$event ? selection.toggle(row) : null"
+                            [checked]="selection.isSelected(row)">
+              </mat-checkbox>
+            </mat-cell>
+          </ng-container>
+          
+          <!-- ID Column -->
+          <ng-container matColumnDef="id">
+            <mat-header-cell *matHeaderCellDef mat-sort-header fxFlex="60px"> ID </mat-header-cell>
+            <mat-cell *matCellDef="let row" fxFlex="60px"> {{row.id}} </mat-cell>
+          </ng-container>
+
+          <!-- Image Column -->
+          <ng-container matColumnDef="product_image">
+            <mat-header-cell *matHeaderCellDef fxFlex="60px">  </mat-header-cell>
+            <mat-cell *matCellDef="let row" fxFlex="60px"> 
+              <img [src]='row.product.data.image' class="avatar-list" *ngIf="row.product.data.image" /> 
+              <div class="avatar-list" *ngIf="!row.product.data.image">
+                <p>{{row.name.substring(0,1) | uppercase}}</p>
+              </div>
+            </mat-cell>
+          </ng-container>
+          
+          <!-- Product name Column -->
+          <ng-container matColumnDef="product">
+            <mat-header-cell *matHeaderCellDef mat-sort-header fxFlex fxFlex.lt-md="300px" > Produto </mat-header-cell>
+            <mat-cell *matCellDef="let row" fxFlex fxFlex.lt-md="300px" > {{row.product.data.id}} - {{ row.product.data.name || null }} </mat-cell>
+          </ng-container>
+
+          <!-- OrderStatus name Column -->
+          <ng-container matColumnDef="orderDetailStatus">
+            <mat-header-cell *matHeaderCellDef mat-sort-header fxFlex fxFlex.lt-md="200px" > Status </mat-header-cell>
+            <mat-cell *matCellDef="let row" fxFlex fxFlex.lt-md="200px" > {{row.orderDetailStatus.data.id}} - {{ row.orderDetailStatus.data.name || null }} </mat-cell>
+          </ng-container>
+
+          <!-- Price Column -->
+          <ng-container matColumnDef="quantity">
+            <mat-header-cell *matHeaderCellDef mat-sort-header fxFlex fxFlex.lt-md="70px" > Quantidade </mat-header-cell>
+            <mat-cell *matCellDef="let row" fxFlex fxFlex.lt-md="70px" > {{ row.quantity }} </mat-cell>
+          </ng-container>
+          
+          <!-- Price Column -->
+          <ng-container matColumnDef="price_alacarte">
+            <mat-header-cell *matHeaderCellDef mat-sort-header fxFlex fxFlex.lt-md="200px" > Preço </mat-header-cell>
+            <mat-cell *matCellDef="let row" fxFlex fxFlex.lt-md="200px" >R$ {{ row.price_alacarte || '0,00' }} </mat-cell>
+          </ng-container>
+
+          <!-- Ações Column -->
+          <ng-container matColumnDef="actions">
+            <mat-header-cell *matHeaderCellDef fxFlex="90px"></mat-header-cell>
+            <mat-cell *matCellDef="let row" fxFlex="90px" ngClass.gt-sm="hover-child">
+                <button mat-icon-button [routerLink]="[row.id, 'edit']" matTooltip="Editar"><mat-icon>edit</mat-icon></button>
+                <button mat-icon-button (click)="deleteConfirm({selected: [row]})" matTooltip="Excluir"><mat-icon>delete</mat-icon></button>
+            </mat-cell>
+          </ng-container>
+
+          <!-- HEADERS AND ROWS -->
+          <mat-header-row *matHeaderRowDef="columns"></mat-header-row>
+          <mat-row class="hover-parent pointer" *matRowDef="let row; columns: columns;" (click)="goDetails(row.company_id, row.branch_id, row.id)"></mat-row>
+        </mat-table>
+      
+        <mat-paginator [length]="total" [pageSize]="20" [pageSizeOptions]="[5, 10, 25, 100]"></mat-paginator>
+      </div>
+    </div>
+    <!-- LIST END -->
+
+  </div>
+</div>

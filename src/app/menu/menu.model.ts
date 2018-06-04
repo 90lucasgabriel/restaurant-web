@@ -11,18 +11,20 @@ import { Branch }       from '@r-branch/branch.model';
  */
 export class Menu {
   constructor(
-    public id?: 					number,
-    public company_id?:   number,
-    public name?: 				string,
-    public description?:	string,
+    public id?: 					  number,
+    public company_id?:     number,
+    public name?: 				  string,
+    public description?:	  string,
+    public price_person?:   number,
+    public allow_alacarte?: boolean,
 
-    public checked?:			boolean,
+    public checked?:			  boolean,
 
-    public pivot?:				MenuProduct|BranchMenu,
-    public price?:				number,
-    public company?:  		Presenter<Company>,
-    public time?:         Presenter<Array<any>>,
-    public product?:      Presenter<Array<Product>>,
-    public branch?:       Presenter<Array<Branch>>
+    public pivot?:				  MenuProduct|BranchMenu,
+    public price?:				  number,
+    public company?:  		  Presenter<Company>,
+    public time?:           Presenter<Array<any>>,
+    public product?:        Presenter<Array<Product>>,
+    public branch?:         Presenter<Array<Branch>>
   ) { }
 }

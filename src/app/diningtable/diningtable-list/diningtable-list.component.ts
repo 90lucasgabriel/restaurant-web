@@ -1,20 +1,15 @@
 import { Component, OnInit, OnDestroy, ViewEncapsulation, AfterViewInit, ViewChild, Host, Inject } from '@angular/core';
-import { trigger, state, style, animate, transition }   from '@angular/animations';
 import { MatSort, MatTableDataSource, MatPaginator, MatDialog, MAT_DIALOG_DATA} from '@angular/material';
-import { SelectionModel }         from '@angular/cdk/collections';
-import { Router }                 from '@angular/router';
+import { SelectionModel }             from '@angular/cdk/collections';
+import { Router }                     from '@angular/router';
 
-import { LoaderService }          from '@r-service/loader.service';
-import { MaterialService }        from '@r-material/material.service';
-import { QueryInput }             from '@r-model/query-input.model';
-import { AppComponent }           from '@r-app/app.component';
-import { ANIMATION }              from '@r-material/material-animation';
+import { LoaderService }              from '@r-service/loader.service';
+import { MaterialService }            from '@r-material/material.service';
+import { QueryInput }                 from '@r-model/query-input.model';
+import { AppComponent }               from '@r-app/app.component';
 
-import { OrderDetail }            from '@r-order-detail/order-detail.model';
-import { Order }                  from '@r-order/order.model';
-import { OrderService }           from '@r-order/order.service';
-import { OrderStatus }            from '@r-order-status/order-status.model';
-import { OrderStatusService }     from '@r-order-status/order-status.service';
+import { Diningtable }                from '@r-diningtable/diningtable.model';
+import { DiningtableService }         from '@r-diningtable/diningtable.service';
 
 import {Observable} from 'rxjs/Observable';
 import 'rxjs/add/observable/merge';
@@ -25,46 +20,39 @@ import 'rxjs/add/operator/startWith';
 import 'rxjs/add/operator/switchMap';
 
 /**
- * Order List Controller
+ * Diningtable List Controller
+ *
  * @export
- * @class OrderListComponent
+ * @class DiningtableListComponent
  * @implements {OnInit}
  */
 @Component({
-  selector:           'app-order-list',
-  templateUrl:        './order-list.component.html',
-  styleUrls:          ['./order-list.component.css'],
-  encapsulation:      ViewEncapsulation.None,
-  animations:         [ ANIMATION ]
+  selector:           'app-diningtable-list',
+  templateUrl:        './diningtable-list.component.html',
+  styleUrls:          ['./diningtable-list.component.css'],
+  encapsulation:      ViewEncapsulation.None
 })
-export class OrderListComponent implements OnInit, OnDestroy, AfterViewInit {
+export class DiningtableListComponent implements OnInit, OnDestroy, AfterViewInit {
 // DECLARATIONS ---------------------
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;
-  selection:          SelectionModel<Order>;
+  selection:          SelectionModel<Diningtable>;
   total:              number;
   columns:            Array<string>;
   pivot:              Array<string>;
-  dataSource:         MatTableDataSource<Order>;
-  dataSourceCopy:     MatTableDataSource<Order>;
-  filter:             Order;
+  dataSource:         MatTableDataSource<Diningtable>;
+  dataSourceCopy:     MatTableDataSource<Diningtable>;
+  filter:             Diningtable;
 
   private sub:        any;
   loading:            boolean;
   showFilter:         boolean;
   actionClick:        boolean;
   centerContent:      boolean;
+  company_id:         number;
 
-  orderStatusList:    Array<OrderStatus>;
 
-  orderDetailStatusList = [
-    {id: 1, name: 'Aberto'},
-    {id: 2, name: 'Preparação'},
-    {id: 3, name: 'Pronto'},
-    {id: 4, name: 'Entregando'},
-    {id: 5, name: 'Concluído'},
-    {id: 6, name: 'Cancelado'}
-  ];
+
 
 
 // MAIN -----------------------------
@@ -72,27 +60,14 @@ export class OrderListComponent implements OnInit, OnDestroy, AfterViewInit {
    * Execute before onInit
    */
   private start() {
-    this.actionClick        = false;
-    this.showFilter         = false;
-    this.total              = 0;
-    this.columns            = ['select', 'id', 'diningtable.data.code', 'order_status_id', 'orderStatus.data.name', 'total', 'actions'];
-    this.dataSource         = new MatTableDataSource();
-    this.dataSourceCopy     = new MatTableDataSource();
-    this.selection          = new SelectionModel<Order>(true, []);
-    this.filter             = new Order();
-    this.orderStatusList    = new Array<OrderStatus>();
-
-    this.filter         = {
-      order_status_id: 1,
-      diningtable: {
-        data: {
-          code: null
-        }
-      }
-    };
-    // this.filterOrderDetail = new OrderDetail();
-
-    this.queryOrderStatus();
+    this.actionClick    = false;
+    this.showFilter     = false;
+    this.total          = 0;
+    this.columns        = ['select', 'id', 'name', 'description', 'actions'];
+    this.dataSource     = new MatTableDataSource();
+    this.dataSourceCopy = new MatTableDataSource();
+    this.selection      = new SelectionModel<Diningtable>(true, []);
+    this.filter         = new Diningtable();
   }
 
   /**
@@ -109,8 +84,7 @@ export class OrderListComponent implements OnInit, OnDestroy, AfterViewInit {
    */
   public query() {
     this.sub = this.service.query({
-      'page': 0,
-      'include': 'diningtable,orderStatus,orderDetail.product,orderDetail.orderDetailStatus'
+      'page': 0
     }).subscribe(data => {
       this.total               = data.data.length;
       this.dataSource.data     = data.data;
@@ -122,11 +96,11 @@ export class OrderListComponent implements OnInit, OnDestroy, AfterViewInit {
 
   /**
    * Open dialog to confirm delete
-   * @param Order item
+   * @param Diningtable item
    */
-  public deleteConfirm(item: SelectionModel<Order>) {
+  public deleteConfirm(item: SelectionModel<Diningtable>) {
     this.actionClick = true;
-    this.material.openDialog(item, 'Excluir', 'Deseja excluir essa conta?', 'CANCELAR', 'EXCLUIR')
+    this.material.openDialog(item, 'Excluir', 'Deseja excluir esse status?', 'CANCELAR', 'EXCLUIR')
       .subscribe(data => {
         this.actionClick = false;
         if (data) {
@@ -147,27 +121,11 @@ export class OrderListComponent implements OnInit, OnDestroy, AfterViewInit {
 
     this.service.delete(id).subscribe(data => {
       this.dataSourceCopy.data = JSON.parse(JSON.stringify(this.dataSource.data));
-      this.material.snackBar('Conta excluída.', 'OK');
+      this.material.snackBar('Status excluído.', 'OK');
     }, error => {
       this.selection.select(this.selection.selected.find(i => i.id === id));
       this.dataSource.data     = JSON.parse(JSON.stringify(this.dataSourceCopy.data));
-      this.material.error('Erro ao excluir conta.', error);
-    });
-  }
-
-
-
-
-  // ORDERSTATUS SECTION -----------------
-  /**
-   * Query order_status list to selectbox
-   */
-  public queryOrderStatus() {
-    this.orderStatusService.query({
-      'orderBy':      'id',
-      'sortedBy':     'asc'
-    }).subscribe(data => {
-      this.orderStatusList = data.data;
+      this.material.error('Erro ao excluir status.', error);
     });
   }
 
@@ -205,14 +163,13 @@ export class OrderListComponent implements OnInit, OnDestroy, AfterViewInit {
   /**
    * Constructor
    *
-   * @param OrderService service
+   * @param DiningtableService service
    */
   constructor(
-    private router:             Router,
-    private service:            OrderService,
-    private orderStatusService: OrderStatusService,
-    private material:           MaterialService,
-    public  loader:             LoaderService
+    private router:           Router,
+    private service:          DiningtableService,
+    private material:         MaterialService,
+    public  loader:           LoaderService
   ) {
     loader.onLoadingChanged.subscribe(isLoading => {
       this.loading = isLoading;
@@ -225,9 +182,9 @@ export class OrderListComponent implements OnInit, OnDestroy, AfterViewInit {
    * @param company_id number
    * @param id number
    */
-  public goDetails(company_id: number, branch_id: number, id: number) {
+  public goDetails(id: number) {
     if (!this.actionClick) {
-      this.router.navigate(['/company', company_id, 'branch', branch_id, 'order', id]);
+      this.router.navigate(['../diningtable', id]);
     }
   }
 

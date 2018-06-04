@@ -1,7 +1,7 @@
 @import '~@angular/material/theming';
 $theme-primary:  mat-palette($mat-teal, A400);
 $theme-accent:   mat-palette($mat-lime);
-$theme-warn:     mat-palette($mat-amber);
+$theme-warn:     mat-palette($mat-yellow);
 $dark-theme:     mat-dark-theme($theme-primary, $theme-accent, $theme-warn);
 
 // Create your Sass color vars (will be available in all the project)
@@ -16,3 +16,11 @@ $warn:    mat-color($theme-warn);
 .accent {
   color: $accent;
 }
+
+.button-menu:hover{
+  background:       mat-color($theme-accent);
+}
+
+/*mat-sidenav-container *:not(primary) {
+  color: rgba(255, 255, 255, 0.9);
+}*/

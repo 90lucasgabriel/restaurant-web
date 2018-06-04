@@ -16,3 +16,11 @@ $warn:    mat-color($theme-warn);
 .accent {
   color: $accent;
 }
+
+.button-menu:hover{
+  background:       mat-color($theme-accent);
+}
+
+/*mat-sidenav-container *:not(primary) {
+  color: rgba(0, 0, 0, 0.6);
+}*/

@@ -5,7 +5,7 @@ import { OrderStatusListComponent }    from '@r-order-status/order-status-list/o
 import { OrderStatusFormComponent }    from '@r-order-status/order-status-form/order-status-form.component';
 import { OrderStatusDetailsComponent } from '@r-order-status/order-status-details/order-status-details.component';
 
-const productRoutes: Routes = [
+const orderStatusRoutes: Routes = [
   { path: 'order-status/:id/edit',  component: OrderStatusFormComponent,     pathMatch: 'full'},
   { path: 'order-status/new',       component: OrderStatusFormComponent,     pathMatch: 'full' },
   { path: 'order-status/:id',       component: OrderStatusDetailsComponent,  pathMatch: 'full' },
@@ -14,7 +14,7 @@ const productRoutes: Routes = [
 
 @NgModule({
   imports: [
-    RouterModule.forChild(productRoutes)
+    RouterModule.forChild(orderStatusRoutes)
   ],
   exports: [
     RouterModule

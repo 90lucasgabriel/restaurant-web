@@ -1,5 +1,5 @@
 <div fxLayout="row" fxLayoutAlign="center start" ngClass.gt-sm="padding" class="mat-typography">
-    <div fxLayout="column" fxFlex="85" fxFlex.lt-md="100" fxLayoutGap="15px">
+  <div fxLayout="column" fxFlex="85" fxFlex.lt-md="100" fxLayoutGap="15px">
 
     <div ngClass.lt-md="padding no-padding-bottom">
       <!-- BACK AND TITLE START -->
@@ -55,7 +55,7 @@
     </div>
 
     <!-- LIST START -->
-    <div [ngClass]="{'hide': dataSource.data.length == 0}">
+    <div [fxHide]="dataSource.data.length == 0">
       <div fxFlex ngClass.gt-sm="mat-elevation-z1 rounded-border">
       
         <mat-table #table [dataSource]="dataSource" 

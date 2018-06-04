@@ -20,6 +20,7 @@
       "@r-app/*":               ["app/*"],
       "@r-branch/*":            ["app/branch/*"],
       "@r-category/*":          ["app/category/*"],
+      "@r-diningtable/*":       ["app/diningtable/*"],
       "@r-enum/*":              ["app/common/enum/*"],
       "@r-interceptor/*":       ["app/common/interceptor/*"],
       "@r-model/*":             ["app/common/model/*"],

@@ -81,7 +81,7 @@ export class AppComponent implements AfterViewInit {
    */
   public ngAfterViewInit() {
     this.openSideNav();
-    this.location.go('company/1/branch');
+    // this.location.go('company/1/branch');
   }
 
   private verifyMobile(changeDetectorRef: ChangeDetectorRef, media: MediaMatcher) {

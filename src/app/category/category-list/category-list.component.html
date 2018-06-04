@@ -1,7 +1,7 @@
- <div fxLayout="row" fxLayoutAlign="center start" class="mat-typography" ngClass.gt-sm="padding">
+<div fxLayout="row" fxLayoutAlign="center start" ngClass.gt-sm="padding" class="mat-typography">
   <div fxLayout="column" fxFlex="85" fxFlex.lt-md="100" fxLayoutGap="15px">
 
-    <div ngClass.lt-md="padding no-padding-bottom">
+    <div ngClass.lt-md="padding no-padding-bottom">      
       <!-- BACK AND TITLE START -->
       <div fxLayoutAlign="space-between start" fxLayout="row">
         <h3 fxLayout="row" fxLayoutAlign="start center" class="no-margin-bottom">
@@ -36,7 +36,7 @@
         </mat-form-field> 
         
         <!-- PARENT CATEGORY AUTOCOMPLETE -->
-        <div class="flex-20 margin-right" *ngIf="false">
+        <div class="flex-20" *ngIf="false">
           <mat-form-field class="full-width">
             <input matInput placeholder="Categoria Pai" [(ngModel)]="categorySelected" name="categorySelected"  [matAutocomplete]="auto" [formControl]="categoryControl" (keyup)="applyFilter()">
             <button mat-button *ngIf="filter.parent_id" matSuffix mat-icon-button aria-label="Clear" (click)="categorySelected='';filter.parent_id = null; applyFilter()">
@@ -66,7 +66,7 @@
     </div>
 
     <!-- LIST START -->
-    <div [ngClass]="{'hide': dataSource.data.length == 0}">
+    <div [fxHide]="dataSource.data.length == 0">
       <div fxFlex ngClass.gt-sm="mat-elevation-z1 rounded-border">
       
         <mat-table #table [dataSource]="dataSource" 

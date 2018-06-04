@@ -9,8 +9,8 @@ import { OrderRoutingModule }      from '@r-order/order-routing.module';
 import { OrderService }            from '@r-order/order.service';
 import { OrderDao }                from '@r-order/order.dao';
 import { OrderListComponent }      from '@r-order/order-list/order-list.component';
-// import { OrderDetailsComponent }   from '@r-order/order-details/order-details.component';
-// import { OrderFormComponent }      from '@r-order/order-form/order-form.component';
+import { OrderDetailsComponent }   from '@r-order/order-details/order-details.component';
+import { OrderFormComponent }      from '@r-order/order-form/order-form.component';
 
 @NgModule({
   imports: [
@@ -21,7 +21,7 @@ import { OrderListComponent }      from '@r-order/order-list/order-list.componen
     ReactiveFormsModule,
     OrderRoutingModule
   ],
-  declarations: [OrderListComponent],
+  declarations: [OrderListComponent, OrderDetailsComponent, OrderFormComponent],
   providers:    [OrderService, OrderDao]
 })
 export class OrderModule {}

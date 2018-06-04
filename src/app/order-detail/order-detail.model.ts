@@ -26,7 +26,7 @@ export class OrderDetail {
     public diningtable?: Presenter<Diningtable>,
     public product?: Presenter<Product>,
     public order_detail_status?:      Presenter<OrderDetailStatus>,
-    public orderDetailType?:       Presenter<OrderDetailType>,
+    public order_detail_type?:        Presenter<OrderDetailType>,
     public menu?: Presenter<Menu>
   ) { }
 }

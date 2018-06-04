@@ -23,7 +23,7 @@
 
   <!-- SIDENAV START -->
   <mat-sidenav-container class="sidenav-container">
-    <mat-sidenav #sidenav fixedTopGap="56" [mode]="mobileQuery.matches ? 'over' : 'side'">
+    <mat-sidenav #sidenav [mode]="mobileQuery.matches ? 'over' : 'side'" ngClass.gt-sm="transparent">
       <div fxHide.gt-sm="true" fxLayout="column" class="padding" style="background:rgba(0,0,0,0.5); color: white">
         <div fxLayout="row" fxLayoutAlign="center center" style="width:45px; height: 45px; border-radius: 100%; padding: 10px; background:darkslategray; border: 2px solid white; margin-bottom: 10px">U</div>
         <div>Nome do usuário</div>

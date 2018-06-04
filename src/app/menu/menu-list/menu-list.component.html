@@ -40,7 +40,7 @@
     </div>
 
     <!-- LIST START -->
-    <div [ngClass]="{'hide': dataSource.data.length == 0}">
+    <div [fxHide]="dataSource.data.length == 0">
       <div fxFlex ngClass.gt-sm="mat-elevation-z1 rounded-border">
       
         <mat-table #table [dataSource]="dataSource" 

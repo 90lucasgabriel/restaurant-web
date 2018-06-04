@@ -23,12 +23,12 @@
 
     <!-- CONTENT START -->
     
-    <div fxLayout="row" fxLayoutAlign="center center">
-      <mat-tab-group class="flex width-padding">
+    <div fxLayout="row" fxLayoutAlign="center start">
+      <mat-tab-group fxFlex="100">
         <!-- MENU TAB START ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
         <mat-tab>
           <ng-template mat-tab-label>
-            <mat-icon>restaurant</mat-icon> Cardápio
+            <mat-icon>restaurant</mat-icon> <span fxHide.lt-md="true">Cardápio</span>
           </ng-template>
           <mat-card>
             <mat-card-content fxLayout="column" fxLayoutGap="10px">
@@ -42,14 +42,28 @@
                 </div>
                 <div fxFlex>
                   <div fxLayout="row wrap" fxLayout.lt-md="column" fxLayoutGap.lt-md="10px">
-                    <div fxLayout="row" fxFlex fxFlex.gt-sm="50">
+                    <div fxLayout="row" fxFlex="100">
                         <div fxFlex="120px"><p>Nome: </p></div>
                       <div fxFlex><p>{{item.name}}</p></div>
                     </div>
-                    <div fxLayout="row" fxFlexFill>
+                    <div fxLayout="row" fxFlex="100">
                       <div fxFlex="120px"><p>Descrição: </p></div>
                       <div fxFlex><p>{{item.description}}</p></div>
                     </div>
+                    <div fxLayout="row" fxFlex.gt-sm="50">
+                       <div fxFlex="120px"><p>Valor do Rodízio: </p></div>
+                      <div fxFlex><p>R$ {{item.price_person}}</p></div>
+                    </div>
+                    <div fxLayout="row" fxFlex.gt-sm="50" fxLayoutAlign="center center"  fxLayoutAlign.lt-md="start center">
+                      <div fxFlex="120px"><p>&nbsp;Opção A La Carte</p></div>
+                      <div fxFlex>
+                        <p>
+                          <mat-icon *ngIf="!item.allow_alacarte">check_box</mat-icon> 
+                          <mat-icon *ngIf="item.allow_alacarte">check_box_outline</mat-icon> 
+                        </p>
+                      </div>
+                    </div>
+
                   </div>
                 </div>
               </div>
@@ -101,7 +115,7 @@
         <!-- PRODUCT TAB START ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
         <mat-tab>
           <ng-template mat-tab-label>
-            <mat-icon>shopping_cart</mat-icon> Produtos
+            <mat-icon>shopping_cart</mat-icon> <span fxHide.lt-md="true">Produtos</span>
           </ng-template>
           <mat-card>
             <mat-card-content fxLayout="column" fxLayoutGap="10px">
@@ -138,7 +152,7 @@
               <!-- LOADERS END -->
   
               <!-- LIST START -->
-              <div [ngClass]="{'hide': productDataSource.data.length == 0}">
+              <div [fxHide]="productDataSource.data.length == 0">
                 <mat-table #table [dataSource]="productDataSource" 
                   matSort matSortActive="id" matSortDirection="desc">
                   <!-- ID Column -->
@@ -190,7 +204,7 @@
         <!-- BRANCH TAB START ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
         <mat-tab>
           <ng-template mat-tab-label>
-            <mat-icon>store</mat-icon> Filiais
+            <mat-icon>store</mat-icon> <span fxHide.lt-md="true">Filiais</span>
           </ng-template>
           <mat-card>
             <mat-card-content fxLayout="column" fxLayoutGap="10px">
@@ -217,7 +231,7 @@
               <!-- LOADERS END -->
   
               <!-- LIST START -->
-              <div [ngClass]="{'hide': branchDataSource.data.length == 0}">
+              <div [fxHide]="branchDataSource.data.length == 0">
                 <mat-table #table [dataSource]="branchDataSource" 
                   matSort matSortActive="id" matSortDirection="desc">
                   <!-- ID Column -->
