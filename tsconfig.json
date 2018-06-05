@@ -28,9 +28,9 @@
       "@r-company/*":           ["app/company/*"],
       "@r-material/*":          ["app/material/*"],
       "@r-menu/*":              ["app/menu/*"],
-      "@r-order/*":             ["app/order/*"],
-      "@r-order-detail/*":      ["app/order-detail/*"],
       "@r-order-status/*":      ["app/order-status/*"],
+      "@r-order-item/*":        ["app/order-item/*"],
+      "@r-order/*":             ["app/order/*"],
       "@r-product/*":           ["app/product/*"],
       "@r-environment/*":       ["environments/*"]
     }

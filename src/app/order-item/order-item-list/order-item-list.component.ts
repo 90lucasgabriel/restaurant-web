@@ -12,8 +12,8 @@ import { ANIMATION }              from '@r-material/material-animation';
 
 import { Category }               from '@r-category/category.model';
 import { CategoryService }        from '@r-category/category.service';
-import { OrderDetail }            from '@r-order-detail/order-detail.model';
-import { OrderDetailService }     from '@r-order-detail/order-detail.service';
+import { OrderItem }              from '@r-order-item/order-item.model';
+import { OrderItemService }       from '@r-order-item/order-item.service';
 
 import {Observable} from 'rxjs/Observable';
 import 'rxjs/add/observable/merge';
@@ -24,24 +24,24 @@ import 'rxjs/add/operator/startWith';
 import 'rxjs/add/operator/switchMap';
 
 /**
- * OrderDetail List Controller
+ * OrderItem List Controller
  * @export
- * @class OrderDetailListComponent
+ * @class OrderItemListComponent
  * @implements {OnInit}
  */
 @Component({
-  selector:           'app-order-detail-list',
-  templateUrl:        './order-detail-list.component.html',
-  styleUrls:          ['./order-detail-list.component.css'],
+  selector:           'app-order-item-list',
+  templateUrl:        './order-item-list.component.html',
+  styleUrls:          ['./order-item-list.component.css'],
   encapsulation:      ViewEncapsulation.None,
   animations:         [ ANIMATION ]
 })
-export class OrderDetailListComponent implements OnInit, OnDestroy, AfterViewInit {
+export class OrderItemListComponent implements OnInit, OnDestroy, AfterViewInit {
 // DECLARATIONS ---------------------
-  filter:              OrderDetail;
-  filterOrderDetail:   OrderDetail;
-  orderDetailList:     Array<OrderDetail>;
-  orderDetailListCopy: Array<OrderDetail>;
+  filter:              OrderItem;
+  filterOrderItem:   OrderItem;
+  orderItemList:     Array<OrderItem>;
+  orderItemListCopy: Array<OrderItem>;
 
   private sub:        any;
   loading:            boolean;
@@ -71,7 +71,7 @@ export class OrderDetailListComponent implements OnInit, OnDestroy, AfterViewIni
     this.showFilter     = false;
 
     this.filter         = {};
-    this.filterOrderDetail = new OrderDetail();
+    this.filterOrderItem = new OrderItem();
     this.categoryList   = new Array<Category>();
   }
 
@@ -88,10 +88,10 @@ export class OrderDetailListComponent implements OnInit, OnDestroy, AfterViewIni
   public queryByBranch() {
     this.sub = this.service.queryByBranch({
       'page': 0,
-      'include': 'diningtable,product,orderDetailStatus'
+      'include': 'diningtable,product,orderItemStatus'
     }).subscribe(data => {
-      this.orderDetailList            = data.data;
-      this.orderDetailListCopy        = data.data;
+      this.orderItemList            = data.data;
+      this.orderItemListCopy        = data.data;
     }, error => {
       this.material.error('Erro ao pesquisar na API.', error);
     });
@@ -99,9 +99,9 @@ export class OrderDetailListComponent implements OnInit, OnDestroy, AfterViewIni
 
   /**
    * Open dialog to confirm delete
-   * @param OrderDetail item
+   * @param OrderItem item
    */
-  public deleteConfirm(item: SelectionModel<OrderDetail>) {
+  public deleteConfirm(item: SelectionModel<OrderItem>) {
     this.actionClick = true;
     this.material.openDialog(item, 'Excluir', 'Deseja excluir esse pedido?', 'CANCELAR', 'EXCLUIR')
       .subscribe(data => {
@@ -141,7 +141,7 @@ export class OrderDetailListComponent implements OnInit, OnDestroy, AfterViewIni
    * Apply filter when key up
    */
   public applyFilter(list: Array<any>, listCopy: Array<any>, filter: any) {
-    this.orderDetailList = listCopy.filter(item => this.material.filterList(item, filter));
+    this.orderItemList = listCopy.filter(item => this.material.filterList(item, filter));
   }
 
   /**
@@ -167,11 +167,11 @@ export class OrderDetailListComponent implements OnInit, OnDestroy, AfterViewIni
   /**
    * Constructor
    *
-   * @param OrderDetailService service
+   * @param OrderItemService service
    */
   constructor(
     private router:           Router,
-    private service:          OrderDetailService,
+    private service:          OrderItemService,
     private categoryService:  CategoryService,
     private material:         MaterialService,
     public  loader:           LoaderService
@@ -183,13 +183,13 @@ export class OrderDetailListComponent implements OnInit, OnDestroy, AfterViewIni
   }
 
   /**
-   * Go to details
+   * Go to items
    * @param company_id number
    * @param id number
    */
-  public goDetails(company_id: number, branch_id: number, id: number) {
+  public goItems(company_id: number, branch_id: number, id: number) {
     if (!this.actionClick) {
-      this.router.navigate(['/company', company_id, 'branch', branch_id, 'order-detail', id]);
+      this.router.navigate(['/company', company_id, 'branch', branch_id, 'order-item', id]);
     }
   }
 

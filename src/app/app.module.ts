@@ -20,7 +20,7 @@ import { DiningtableModule }          from '@r-diningtable/diningtable.module';
 import { CompanyModule }              from '@r-company/company.module';
 import { MenuModule }                 from '@r-menu/menu.module';
 import { OrderModule }                from '@r-order/order.module';
-import { OrderDetailModule }          from '@r-order-detail/order-detail.module';
+import { OrderItemModule }            from '@r-order-item/order-item.module';
 import { OrderStatusModule }          from '@r-order-status/order-status.module';
 import { ProductModule }              from '@r-product/product.module';
 
@@ -45,7 +45,7 @@ import { ProductModule }              from '@r-product/product.module';
     DiningtableModule,
     MenuModule,
     OrderModule,
-    OrderDetailModule,
+    OrderItemModule,
     OrderStatusModule,
     ProductModule
   ],

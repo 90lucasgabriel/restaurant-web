@@ -6,32 +6,32 @@ import { environment }              from '@r-environment/environment';
 import { Presenter }                from '@r-model/presenter.model';
 import { QueryInput }               from '@r-model/query-input.model';
 
-import { OrderDetail }              from '@r-order-detail/order-detail.model';
+import { OrderItem }                from '@r-order-item/order-item.model';
 
 /**
  * @export
- * @class OrderDetailDao
+ * @class OrderItemDao
  */
 @Injectable()
-export class OrderDetailDao {
+export class OrderItemDao {
   private path: string;
 
   /**
-   * Creates an instance of OrderDetailDao.
+   * Creates an instance of OrderItemDao.
    * @param {HttpClient} http
-   * @memberof OrderDetailDao
+   * @memberof OrderItemDao
    */
   constructor(private http: HttpClient) {
-    this.path = `${environment.apiUrl}/api/company/${environment.COMPANY_ID}/branch/${environment.BRANCH_ID}/order-detail`;
+    this.path = `${environment.apiUrl}/api/company/${environment.COMPANY_ID}/branch/${environment.BRANCH_ID}/order-item`;
   }
 
   /**
    * Returns a list of the resource.
    * @param {QueryInput} queryInput
-   * @returns {Observable<Presenter<Array<OrderDetail>>>}
-   * @memberof OrderDetailDao
+   * @returns {Observable<Presenter<Array<OrderItem>>>}
+   * @memberof OrderItemDao
    */
-  public query(queryInput: QueryInput): Observable<Presenter<Array<OrderDetail>>> {
+  public query(queryInput: QueryInput): Observable<Presenter<Array<OrderItem>>> {
     return this.http.get(this.path, {params: <HttpParams> queryInput});
   }
 
@@ -39,24 +39,24 @@ export class OrderDetailDao {
    *  Returns only one item of the resource
    * @param number id
    */
-  public get(id: number, queryInput: QueryInput): Observable<Presenter<OrderDetail>> {
+  public get(id: number, queryInput: QueryInput): Observable<Presenter<OrderItem>> {
     return this.http.get(`${this.path}/${id}`, {params: <HttpParams> queryInput});
   }
 
    /**
    * Create new itemof resource on database
-   * @param OrderDetail item
+   * @param OrderItem item
    */
-  public save(item: OrderDetail): Observable<any> {
+  public save(item: OrderItem): Observable<any> {
     return this.http.post(this.path, item);
   }
 
   /**
-   * Update details of resource on database
-   * @param OrderDetail item
+   * Update items of resource on database
+   * @param OrderItem item
    * @param number id
    */
-  public update(item: OrderDetail, id: number): Observable<any> {
+  public update(item: OrderItem, id: number): Observable<any> {
     return this.http.put(`${this.path}/${id}`, item);
   }
 
@@ -68,8 +68,8 @@ export class OrderDetailDao {
     return this.http.delete(`${this.path}/${id}`);
   }
 
-  public queryByBranch(queryInput: QueryInput): Observable<Presenter<Array<OrderDetail>>> {
-    let path = `${environment.apiUrl}/api/company/${environment.COMPANY_ID}/branch/${environment.BRANCH_ID}/order-detail`;
+  public queryByBranch(queryInput: QueryInput): Observable<Presenter<Array<OrderItem>>> {
+    const path = `${environment.apiUrl}/api/company/${environment.COMPANY_ID}/branch/${environment.BRANCH_ID}/order-item`;
     return this.http.get(path, {params: <HttpParams> queryInput});
   }
 }

@@ -10,7 +10,7 @@ import { QueryInput }             from '@r-model/query-input.model';
 import { AppComponent }           from '@r-app/app.component';
 import { ANIMATION }              from '@r-material/material-animation';
 
-import { OrderDetail }            from '@r-order-detail/order-detail.model';
+import { OrderItem }              from '@r-order-item/order-item.model';
 import { Order }                  from '@r-order/order.model';
 import { OrderService }           from '@r-order/order.service';
 import { OrderStatus }            from '@r-order-status/order-status.model';
@@ -90,7 +90,7 @@ export class OrderListComponent implements OnInit, OnDestroy, AfterViewInit {
         }
       }
     };
-    // this.filterOrderDetail = new OrderDetail();
+    // this.filterOrderItem = new OrderItem();
 
     this.queryOrderStatus();
   }

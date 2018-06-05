@@ -31,7 +31,7 @@
         </mat-form-field>
         
         <mat-form-field fxFlex>
-          <mat-select placeholder="Status" [(ngModel)]="filter.order_detail_status_id" name="filter.order_detail_status_id" (change)="applyFilter(orderList, orderListCopy, filter)">
+          <mat-select placeholder="Status" [(ngModel)]="filter.order_item_status_id" name="filter.order_item_status_id" (change)="applyFilter(orderList, orderListCopy, filter)">
             <mat-option>-</mat-option>
             <mat-option *ngFor="let status of statusList" [value]="status.id">
               {{ status.name }}
@@ -58,17 +58,17 @@
     <div ngClass.gt-sm="mat-elevation-z1 rounded-border">
       <mat-card>
         <mat-card-content style="overflow-x: auto">
-            <mat-list *ngFor="let odl of orderDetailList">
+            <mat-list *ngFor="let oil of orderItemList">
               <mat-list-item fxLayout="column" fxLayoutAlign="space-between">
                   <div fxLayout="row" fxLayoutAlign="start center" fxFlex="70%" fxFlex.lt-md fxLayoutGap="10px">
-                    <img matListAvatar src="{{odl.product.data.image}}">
+                    <img matListAvatar src="{{oil.product.data.image}}">
                   <div fxFlex fxFlex.lt-md="300px">
-                    {{odl.product.data.name}}
+                    {{oil.product.data.name}}
                   </div>
                 </div>
                 <div fxLayout="row" fxLayoutAlign="end center" fxFlex>
-                  <div fxFlex="60px">{{odl.quantity}}</div>
-                  <div fxFlex="100px">{{odl.orderDetailStatus.data.name}}</div>
+                  <div fxFlex="60px">{{oil.quantity}}</div>
+                  <div fxFlex="100px">{{oil.orderDetailStatus.data.name}}</div>
                   <div fxFlex="90px">
                     <button mat-icon-button matTooltip="Cancelar"><mat-icon>clear</mat-icon></button>
                     <button mat-icon-button matTooltip="Concluir"><mat-icon>check</mat-icon></button>

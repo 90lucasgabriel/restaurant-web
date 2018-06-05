@@ -15,7 +15,7 @@ import { ANIMATION }              from '@r-material/material-animation';
 import { Presenter }              from '@r-model/presenter.model';
 import { Diningtable }            from '@r-diningtable/diningtable.model';
 import { DiningtableService }     from '@r-diningtable/diningtable.service';
-import { OrderDetail }            from '@r-order-detail/order-detail.model';
+import { OrderItem }              from '@r-order-item/order-item.model';
 import { OrderStatus }            from '@r-order-status/order-status.model';
 import { OrderStatusService }     from '@r-order-status/order-status.service';
 import { Order }                  from '@r-order/order.model';
@@ -36,10 +36,10 @@ export class OrderDetailsComponent implements OnInit, OnDestroy, AfterViewInit  
   total:                    number;
   columns:                  Array<string>;
   pivot:                    Array<string>;
-  dataSource:               MatTableDataSource<OrderDetail>;
-  dataSourceCopy:           MatTableDataSource<OrderDetail>;
-  filter:                   OrderDetail;
-  orderDetailList:          Presenter<Array<OrderDetail>>;
+  dataSource:               MatTableDataSource<OrderItem>;
+  dataSourceCopy:           MatTableDataSource<OrderItem>;
+  filter:                   OrderItem;
+  orderItemList:            Presenter<Array<OrderItem>>;
 
   private sub:              any;
   readMode:                 boolean;
@@ -63,11 +63,11 @@ export class OrderDetailsComponent implements OnInit, OnDestroy, AfterViewInit  
     this.actionClick        = false;
     this.showFilter         = false;
     this.total              = 0;
-    this.columns            = ['select', 'id', 'product_image', 'product', 'orderDetailStatus', 'quantity', 'price_alacarte', 'actions'];
+    this.columns            = ['select', 'id', 'product_image', 'product', 'orderItemStatus', 'quantity', 'price_alacarte', 'actions'];
     this.dataSource         = new MatTableDataSource();
     this.dataSourceCopy     = new MatTableDataSource();
-    this.selection          = new SelectionModel<OrderDetail>(true, []);
-    this.filter             = new OrderDetail();
+    this.selection          = new SelectionModel<OrderItem>(true, []);
+    this.filter             = new OrderItem();
     this.sub = this.route.params.subscribe(params => {
       if (params['id'] != null) {
         this.result = this.getAsync(+params['id']);
@@ -88,10 +88,10 @@ export class OrderDetailsComponent implements OnInit, OnDestroy, AfterViewInit  
    */
   public ngAfterViewInit() {
     this.result.then(success => {
-      this.orderDetailList      = <Presenter<Array<OrderDetail>>> success.data.orderDetail;
-      this.total                = this.orderDetailList.data.length;
-      this.dataSource.data      = this.orderDetailList.data;
-      this.dataSourceCopy.data  = this.orderDetailList.data;
+      this.orderItemList      = <Presenter<Array<OrderItem>>> success.data.orderItem;
+      this.total                = this.orderItemList.data.length;
+      this.dataSource.data      = this.orderItemList.data;
+      this.dataSourceCopy.data  = this.orderItemList.data;
     }, error => {
       console.log('Erro ao pesquisar conta', error);
       this.material.snackBar('Erro ao pesquisar conta. Detalhes no console (F12).', 'OK');
@@ -108,7 +108,7 @@ export class OrderDetailsComponent implements OnInit, OnDestroy, AfterViewInit  
    */
   public getAsync(id: number): Promise<Presenter<Order>> {
     return this.service.get(id,
-      {'include': `diningtable,orderStatus,orderDetail.product,orderDetail.orderDetailStatus`})
+      {'include': `diningtable,orderStatus,orderItem.product,orderItem.orderItemStatus`})
       .toPromise();
   }
 

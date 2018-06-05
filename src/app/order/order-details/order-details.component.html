@@ -106,10 +106,10 @@
             <mat-cell *matCellDef="let row" fxFlex fxFlex.lt-md="300px" > {{row.product.data.id}} - {{ row.product.data.name || null }} </mat-cell>
           </ng-container>
 
-          <!-- OrderStatus name Column -->
-          <ng-container matColumnDef="orderDetailStatus">
+          <!-- orderItemStatus name Column -->
+          <ng-container matColumnDef="orderItemStatus">
             <mat-header-cell *matHeaderCellDef mat-sort-header fxFlex fxFlex.lt-md="200px" > Status </mat-header-cell>
-            <mat-cell *matCellDef="let row" fxFlex fxFlex.lt-md="200px" > {{row.orderDetailStatus.data.id}} - {{ row.orderDetailStatus.data.name || null }} </mat-cell>
+            <mat-cell *matCellDef="let row" fxFlex fxFlex.lt-md="200px" > {{row.orderItemStatus.data.id}} - {{ row.orderItemStatus.data.name || null }} </mat-cell>
           </ng-container>
 
           <!-- Price Column -->

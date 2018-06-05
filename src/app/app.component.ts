@@ -44,7 +44,7 @@ export class AppComponent implements AfterViewInit {
     {
       name: 'Pedidos',
       icon: 'room_service',
-      link: `company/${environment.COMPANY_ID}/branch/${environment.BRANCH_ID}/order-detail`
+      link: `company/${environment.COMPANY_ID}/branch/${environment.BRANCH_ID}/order-item`
     },
     {
       name: 'Contas',

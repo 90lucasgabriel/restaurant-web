@@ -6,18 +6,18 @@ import { Order     } from '@r-app/order/order.model';
 import { Menu      } from '@r-app/menu/menu.model';
 
 /**
- * Model OrderDetail
- * @class OrderDetail
+ * Model OrderItem
+ * @class OrderItem
  */
-export class OrderDetail {
+export class OrderItem {
   constructor(
     public id?: number,
     public order_id?: number,
     public menu_id?: number,
     public product_id?: number,
     public dining_table_id?: number,
-    public order_detail_status_id?:  number,
-    public order_detail_type_id?:    number,
+    public order_item_status_id?:  number,
+    public order_item_type_id?:    number,
     public price_person?: number,
     public price_alacarte?: number,
     public quantity?: number,
@@ -25,13 +25,13 @@ export class OrderDetail {
 
     public diningtable?: Presenter<Diningtable>,
     public product?: Presenter<Product>,
-    public order_detail_status?:      Presenter<OrderDetailStatus>,
-    public order_detail_type?:        Presenter<OrderDetailType>,
+    public order_item_status?:      Presenter<OrderItemStatus>,
+    public order_item_type?:        Presenter<OrderItemType>,
     public menu?: Presenter<Menu>
   ) { }
 }
 
-export class OrderDetailType {
+export class OrderItemType {
   constructor(
     public id?: number,
     public name?: string,
@@ -39,7 +39,7 @@ export class OrderDetailType {
   ) { }
 }
 
-export class OrderDetailStatus {
+export class OrderItemStatus {
   constructor(
     public id?: number,
     public name?: string,

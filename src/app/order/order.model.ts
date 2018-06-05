@@ -1,7 +1,7 @@
 import { Presenter   } from '@r-model/presenter.model';
 import { Company     } from '@r-company/company.model';
 import { Branch      } from '@r-app/branch/branch.model';
-import { OrderDetail } from '@r-app/order-detail/order-detail.model';
+import { OrderItem   } from '@r-app/order-item/order-item.model';
 import { OrderStatus } from '@r-app/order-status/order-status.model';
 import { Product     } from '@r-app/product/product.model';
 import { Menu        } from '@r-app/menu/menu.model';
@@ -23,7 +23,7 @@ export class Order {
     public branch?:  		      Presenter<Branch>,
     public diningtable?:      Presenter<Diningtable>,
     public orderStatus?:      Presenter<OrderStatus>,
-    public orderDetail?:      OrderDetail | Presenter<Array<OrderDetail>>
+    public orderItem?:        OrderItem | Presenter<Array<OrderItem>>
   ) { }
 }
 
