@@ -1,11 +1,11 @@
 {
-  "name": "restaurant-web",
+  "name": "Restaurante",
   "short_name": "Restaurante",
-  "theme_color": "#1de9b6",
+  "theme_color": "#1DE9B6",
   "background_color": "#303030",
   "display": "standalone",
   "scope": "/",
-  "start_url": "https://restaurant-web-90lucasgabriel.herokuapp.com",
+  "start_url": "/company/1/branch",
   "icons": [
     {
       "src": "assets/icons/icon-72x72.png",
