@@ -25,6 +25,8 @@ import { OrderItemStatusModule }      from '@r-order-item-status/order-item-stat
 import { OrderItemTypeModule }        from '@r-order-item-type/order-item-type.module';
 import { OrderStatusModule }          from '@r-order-status/order-status.module';
 import { ProductModule }              from '@r-product/product.module';
+import { ServiceWorkerModule }        from '@angular/service-worker';
+import { environment }                from '../environments/environment';
 
 
 @NgModule({
@@ -51,7 +53,8 @@ import { ProductModule }              from '@r-product/product.module';
     OrderItemStatusModule,
     OrderItemTypeModule,
     OrderStatusModule,
-    ProductModule
+    ProductModule,
+    ServiceWorkerModule.register('/ngsw-worker.js', { enabled: environment.production })
   ],
   exports: [
     FormsModule,

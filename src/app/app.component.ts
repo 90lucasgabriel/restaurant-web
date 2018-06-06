@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, ViewChild, AfterViewInit }      from '@angular/core';
+import { ChangeDetectorRef, Component, ViewChild, AfterViewInit, OnInit }      from '@angular/core';
 import { MediaMatcher }             from '@angular/cdk/layout';
 import { MatSidenav }               from '@angular/material';
 import { environment }              from '@r-environment/environment';
@@ -6,13 +6,14 @@ import { MaterialService }          from '@r-material/material.service';
 import { LoaderService }            from '@r-service/loader.service';
 import { AppConfig }                from '@r-app/app.config';
 import { Location }                 from '@angular/common';
+import { SwUpdate }                 from '@angular/service-worker';
 
 @Component({
   selector:     'app-root',
   templateUrl:  './app.component.html',
   styleUrls:    ['./app.component.css']
 })
-export class AppComponent implements AfterViewInit {
+export class AppComponent implements OnInit, AfterViewInit {
   title = 'app';
   public progressBarVisible = true;
 
@@ -64,7 +65,8 @@ export class AppComponent implements AfterViewInit {
     private loader:             LoaderService,
     private changeDetectorRef:  ChangeDetectorRef,
     private location:           Location,
-    private media:              MediaMatcher) {
+    private media:              MediaMatcher,
+    private swUpdate:           SwUpdate) {
     // change isLoading status whenever notified
     loader
       .onLoadingChanged
@@ -74,6 +76,19 @@ export class AppComponent implements AfterViewInit {
 
     // Change mode of sidenav if mobile
     this.verifyMobile(changeDetectorRef, media);
+  }
+
+  /**
+   * Execute after load
+   */
+  public ngOnInit() {
+    if (this.swUpdate.isEnabled) {
+      this.swUpdate.available.subscribe(() => {
+          if (confirm('New version available. Load New Version?')) {
+              window.location.reload();
+          }
+      });
+    }
   }
 
   /**
