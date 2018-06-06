@@ -1,90 +1,150 @@
 <div fxLayout="row" fxLayoutAlign="center start" ngClass.gt-sm="padding" class="mat-typography">
   <div fxLayout="column" fxFlex="85" fxFlex.lt-md="100" fxLayoutGap="15px">
-    
+
     <div ngClass.lt-md="padding no-padding-bottom">
       <!-- BACK AND TITLE START -->
       <div fxLayoutAlign="space-between start" fxLayout="row">
-          <h3 fxLayout="row" fxLayoutAlign="start center" class="no-margin-bottom">
-            <button mat-icon-button><mat-icon>room_service</mat-icon></button> Pedidos
-          </h3>
-          <div>
-            <button mat-icon-button (click)="showFilter = !showFilter" matTooltip="Filtrar"><mat-icon>filter_list</mat-icon></button>
-            <button mat-icon-button matTooltip="Exportar"><mat-icon>share</mat-icon></button>
-          </div>  
-        </div>
-        <!--BACK AND TITLE END -->
+        <h3 fxLayout="row" fxLayoutAlign="start center" class="no-margin-bottom">
+          <button mat-icon-button><mat-icon>store</mat-icon></button> Pedidos
+        </h3>
+        <div>
+          <button mat-icon-button (click)="showFilter = !showFilter" matTooltip="Filtrar"><mat-icon>filter_list</mat-icon></button>
+          <button mat-icon-button matTooltip="Exportar"><mat-icon>share</mat-icon></button>
+          <button mat-icon-button *ngIf="selection.selected.length > 0" (click)="deleteConfirm(selection)" matTooltip="Excluir" [@hfold]><mat-icon>delete</mat-icon></button>
+        </div>  
+      </div>
+      <!--BACK AND TITLE END -->
       
       <!-- FILTER START -->
-      <div fxLayout="row" fxLayout.lt-md="column" fxLayoutGap="5px" fxLayoutAlign="space-evenly" *ngIf="showFilter" [@vfold]>
-        
-        <mat-form-field fxFlex>
-          <input matInput placeholder="ID" [(ngModel)]="filter.id" name="filter.id" (keyup)="applyFilter(dataSource, dataSourceCopy, filter)">
-        </mat-form-field>
-      
-        <mat-form-field fxFlex>
-            <mat-select placeholder="Status conta" [(ngModel)]="filter.order_status_id" name="filter.order_status_id" (change)="applyFilter(orderList, orderListCopy, filter)">
-              <mat-option>-</mat-option>
-              <mat-option value="1">Aberto</mat-option>
-              <mat-option value="2">Pendente</mat-option>
-              <mat-option value="3">Pago</mat-option>
+      <div fxLayout="column" fxLayoutAlign="space-evenly" *ngIf="showFilter" [@vfold]>        
+        <div fxLayout="row" fxLayout.lt-md="column" fxLayoutGap="10px">
+          <mat-form-field fxFlex>
+            <input matInput placeholder="Produto" [(ngModel)]="filter.product.data.name" name="filter.product.data.name" (keyup)="applyFilter(dataSource, dataSourceCopy, filter)">
+          </mat-form-field>
+
+          <mat-form-field fxFlex>
+            <input matInput placeholder="Mesa" [(ngModel)]="filter.diningtable" name="filter.diningtable" (keyup)="applyFilter(dataSource, dataSourceCopy, filter)">
+          </mat-form-field>
+
+          <mat-form-field fxFlex>
+            <mat-select placeholder="Status" [(ngModel)]="filter.order_item_status_id" name="filter.order_item_status_id" (ngModelChange)="applyFilter(dataSource, dataSourceCopy, filter)" multiple> 
+              <mat-option *ngFor="let order_item_status of orderItemStatusList" [value]="order_item_status.id">
+                {{ order_item_status.id }} - {{ order_item_status.name }}
+              </mat-option>
             </mat-select>
-        </mat-form-field>
+          </mat-form-field>
         
-        <mat-form-field fxFlex>
-          <mat-select placeholder="Status" [(ngModel)]="filter.order_item_status_id" name="filter.order_item_status_id" (change)="applyFilter(orderList, orderListCopy, filter)">
-            <mat-option>-</mat-option>
-            <mat-option *ngFor="let status of statusList" [value]="status.id">
-              {{ status.name }}
-            </mat-option>
-          </mat-select>
-        </mat-form-field>      
+          <mat-form-field fxFlex>
+            <mat-select placeholder="Tipo" [(ngModel)]="filter.order_item_type_id" name="filter.order_item_type_id"  (ngModelChange)="applyFilter(dataSource, dataSourceCopy, filter)">
+              <mat-option>-</mat-option>
+              <mat-option *ngFor="let order_item_type of orderItemTypeList" [value]="order_item_type.id">
+                {{ order_item_type.id }} - {{ order_item_type.name }}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
       </div>
       <!-- FILTER END -->
 
-      <!-- LOADERS START 
-      <div *ngIf="loading">
+      <!-- LOADERS START -->
+      <div fxLayout="column" fxFlexFill fxLayoutAlign="center center" *ngIf="loading">
         <mat-progress-spinner mode="indeterminate" diameter="30" strokeWidth="4"></mat-progress-spinner>
       </div>
       <div fxFlex fxLayout="column" fxLayoutAlign="center center" *ngIf="dataSource.data.length == 0 && !loading" class="mat-typography" >
         <mat-icon class="big">help_outline</mat-icon>
         <h3>Nenhum resultado encontrado.</h3>
       </div>
-        LOADERS END -->
+      <!-- LOADERS END -->
 
     </div>
 
-  <!-- LIST START -->
-  <div fxLayout="column" fxLayoutGap="10px" >
-    <div ngClass.gt-sm="mat-elevation-z1 rounded-border">
-      <mat-card>
-        <mat-card-content style="overflow-x: auto">
-            <mat-list *ngFor="let oil of orderItemList">
-              <mat-list-item fxLayout="column" fxLayoutAlign="space-between">
-                  <div fxLayout="row" fxLayoutAlign="start center" fxFlex="70%" fxFlex.lt-md fxLayoutGap="10px">
-                    <img matListAvatar src="{{oil.product.data.image}}">
-                  <div fxFlex fxFlex.lt-md="300px">
-                    {{oil.product.data.name}}
-                  </div>
-                </div>
-                <div fxLayout="row" fxLayoutAlign="end center" fxFlex>
-                  <div fxFlex="60px">{{oil.quantity}}</div>
-                  <div fxFlex="100px">{{oil.orderItemStatus.data.name}}</div>
-                  <div fxFlex="90px">
-                    <button mat-icon-button matTooltip="Cancelar"><mat-icon>clear</mat-icon></button>
-                    <button mat-icon-button matTooltip="Concluir"><mat-icon>check</mat-icon></button>
-                  </div>
-                </div>
-              </mat-list-item>
-            </mat-list>
-        </mat-card-content>
-      </mat-card>
+    <!-- LIST START -->
+    <div [fxHide]="dataSource.data.length == 0">
+      <div fxFlex ngClass.gt-sm="mat-elevation-z1 rounded-border">
       
+        <mat-table #table [dataSource]="dataSource" 
+          matSort matSortActive="id" matSortDirection="desc">
+          <!-- Checkbox Column -->
+          <ng-container matColumnDef="select">
+            <mat-header-cell *matHeaderCellDef fxFlex="60px">
+              <mat-checkbox (change)="$event ? masterToggle(dataSourceCopy, selection) : null"
+                            [checked]="selection.hasValue() && isAllSelected(dataSourceCopy, selection)"
+                            [indeterminate]="selection.hasValue() && !isAllSelected(dataSourceCopy, selection)">
+              </mat-checkbox>
+            </mat-header-cell>
+            <mat-cell *matCellDef="let row" fxFlex="60px">
+              <mat-checkbox (click)="$event.stopPropagation()"
+                            (change)="$event ? selection.toggle(row) : null"
+                            [checked]="selection.isSelected(row)">
+              </mat-checkbox>
+            </mat-cell>
+          </ng-container>
+                    
+          <!-- ID Column -->
+          <ng-container matColumnDef="id">
+            <mat-header-cell *matHeaderCellDef mat-sort-header fxFlex="60px"> ID </mat-header-cell>
+            <mat-cell *matCellDef="let row" fxFlex="60px"> {{row.id}} </mat-cell>
+          </ng-container>
+
+          <!-- Product Column -->
+          <ng-container matColumnDef="product">
+            <mat-header-cell *matHeaderCellDef mat-sort-header fxFlex fxFlex.lt-md="300px"> Produto </mat-header-cell>
+            <mat-cell *matCellDef="let row" fxFlex fxFlex.lt-md="300px" (click)="goDetailsProduct(row.order.data.company_id, row.product_id)"> {{row?.product_id}} - {{row?.product.data.name}} </mat-cell>
+          </ng-container>
+
+          <!-- Quantity Column -->
+          <ng-container matColumnDef="quantity">
+            <mat-header-cell *matHeaderCellDef mat-sort-header fxFlex="70px"> Qtd </mat-header-cell>
+            <mat-cell *matCellDef="let row" fxFlex="70px"> {{ row?.quantity }} </mat-cell>
+          </ng-container>
+
+          <!-- Diningtable Column -->
+          <ng-container matColumnDef="diningtable">
+            <mat-header-cell *matHeaderCellDef mat-sort-header fxFlex="70px"> Mesa </mat-header-cell>
+            <mat-cell *matCellDef="let row" fxFlex="70px" (click)="goDetailsOrder(row.order.data.company_id, row.order.data.branch_id, row.order.data.id)"> {{ row.diningtable?.data.code }} </mat-cell>
+          </ng-container>
+
+          <!-- OrderItemType Column -->
+          <ng-container matColumnDef="order_item_type">
+            <mat-header-cell *matHeaderCellDef mat-sort-header fxFlex fxFlex.lt-md="150px" > Tipo </mat-header-cell>
+            <mat-cell *matCellDef="let row" fxFlex fxFlex.lt-md="150px"> {{ row?.order_item_type_id }} - {{ row.orderItemType?.data.name }}  </mat-cell>
+          </ng-container>
+
+          <!-- OrderItemStatus Column -->
+          <ng-container matColumnDef="order_item_status">
+            <mat-header-cell *matHeaderCellDef mat-sort-header fxFlex fxFlex.lt-md="150px" > Status </mat-header-cell>
+            <mat-cell *matCellDef="let row" fxFlex fxFlex.lt-md="150px" > {{ row?.order_item_status_id }} - {{ row.orderItemStatus?.data.name }} </mat-cell>
+          </ng-container>
+          
+          <!-- Comment Column -->
+          <ng-container matColumnDef="comment">
+              <mat-header-cell *matHeaderCellDef mat-sort-header fxFlex fxFlex.lt-md="50px" > Obs. </mat-header-cell>
+              <mat-cell *matCellDef="let row" fxFlex fxFlex.lt-md="50px" > 
+                  <button *ngIf="row.comment" mat-icon-button [matTooltip]="row.comment"><mat-icon>comment</mat-icon></button>  
+              </mat-cell>
+            </ng-container>
+
+          <!-- Ações Column -->
+          <ng-container matColumnDef="actions">
+            <mat-header-cell *matHeaderCellDef fxFlex="90px"></mat-header-cell>
+            <mat-cell *matCellDef="let row" fxFlex="90px" ngClass.gt-sm="hover-child">
+                <button *ngIf="false" mat-icon-button [routerLink]="[row.id, 'edit']" matTooltip="Editar"><mat-icon>edit</mat-icon></button>
+                <button mat-icon-button (click)="accomplished({selected: [row]})" matTooltip="Concluir"><mat-icon>checked</mat-icon></button>
+            </mat-cell>
+          </ng-container>
+
+          <!-- HEADERS AND ROWS -->
+          <mat-header-row *matHeaderRowDef="columns"></mat-header-row>
+          <mat-row class="hover-parent pointer" *matRowDef="let row; columns: columns;"></mat-row>
+        </mat-table>
+      
+        <mat-paginator [length]="total" [pageSize]="20" [pageSizeOptions]="[5, 10, 25, 100]"></mat-paginator>
+      </div>
     </div>
+    <!-- LIST END -->
 
-  </div>
-  <!-- LIST END -->
-
-  <div class="fab-position">
-    <button mat-fab [routerLink]="['new']" matTooltip="Novo" matTooltipPosition="left"><mat-icon>add</mat-icon></button>
+    <div class="fab-position">
+      <button mat-fab [routerLink]="['new']" matTooltip="Novo" matTooltipPosition="left"><mat-icon>add</mat-icon></button>
+    </div>
   </div>
 </div>

@@ -141,11 +141,27 @@ export class MaterialService {
 
     for (const tag in item) { // Verify property by property
       if (filter[tag]) {      // Verify undefined
-        if (item[tag].data) {
+        // Recursive to inside arrays (fail)
+        /*if (item[tag].data) {
           if (item[tag].data.constructor === Array) {
             return item[tag].data.filter(i => this.filterList(i, filter[tag]));
           }
+        }*/
+
+        // If is array, filter each item. Multiple Select. OR CONDITION.
+        if (filter[tag].constructor === Array) {
+          for (const obj in filter[tag]) {
+            if (item[tag].toString().trim().toLowerCase().includes(filter[tag][obj].toString().trim().toLowerCase())) {
+              return true;
+            }
+            /* AND CONDITION
+            else {
+              return false;
+            }*/
+          }
         }
+
+        // Simple filter.
         if (!item[tag].toString().trim().toLowerCase().includes(filter[tag].toString().trim().toLowerCase())) {
           return false;
         }

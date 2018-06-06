@@ -57,15 +57,6 @@ export class OrderListComponent implements OnInit, OnDestroy, AfterViewInit {
 
   orderStatusList:    Array<OrderStatus>;
 
-  orderDetailStatusList = [
-    {id: 1, name: 'Aberto'},
-    {id: 2, name: 'Preparação'},
-    {id: 3, name: 'Pronto'},
-    {id: 4, name: 'Entregando'},
-    {id: 5, name: 'Concluído'},
-    {id: 6, name: 'Cancelado'}
-  ];
-
 
 // MAIN -----------------------------
   /**
@@ -158,7 +149,7 @@ export class OrderListComponent implements OnInit, OnDestroy, AfterViewInit {
 
 
 
-  // ORDERSTATUS SECTION -----------------
+// ORDERSTATUS SECTION -----------------
   /**
    * Query order_status list to selectbox
    */

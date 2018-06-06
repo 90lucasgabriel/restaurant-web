@@ -32,7 +32,7 @@ export class OrderDetailsComponent implements OnInit, OnDestroy, AfterViewInit  
 // DECLARATIONS --------------------------
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatSort)       sort: MatSort;
-  selection:                SelectionModel<Order>;
+  selection:                SelectionModel<OrderItem>;
   total:                    number;
   columns:                  Array<string>;
   pivot:                    Array<string>;

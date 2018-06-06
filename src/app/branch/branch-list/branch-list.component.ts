@@ -13,20 +13,13 @@ import { ANIMATION }              from '@r-material/material-animation';
 import { Branch }                 from '@r-branch/branch.model';
 import { BranchService }          from '@r-branch/branch.service';
 
-import {Observable} from 'rxjs/Observable';
-import 'rxjs/add/observable/merge';
-import 'rxjs/add/observable/of';
-import 'rxjs/add/operator/catch';
-import 'rxjs/add/operator/map';
-import 'rxjs/add/operator/startWith';
-import 'rxjs/add/operator/switchMap';
-
 /**
  * List Branch
- *
  * @export
  * @class BranchListComponent
  * @implements {OnInit}
+ * @implements {OnDestroy}
+ * @implements {AfterViewInit}
  */
 @Component({
   selector:           'app-branch-list',

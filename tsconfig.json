@@ -28,8 +28,10 @@
       "@r-company/*":           ["app/company/*"],
       "@r-material/*":          ["app/material/*"],
       "@r-menu/*":              ["app/menu/*"],
-      "@r-order-status/*":      ["app/order-status/*"],
       "@r-order-item/*":        ["app/order-item/*"],
+      "@r-order-status/*":      ["app/order-status/*"],
+      "@r-order-item-status/*": ["app/order-item-status/*"],
+      "@r-order-item-type/*":   ["app/order-item-type/*"],
       "@r-order/*":             ["app/order/*"],
       "@r-product/*":           ["app/product/*"],
       "@r-environment/*":       ["environments/*"]

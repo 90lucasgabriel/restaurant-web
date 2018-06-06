@@ -10,24 +10,20 @@ import { QueryInput }             from '@r-model/query-input.model';
 import { AppComponent }           from '@r-app/app.component';
 import { ANIMATION }              from '@r-material/material-animation';
 
-import { Category }               from '@r-category/category.model';
-import { CategoryService }        from '@r-category/category.service';
 import { OrderItem }              from '@r-order-item/order-item.model';
 import { OrderItemService }       from '@r-order-item/order-item.service';
-
-import {Observable} from 'rxjs/Observable';
-import 'rxjs/add/observable/merge';
-import 'rxjs/add/observable/of';
-import 'rxjs/add/operator/catch';
-import 'rxjs/add/operator/map';
-import 'rxjs/add/operator/startWith';
-import 'rxjs/add/operator/switchMap';
+import { OrderItemStatus }        from '@r-order-item-status/order-item-status.model';
+import { OrderItemStatusService } from '@r-order-item-status/order-item-status.service';
+import { OrderItemType }          from '@r-order-item-type/order-item-type.model';
+import { OrderItemTypeService }   from '@r-order-item-type/order-item-type.service';
 
 /**
- * OrderItem List Controller
+ * List OrderItem
  * @export
  * @class OrderItemListComponent
  * @implements {OnInit}
+ * @implements {OnDestroy}
+ * @implements {AfterViewInit}
  */
 @Component({
   selector:           'app-order-item-list',
@@ -37,11 +33,16 @@ import 'rxjs/add/operator/switchMap';
   animations:         [ ANIMATION ]
 })
 export class OrderItemListComponent implements OnInit, OnDestroy, AfterViewInit {
-// DECLARATIONS ---------------------
-  filter:              OrderItem;
-  filterOrderItem:   OrderItem;
-  orderItemList:     Array<OrderItem>;
-  orderItemListCopy: Array<OrderItem>;
+// DECLARATIONS --------------------------
+  @ViewChild(MatPaginator) paginator: MatPaginator;
+  @ViewChild(MatSort) sort: MatSort;
+  selection:          SelectionModel<OrderItem>;
+  total:              number;
+  columns:            Array<string>;
+  pivot:              Array<string>;
+  dataSource:         MatTableDataSource<OrderItem>;
+  dataSourceCopy:     MatTableDataSource<OrderItem>;
+  filter:             OrderItem;
 
   private sub:        any;
   loading:            boolean;
@@ -49,49 +50,61 @@ export class OrderItemListComponent implements OnInit, OnDestroy, AfterViewInit 
   actionClick:        boolean;
   centerContent:      boolean;
 
-  categoryList:       Array<Category>;
+  orderItemStatusList:      Array<OrderItemStatus>;
+  orderItemTypeList:        Array<OrderItemType>;
 
 
-  statusList = [
-    {id: 1, name: 'Aberto'},
-    {id: 2, name: 'Preparação'},
-    {id: 3, name: 'Pronto'},
-    {id: 4, name: 'Entregando'},
-    {id: 5, name: 'Concluído'},
-    {id: 6, name: 'Cancelado'}
-  ];
 
 
-// MAIN -----------------------------
+// MAIN ----------------------------------
   /**
    * Execute before onInit
    */
-  private start() {
+  public start() {
+    this.loading        = true;
     this.actionClick    = false;
     this.showFilter     = false;
+    this.total          = 0;
+    this.columns        = ['select', 'id', 'product', 'quantity', 'diningtable', 'order_item_type', 'order_item_status',  'comment', 'actions'];
+    this.dataSource     = new MatTableDataSource();
+    this.dataSourceCopy = new MatTableDataSource();
+    this.selection      = new SelectionModel<OrderItem>(true, []);
+    this.filter         = new OrderItem();
+    this.filter = {
+      order_item_status_id: [1, 2, 3, 4],
+      product: {
+        data: {
+          name: ''
+        }
+      }
+    };
 
-    this.filter         = {};
-    this.filterOrderItem = new OrderItem();
-    this.categoryList   = new Array<Category>();
+    this.queryOrderItemStatus();
+    this.queryOrderItemType();
   }
 
   /**
    * Execute after load all components
    */
   public ngAfterViewInit() {
-    this.queryByBranch();
+    this.query();
+    this.dataSource.sort      = this.sort;
+    this.dataSource.paginator = this.paginator;
   }
 
   /**
    * Show list items on datatable
    */
-  public queryByBranch() {
-    this.sub = this.service.queryByBranch({
+  public query() {
+    this.sub = this.service.query({
       'page': 0,
-      'include': 'diningtable,product,orderItemStatus'
+      'include': 'product,diningtable,order,orderItemStatus,orderItemType,menu'
     }).subscribe(data => {
-      this.orderItemList            = data.data;
-      this.orderItemListCopy        = data.data;
+      this.total               = data.data.length;
+      this.dataSource.data     = data.data;
+      this.dataSourceCopy.data = data.data;
+      this.applyFilter(this.dataSource, this.dataSourceCopy, this.filter);
+      this.loading             = false;
     }, error => {
       this.material.error('Erro ao pesquisar na API.', error);
     });
@@ -99,12 +112,12 @@ export class OrderItemListComponent implements OnInit, OnDestroy, AfterViewInit 
 
   /**
    * Open dialog to confirm delete
-   * @param OrderItem item
+   * @param {SelectionModel<OrderItem>} item
+   * @memberof OrderItemListComponent
    */
   public deleteConfirm(item: SelectionModel<OrderItem>) {
     this.actionClick = true;
-    this.material.openDialog(item, 'Excluir', 'Deseja excluir esse pedido?', 'CANCELAR', 'EXCLUIR')
-      .subscribe(data => {
+    this.material.openDialog(item, 'Excluir', 'Deseja excluir essa pedido?', 'CANCELAR', 'EXCLUIR').subscribe(data => {
         this.actionClick = false;
         if (data) {
           item.selected.forEach(i => this.delete(i.id));
@@ -117,20 +130,52 @@ export class OrderItemListComponent implements OnInit, OnDestroy, AfterViewInit 
    * @param number id
    */
   public delete(id: number) {
-    /*const dataTmp              = JSON.parse(JSON.stringify(this.dataSource.data));
+    const dataTmp              = JSON.parse(JSON.stringify(this.dataSource.data));
     dataTmp.splice(this.dataSource.data.findIndex(i => i.id === id), 1);
     this.dataSource.data       = JSON.parse(JSON.stringify(dataTmp));
     this.selection.deselect(this.selection.selected.find(i => i.id === id));
 
     this.service.delete(id).subscribe(data => {
       this.dataSourceCopy.data = JSON.parse(JSON.stringify(this.dataSource.data));
-      this.material.snackBar('Produto excluído.', 'OK');
+      this.material.snackBar('Pedido excluída.', 'OK');
     }, error => {
       this.selection.select(this.selection.selected.find(i => i.id === id));
-      this.dataSource.data     = JSON.parse(JSON.stringify(this.dataSourceCopy.data));
-      this.material.error('Erro ao excluir produto.', error);
+      this.dataSource.data = JSON.parse(JSON.stringify(this.dataSourceCopy.data));
+      this.material.error('Erro ao excluir pedido.', error);
     });
-    */
+  }
+
+
+
+
+
+// ORDER ITEM STATUS SECTION ------------------------
+  /**
+   * Return a list of OrderItemStatus
+   */
+  public queryOrderItemStatus() {
+    this.orderItemStatusService.query({
+      'orderBy':      'id',
+      'sortedBy':     'asc'
+    }).subscribe(data => {
+      this.orderItemStatusList = data.data;
+    });
+  }
+
+
+
+
+// ORDER ITEM TYPE SECTION ------------------------
+  /**
+   * Return a list of OrderItemType
+   */
+  public queryOrderItemType() {
+    this.orderItemTypeService.query({
+      'orderBy':      'id',
+      'sortedBy':     'asc'
+    }).subscribe(data => {
+      this.orderItemTypeList = data.data;
+    });
   }
 
 
@@ -140,8 +185,8 @@ export class OrderItemListComponent implements OnInit, OnDestroy, AfterViewInit 
   /**
    * Apply filter when key up
    */
-  public applyFilter(list: Array<any>, listCopy: Array<any>, filter: any) {
-    this.orderItemList = listCopy.filter(item => this.material.filterList(item, filter));
+  public applyFilter(dataSource: MatTableDataSource<any>, dataSourceCopy: MatTableDataSource<any>, filter: any) {
+    this.material.applyFilter(dataSource, dataSourceCopy, filter);
   }
 
   /**
@@ -170,11 +215,12 @@ export class OrderItemListComponent implements OnInit, OnDestroy, AfterViewInit 
    * @param OrderItemService service
    */
   constructor(
-    private router:           Router,
-    private service:          OrderItemService,
-    private categoryService:  CategoryService,
-    private material:         MaterialService,
-    public  loader:           LoaderService
+    private router:                   Router,
+    private material:                 MaterialService,
+    public  loader:                   LoaderService,
+    private service:                  OrderItemService,
+    private orderItemStatusService:   OrderItemStatusService,
+    private orderItemTypeService:     OrderItemTypeService,
   ) {
     loader.onLoadingChanged.subscribe(isLoading => {
       this.loading = isLoading;
@@ -183,13 +229,25 @@ export class OrderItemListComponent implements OnInit, OnDestroy, AfterViewInit 
   }
 
   /**
-   * Go to items
+   * Go to Product details
    * @param company_id number
    * @param id number
    */
-  public goItems(company_id: number, branch_id: number, id: number) {
+  public goDetailsProduct(company_id: number, product_id: number) {
     if (!this.actionClick) {
-      this.router.navigate(['/company', company_id, 'branch', branch_id, 'order-item', id]);
+      this.router.navigate(['/company', company_id, 'product', product_id]);
+    }
+  }
+
+  /**
+   * Go to Order details
+   * @param company_id number
+   * @param branch_id number
+   * @param order_id number
+   */
+  public goDetailsOrder(company_id: number, branch_id: number, order_id: number) {
+    if (!this.actionClick) {
+      this.router.navigate(['/company', company_id, 'branch', branch_id, 'order', order_id]);
     }
   }
 
@@ -207,3 +265,20 @@ export class OrderItemListComponent implements OnInit, OnDestroy, AfterViewInit 
     this.sub.unsubscribe();
   }
 }
+
+
+
+  /**
+   * Show list items on datatable
+   */
+  /*public queryByOrderItem() {
+    this.sub = this.service.queryByOrderItem({
+      'page': 0,
+      'include': 'diningtable,product,orderItemStatus'
+    }).subscribe(data => {
+      this.orderItemList            = data.data;
+      this.orderItemListCopy        = data.data;
+    }, error => {
+      this.material.error('Erro ao pesquisar na API.', error);
+    });
+  }*/

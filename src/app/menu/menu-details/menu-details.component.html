@@ -131,7 +131,7 @@
                 </mat-form-field>
               
                 <mat-form-field fxFlex>
-                  <mat-select placeholder="Categoria" [(ngModel)]="productFilter.category_id" name="productFilter.category_id" (change)="applyFilter(productDataSource, productDataSourceCopy, productFilter)">
+                  <mat-select placeholder="Categoria" [(ngModel)]="productFilter.category_id" name="productFilter.category_id" (ngModelChange)="applyFilter(productDataSource, productDataSourceCopy, productFilter)">
                     <mat-option>-</mat-option>
                     <mat-option *ngFor="let category of categoryList" [value]="category.id">
                       {{ category.id }} - {{ category.name }}

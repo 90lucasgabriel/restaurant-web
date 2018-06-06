@@ -9,8 +9,8 @@ import { OrderItemRoutingModule }      from '@r-order-item/order-item-routing.mo
 import { OrderItemService }            from '@r-order-item/order-item.service';
 import { OrderItemDao }                from '@r-order-item/order-item.dao';
 import { OrderItemListComponent }      from '@r-order-item/order-item-list/order-item-list.component';
-// import { OrderItemItemsComponent }   from '@r-order-item/order-item-details/order-item-details.component';
-// import { OrderItemFormComponent }      from '@r-order-item/order-item-form/order-item-form.component';
+// import { OrderItemDetailsComponent }   from '@r-order-item/order-item-details/order-item-details.component';
+import { OrderItemFormComponent }      from '@r-order-item/order-item-form/order-item-form.component';
 
 @NgModule({
   imports: [
@@ -21,7 +21,7 @@ import { OrderItemListComponent }      from '@r-order-item/order-item-list/order
     ReactiveFormsModule,
     OrderItemRoutingModule
   ],
-  declarations: [OrderItemListComponent],
+  declarations: [OrderItemListComponent, OrderItemFormComponent],
   providers:    [OrderItemService, OrderItemDao]
 })
 export class OrderItemModule {}

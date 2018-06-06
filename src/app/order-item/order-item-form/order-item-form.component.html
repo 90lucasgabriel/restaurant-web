@@ -1,0 +1,110 @@
+<!-- LOADERS START -->
+<div fxLayout="column" fxFlexFill fxLayoutAlign="center center" *ngIf="loading && !submitted">
+  <mat-progress-spinner mode="indeterminate" diameter="30" strokeWidth="4"></mat-progress-spinner>
+</div>
+<!-- LOADERS END -->
+
+<div fxLayout="row" fxLayoutAlign="center start" ngClass.gt-sm="padding" class="mat-typography">
+  <div fxLayout="column" fxFlex="85" fxFlex.lt-md="100" fxLayoutGap="10px"  *ngIf="!loading || submitted"  >
+
+    <!-- BACK AND TITLE START -->
+    <div ngClass.lt-md="padding no-padding-bottom">
+      <div fxLayoutAlign="space-between start" fxLayout="row">
+        <h3 fxLayout="row" fxLayoutAlign="start center" class="no-margin-bottom">
+            <button mat-icon-button (click)="goBack()" matTooltip="Voltar"><mat-icon>arrow_back</mat-icon></button> {{title}}
+        </h3>
+      </div>
+    </div>
+    <!--BACK AND TITLE END -->  
+
+    <!-- CONTENT START -->
+    <div fxLayout="column" fxLayoutGap="10px" >
+      <div ngClass.gt-sm="mat-elevation-z1 rounded-border">
+        <mat-card>
+          <mat-card-content>
+            <!-- CREATE AND EDIT FORM START -->
+            <form #itemForm="ngForm">
+                <mat-card-title-group>
+                  <mat-card-subtitle>Informações</mat-card-subtitle>
+                </mat-card-title-group>
+                <div fxLayout="column" fxLayoutAlign="start start">
+                  
+                  <div fxLayout="row" fxFlexFill>
+                    <div fxFlex="40px" fxHide.lt-md="true">
+                      <p><mat-icon>info_outline</mat-icon></p>
+                    </div>
+                    <div fxFlex>
+                      <div fxLayout="row wrap" fxLayout.lt-md="column" fxLayoutGap="10px">                        
+                        <mat-form-field fxFlex="calc(50%-10px)">
+                          <mat-select placeholder="Conta" [(ngModel)]="item.order" name="item.order_id" required>
+                            <mat-option *ngFor="let order of orderList" [value]="order">
+                              {{ order.id }} - Mesa {{ order.diningtable.data.code }}
+                            </mat-option>
+                          </mat-select>
+                        </mat-form-field>
+
+                        <mat-form-field fxFlex="calc(50%-10px)">
+                          <mat-select placeholder="Menu" [(ngModel)]="item.menu" name="item.menu" required>
+                            <mat-option *ngFor="let menu of menuList" [value]="menu">
+                              {{ menu.id }} - {{ menu.name }}
+                            </mat-option>
+                          </mat-select>
+                        </mat-form-field>
+
+                        <mat-form-field fxFlex="calc(50%-10px)">
+                          <mat-select placeholder="Produto" [(ngModel)]="item.product" name="item.product" required>
+                            <mat-option *ngFor="let product of productList" [value]="product">
+                              {{ product.id }} - {{ product.name }}
+                            </mat-option>
+                          </mat-select>
+                        </mat-form-field>
+                        
+                        <mat-form-field *ngIf="false" fxFlex="calc(50%-10px)">
+                          <mat-select placeholder="Mesa" [(ngModel)]="item.diningtable_id" name="item.diningtable_id" required>
+                            <mat-option *ngFor="let diningtable of diningtableList" [value]="diningtable.id">
+                              {{ diningtable.code }}
+                            </mat-option>
+                          </mat-select>
+                        </mat-form-field>
+                      
+                        <mat-form-field fxFlex="calc(50%-10px)">
+                          <mat-select placeholder="Status" [(ngModel)]="item.order_item_status_id" name="item.order_item_status_id" required>
+                            <mat-option *ngFor="let order_item_status of orderItemStatusList" [value]="order_item_status.id">
+                              {{ order_item_status.id }} - {{ order_item_status.name }}
+                            </mat-option>
+                          </mat-select>
+                        </mat-form-field>
+                      
+                        <mat-form-field fxFlex="calc(50%-10px)">
+                          <mat-select placeholder="Tipo" [(ngModel)]="item.order_item_type_id" name="item.order_item_type_id" required>
+                            <mat-option *ngFor="let order_item_type of orderItemTypeList" [value]="order_item_type.id">
+                              {{ order_item_type.id }} - {{ order_item_type.name }}
+                            </mat-option>
+                          </mat-select>
+                        </mat-form-field>
+
+                        <mat-form-field fxFlex="100">
+                          <textarea matInput placeholder="Descrição" [(ngModel)]="item.comment" name="comment"  matTextareaAutosize matAutosizeMinRows="1"></textarea>
+                        </mat-form-field>   
+                      </div>
+                    </div>
+                  </div>
+
+                </div>
+              </form>
+              <!-- EDIT FORM END -->
+          </mat-card-content>
+
+          <!-- FORM ACTIONS START -->
+          <mat-card-actions fxLayoutAlign="end">
+            <button mat-button (click)="cancelForm()">CANCELAR</button>
+            <button mat-button (click)="submitForm(item)" [disabled]="!itemForm.form.valid" color="primary">SALVAR</button>
+          </mat-card-actions>
+          <!-- FORM ACTIONS END -->
+        </mat-card>
+      </div>
+    </div>
+    <!-- CONTENT END -->    
+
+  </div>
+</div>

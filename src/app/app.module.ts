@@ -21,6 +21,8 @@ import { CompanyModule }              from '@r-company/company.module';
 import { MenuModule }                 from '@r-menu/menu.module';
 import { OrderModule }                from '@r-order/order.module';
 import { OrderItemModule }            from '@r-order-item/order-item.module';
+import { OrderItemStatusModule }      from '@r-order-item-status/order-item-status.module';
+import { OrderItemTypeModule }        from '@r-order-item-type/order-item-type.module';
 import { OrderStatusModule }          from '@r-order-status/order-status.module';
 import { ProductModule }              from '@r-product/product.module';
 
@@ -46,6 +48,8 @@ import { ProductModule }              from '@r-product/product.module';
     MenuModule,
     OrderModule,
     OrderItemModule,
+    OrderItemStatusModule,
+    OrderItemTypeModule,
     OrderStatusModule,
     ProductModule
   ],

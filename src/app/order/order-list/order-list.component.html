@@ -26,7 +26,7 @@
         </mat-form-field>
 
         <mat-form-field fxFlex>
-            <mat-select placeholder="Status" [(ngModel)]="filter.order_status_id" name="filter.order_status_id" (change)="applyFilter(dataSource, dataSourceCopy, filter)">
+            <mat-select placeholder="Status" [(ngModel)]="filter.order_status_id" name="filter.order_status_id" (ngModelChange)="applyFilter(dataSource, dataSourceCopy, filter)">
               <mat-option>-</mat-option>
               <mat-option *ngFor="let order_status of orderStatusList" [value]="order_status.id">
                 {{ order_status.id }} - {{ order_status.name }}
