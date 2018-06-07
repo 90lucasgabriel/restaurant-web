@@ -2,7 +2,7 @@
 
 <div class="container mat-typography" [class.is-mobile]="mobileQuery.matches">
   <!-- TOOLBAR START -->
-  <mat-toolbar fxLayout="row" fxLayoutAlign="space-between center" color="primary" class="toolbar">
+  <mat-toolbar fxLayout="row" fxLayoutAlign="space-between center" color="primary" class="toolbar" fxHide.lt-md="true">
     <div fxLayout="row" fxLayoutAlign="start center">
       <button mat-icon-button (click)="sidenav.toggle()">
         <mat-icon>menu</mat-icon>

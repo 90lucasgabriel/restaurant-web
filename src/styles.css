@@ -58,6 +58,9 @@ html, body, material-app, .my-content {
 /*TOOLBAR*/
 mat-toolbar{
   z-index:            2;
+}
+
+mat-toolbar.toolbar{
   box-shadow:         0px 1px 5px rgba(0, 0, 0, 0.5);
 }
 
