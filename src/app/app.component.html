@@ -2,7 +2,7 @@
 
 <div class="container mat-typography" [class.is-mobile]="mobileQuery.matches">
   <!-- TOOLBAR START -->
-  <mat-toolbar fxLayout="row" fxLayoutAlign="space-between center" color="primary" class="toolbar" fxHide.lt-md="true">
+  <mat-toolbar fxLayout="row" fxLayoutAlign="space-between center" color="primary" class="toolbar">
     <div fxLayout="row" fxLayoutAlign="start center">
       <button mat-icon-button (click)="sidenav.toggle()">
         <mat-icon>menu</mat-icon>
@@ -15,7 +15,7 @@
       <mat-menu #theme="matMenu" xPosition="before" yPosition="below">
         <button mat-menu-item *ngFor="let theme of themeList" (click)="selectTheme(theme.value)">{{theme.label}}</button>
       </mat-menu>
-      <button mat-icon-button matTooltip="Notificações"><mat-icon>notifications</mat-icon></button>
+      <button mat-icon-button matTooltip="Notificações" (click)="subscribeToNotifications()"><mat-icon>notifications</mat-icon></button>
       <button fxHide.lt-md="true"  mat-icon-button matTooltip="Perfil"><mat-icon>account_circle</mat-icon></button>
     </div>
   </mat-toolbar>
