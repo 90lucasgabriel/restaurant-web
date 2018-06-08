@@ -6,7 +6,7 @@ import { MaterialService }          from '@r-material/material.service';
 import { LoaderService }            from '@r-service/loader.service';
 import { AppConfig }                from '@r-app/app.config';
 import { Location }                 from '@angular/common';
-import { SwUpdate }                 from '@angular/service-worker';
+import { SwUpdate, SwPush }                 from '@angular/service-worker';
 
 @Component({
   selector:     'app-root',
@@ -20,6 +20,9 @@ export class AppComponent implements OnInit, AfterViewInit {
   mobileQuery: MediaQueryList;
   private _mobileQueryListener: () => void;
   @ViewChild('sidenav') sidenav: MatSidenav;
+
+  readonly VAPID_PUBLIC_KEY = 'BEBiTJ2kom9KYoC1horKIqGKZ0b6kRWXqnCcqTehNrWA8tngWIIBC6ebGgvQ8G1Ue1jcOPAQUajaYhGsWS4NDXc';
+
 
   menus = [
     {
@@ -66,7 +69,8 @@ export class AppComponent implements OnInit, AfterViewInit {
     private changeDetectorRef:  ChangeDetectorRef,
     private location:           Location,
     private media:              MediaMatcher,
-    private swUpdate:           SwUpdate) {
+    private swUpdate:           SwUpdate,
+    private swPush:             SwPush) {
     // change isLoading status whenever notified
     loader
       .onLoadingChanged
@@ -120,5 +124,13 @@ export class AppComponent implements OnInit, AfterViewInit {
   public selectTheme(theme) {
     document.body.className = '';
     document.body.classList.add(theme, 'mat-app-background');
+  }
+
+  public subscribeToNotifications() {
+    this.swPush.requestSubscription({
+        serverPublicKey: this.VAPID_PUBLIC_KEY
+    })
+    .then(sub => console.log('sub'))
+    .catch(err => console.error('Could not subscribe to notifications', err));
   }
 }
